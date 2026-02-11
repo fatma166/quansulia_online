@@ -51,55 +51,63 @@ export default function ApplicationDetail() {
     try {
       setLoading(true);
 
-      // Fetch application with related data
+      // Fetch application
       const { data: appData, error: appError } = await supabase
         .from('applications')
-        .select(`
-          *,
-          services:service_id (
-            id,
-            name_ar,
-            name_en,
-            slug
-          ),
-          application_statuses:status (
-            id,
-            name_ar,
-            name_en,
-            description_ar,
-            description_en,
-            color
-          )
-        `)
+        .select('*')
         .eq('id', id)
         .maybeSingle();
 
-      if (appError) throw appError;
+      if (appError) {
+        console.error('Error fetching application:', appError);
+        throw appError;
+      }
 
       if (!appData) {
+        console.log('Application not found with ID:', id);
         navigate('/admin/applications');
         return;
       }
 
       setApplication(appData);
-      setService(appData.services);
+
+      // Fetch service data separately if service_id exists
+      if (appData.service_id) {
+        const { data: serviceData, error: serviceError } = await supabase
+          .from('services')
+          .select('id, name_ar, name_en, slug')
+          .eq('slug', appData.service_id)
+          .maybeSingle();
+
+        if (!serviceError && serviceData) {
+          setService(serviceData);
+        }
+      }
 
       // Load status history
       const { data: historyData, error: historyError } = await supabase
         .from('status_history')
-        .select(`
-          *,
-          application_statuses:status_id (
-            name_ar,
-            name_en,
-            color
-          )
-        `)
+        .select('*')
         .eq('application_id', id)
         .order('created_at', { ascending: false });
 
       if (!historyError && historyData) {
-        setStatusHistory(historyData);
+        // Fetch status details for each history entry
+        const historyWithStatuses = await Promise.all(
+          historyData.map(async (history) => {
+            const { data: statusData } = await supabase
+              .from('application_statuses')
+              .select('name_ar, name_en, color')
+              .eq('id', history.status_id)
+              .maybeSingle();
+
+            return {
+              ...history,
+              application_statuses: statusData
+            };
+          })
+        );
+        setStatusHistory(historyWithStatuses);
       }
     } catch (error) {
       console.error('Error loading application:', error);
@@ -166,10 +174,26 @@ export default function ApplicationDetail() {
                   <h1 className="text-3xl font-bold text-gray-900">
                     طلب رقم: {application.reference_number || application.id?.slice(0, 8)}
                   </h1>
-                  <StatusBadge status={application.application_statuses} />
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    application.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
+                    application.status === 'in_review' ? 'bg-yellow-100 text-yellow-800' :
+                    application.status === 'processing' ? 'bg-purple-100 text-purple-800' :
+                    application.status === 'ready' ? 'bg-green-100 text-green-800' :
+                    application.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
+                    application.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {application.status === 'submitted' ? 'مستلم' :
+                     application.status === 'in_review' ? 'قيد المراجعة' :
+                     application.status === 'processing' ? 'قيد المعالجة' :
+                     application.status === 'ready' ? 'جاهز' :
+                     application.status === 'completed' ? 'مكتمل' :
+                     application.status === 'rejected' ? 'مرفوض' :
+                     application.status}
+                  </span>
                 </div>
                 <p className="text-gray-600">
-                  الخدمة: {service?.name_ar || 'غير محدد'}
+                  الخدمة: {service?.name_ar || application.service_title || 'غير محدد'}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
                   تاريخ التقديم: {formatDate(application.created_at)}

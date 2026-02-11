@@ -1,0 +1,9 @@
+          setEditingNews(null);
+        }}
+      />
+      </div>
+    </div>
+  </div>
+
+      {/* Event Form Modal */}
+      <EventFormModal

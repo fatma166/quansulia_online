@@ -1,0 +1,414 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+  }
+
+  html[lang="en"] {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Force Arabic font rendering */
+  *[dir="rtl"],
+  *[lang="ar"] {
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', 'Tahoma', 'Arial', sans-serif !important;
+  }
+}
+
+@layer utilities {
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+  
+  @keyframes scroll {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
+  .animate-scroll:hover {
+    animation-play-state: paused;
+  }
+  
+  .animate-scroll-horizontal {
+    animation: scroll-horizontal 40s linear infinite;
+  }
+  
+  @keyframes scroll-horizontal {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  .pause-animation:hover {
+    animation-play-state: paused;
+  }
+  
+  /* RTL Animation Fix */
+  [dir="rtl"] .animate-scroll {
+    animation: scroll-rtl 30s linear infinite;
+  }
+  
+  [dir="rtl"] .animate-scroll-horizontal {
+    animation: scroll-horizontal-rtl 40s linear infinite;
+  }
+  
+  @keyframes scroll-horizontal-rtl {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(50%);
+    }
+  }
+  
+  @keyframes scroll-rtl {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #276073;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1e4a5a;
+  }
+  
+  /* Selection Colors */
+  ::selection {
+    background-color: #276073;
+    color: white;
+  }
+  
+  ::-moz-selection {
+    background-color: #276073;
+    color: white;
+  }
+  
+  /* Focus Styles */
+  .focus-visible {
+    outline: 2px solid #276073;
+    outline-offset: 2px;
+  }
+  
+  /* Glass Morphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, #276073, #87ceeb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Button Hover Effects */
+  .btn-hover {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-hover:hover::before {
+    left: 100%;
+  }
+  
+  /* Card Hover Effects */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Loading Animation */
+  .loading-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  /* Smooth Page Transitions */
+  .page-transition {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Dark mode utilities */
+@media (prefers-color-scheme: dark) {
+  .auto-dark {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  
+  img {
+    max-width: 100% !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .high-contrast {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-scroll {
+    animation: none;
+  }
+}
+
+/* Rich Text Editor Styles */
+.rich-text-editor .ql-container {
+  min-height: 200px;
+  font-family: 'Cairo', 'Tajawal', 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+  font-size: 14px;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.rich-text-editor .ql-toolbar {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.rich-text-editor .ql-container {
+  border-color: #d1d5db;
+}
+
+.rich-text-editor .ql-editor {
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.rich-text-editor .ql-editor.ql-blank::before {
+  color: #9ca3af;
+  font-style: normal;
+}
+
+.rich-text-editor .ql-snow .ql-stroke {
+  stroke: #276073;
+}
+
+.rich-text-editor .ql-snow .ql-fill {
+  fill: #276073;
+}
+
+.rich-text-editor .ql-snow .ql-picker-label:hover,
+.rich-text-editor .ql-snow .ql-picker-label.ql-active,
+.rich-text-editor .ql-snow .ql-picker-item:hover,
+.rich-text-editor .ql-snow .ql-picker-item.ql-selected {
+  color: #276073;
+}
+
+.rich-text-editor .ql-snow.ql-toolbar button:hover,
+.rich-text-editor .ql-snow .ql-toolbar button:hover,
+.rich-text-editor .ql-snow.ql-toolbar button:focus,
+.rich-text-editor .ql-snow .ql-toolbar button:focus,
+.rich-text-editor .ql-snow.ql-toolbar button.ql-active,
+.rich-text-editor .ql-snow .ql-toolbar button.ql-active {
+  color: #276073;
+}
+
+.rich-text-editor .ql-snow.ql-toolbar button:hover .ql-stroke,
+.rich-text-editor .ql-snow .ql-toolbar button:hover .ql-stroke,
+.rich-text-editor .ql-snow.ql-toolbar button:focus .ql-stroke,
+.rich-text-editor .ql-snow .ql-toolbar button:focus .ql-stroke,
+.rich-text-editor .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.rich-text-editor .ql-snow .ql-toolbar button.ql-active .ql-stroke {
+  stroke: #276073;
+}
+
+.rich-text-editor .ql-snow.ql-toolbar button:hover .ql-fill,
+.rich-text-editor .ql-snow .ql-toolbar button:hover .ql-fill,
+.rich-text-editor .ql-snow.ql-toolbar button:focus .ql-fill,
+.rich-text-editor .ql-snow .ql-toolbar button:focus .ql-fill,
+.rich-text-editor .ql-snow.ql-toolbar button.ql-active .ql-fill,
+.rich-text-editor .ql-snow .ql-toolbar button.ql-active .ql-fill {
+  fill: #276073;
+}
+
+/* RTL Support for Rich Text Editor */
+[dir="rtl"] .rich-text-editor .ql-editor {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  /* Improve tap targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better touch scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Remove tap highlight color on mobile */
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  /* Better mobile font sizes */
+  body {
+    font-size: 16px;
+  }
+
+  /* Reduce animations on mobile for performance */
+  .animate-scroll-horizontal {
+    animation-duration: 60s;
+  }
+
+  /* Better spacing for mobile */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape mode */
+  .py-20 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .py-16 {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 375px) {
+  /* Extra small screens - reduce font sizes */
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  /* Reduce padding on very small screens */
+  .px-8 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .px-6 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}

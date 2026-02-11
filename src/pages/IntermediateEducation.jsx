@@ -1,0 +1,519 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, ChevronRight, FileText, Upload, CheckCircle, AlertCircle, User, Calendar, Phone, Mail, MapPin, BookOpen, Camera, Car as IdCard, Users, Clock, Star, Send } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
+import { getRegionsList, getCitiesByRegion, getDistrictsByCity } from '../data/saudiRegions';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import ProgressSteps from '../components/ProgressSteps';
+import FormStep from '../components/FormStep';
+import SidebarSummary from '../components/SidebarSummary';
+
+const IntermediateEducation = () => {
+  const { language, isRTL } = useLanguage();
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const breadcrumbs = [
+    { label: 'الرئيسية', href: '/' },
+    { label: 'الخدمات', href: '/services' },
+    { label: 'التعليم', href: '/services/education' },
+    { label: 'الشهادة المتوسطة', href: '/services/education/intermediate' }
+  ];
+
+  // Service configuration for Intermediate Education
+  const service = {
+    id: 'intermediate',
+    title: 'امتحانات الشهادة المتوسطة',
+    description: 'التقديم لامتحانات الشهادة المتوسطة (الصف العاشر)',
+    icon: 'BookOpen',
+    category: 'education',
+    requirements: [
+      'إرفاق شهادة الأساس أو ما يعادلها مرّ عليها ثلاث سنوات',
+      'صور شخصية حديثة',
+      'الرقم الوطني ولغير السودانيين الجواز',
+      'التأكد من صحة البيانات',
+      'لن يكتمل التسجيل إن كانت المستندات غير مكتملة'
+    ],
+    fees: '450 ريال',
+    duration: '3-4 أشهر',
+    steps: [
+      {
+        id: 'personal-info',
+        title: 'بيانات المتقدم',
+        fields: [
+          {
+            name: 'gender',
+            label: 'النوع',
+            type: 'radio',
+            options: [
+              { value: 'male', label: 'ذكر' },
+              { value: 'female', label: 'أنثى' }
+            ],
+            required: true,
+            validation: { required: 'النوع مطلوب' }
+          },
+          {
+            name: 'nationality',
+            label: 'الجنسية',
+            type: 'radio',
+            options: [
+              { value: 'sudanese', label: 'سوداني' },
+              { value: 'non-sudanese', label: 'غير سوداني' }
+            ],
+            required: true,
+            validation: { required: 'الجنسية مطلوبة' }
+          },
+          {
+            name: 'specificNationality',
+            label: 'نوع الجنسية',
+            type: 'text',
+            required: true,
+            conditional: { field: 'nationality', values: ['non-sudanese'] },
+            validation: { required: 'نوع الجنسية مطلوب' },
+            pattern: '[\u0600-\u06FF\s]+',
+            help: 'أدخل الحروف فقط'
+          },
+          {
+            name: 'fullName',
+            label: 'الاسم الرباعي مطابقاً للرقم الوطني',
+            type: 'text',
+            required: true,
+            className: 'md:col-span-2',
+            pattern: '^[\u0600-\u06ff\s]+$',
+            help: 'يجب إدخال الأحرف العربية فقط',
+            validation: { required: 'الاسم الرباعي مطلوب' }
+          },
+          {
+            name: 'nationalId',
+            label: 'الرقم الوطني / رقم الجواز',
+            type: 'text',
+            required: true,
+            pattern: '^[A-Za-z0-9]+$',
+            help: 'يجب إدخال أرقام وحروف إنجليزية فقط',
+            validation: { required: 'الرقم الوطني أو رقم الجواز مطلوب' }
+          },
+          {
+            name: 'dateOfBirth',
+            label: 'تاريخ الميلاد',
+            type: 'date',
+            required: true,
+            validation: { required: 'تاريخ الميلاد مطلوب' }
+          },
+          {
+            name: 'motherName',
+            label: 'اسم الأم رباعي',
+            type: 'text',
+            required: true,
+            className: 'md:col-span-2',
+            pattern: '^[\u0600-\u06ff\s]+$',
+            help: 'يجب إدخال الأحرف العربية فقط',
+            validation: { required: 'اسم الأم مطلوب' }
+          },
+          {
+            name: 'mobileNumber',
+            label: 'رقم الجوال',
+            type: 'tel',
+            required: true,
+            pattern: '^[0-9+\s()-]+$',
+            help: 'يجب إدخال أرقام فقط',
+            validation: { required: 'رقم الجوال مطلوب' }
+          },
+          {
+            name: 'addressRegion',
+            label: 'المنطقة',
+            type: 'select',
+            options: getRegionsList(),
+            required: true,
+            validation: { required: 'المنطقة مطلوبة' }
+          },
+          {
+            name: 'addressCity',
+            label: 'المدينة',
+            type: 'select',
+            options: [],
+            required: true,
+            conditional: { field: 'addressRegion', values: getRegionsList().map(r => r.value) },
+            validation: { required: 'المدينة مطلوبة' }
+          },
+          {
+            name: 'addressDistrict',
+            label: 'الحي',
+            type: 'select',
+            options: [],
+            required: false,
+            conditional: { field: 'addressCity', values: [] }
+          },
+          {
+            name: 'addressLandmark',
+            label: 'أقرب معلم',
+            type: 'text',
+            required: true,
+            conditional: { field: 'addressCity', values: [] },
+            validation: { required: 'أقرب معلم مطلوب' }
+          }
+        ]
+      },
+      {
+        id: 'service-details',
+        title: 'تفاصيل الخدمة',
+        fields: [
+          {
+            name: 'schoolName',
+            label: 'اسم المدرسة',
+            type: 'text',
+            required: true,
+            pattern: '^[\u0600-\u06ff\s]+$',
+            help: 'يجب إدخال الأحرف العربية فقط',
+            validation: { required: 'اسم المدرسة مطلوب' }
+          },
+          {
+            name: 'examLanguage',
+            label: 'لغة الامتحان',
+            type: 'radio',
+            options: [
+              { value: 'arabic', label: 'عربي' },
+              { value: 'english', label: 'إنجليزي' }
+            ],
+            required: true,
+            validation: { required: 'لغة الامتحان مطلوبة' }
+          },
+          {
+            name: 'specialCase',
+            label: 'حالة خاصة',
+            type: 'select',
+            options: [
+              { value: '', label: 'لا توجد' },
+              { value: 'mobility', label: 'إعاقة حركية' },
+              { value: 'hearing', label: 'إعاقة سمعية' },
+              { value: 'visual', label: 'إعاقة بصرية' },
+              { value: 'learning', label: 'صعوبة تعلم' },
+              { value: 'attention', label: 'تشتت انتباه' }
+            ],
+            required: false
+          },
+          {
+            name: 'specialCaseDescription',
+            label: 'وصف الحالة الخاصة',
+            type: 'textarea',
+            required: false,
+            conditional: { field: 'specialCase', values: ['mobility', 'hearing', 'visual', 'learning', 'attention'] },
+            className: 'md:col-span-2'
+          }
+        ]
+      },
+      {
+        id: 'guardian-info',
+        title: 'معلومات ولي الأمر',
+        fields: [
+          {
+            name: 'guardianName',
+            label: 'اسم ولي الأمر',
+            type: 'text',
+            required: true,
+            pattern: '^[\u0600-\u06ff\s]+$',
+            help: 'يجب إدخال الأحرف العربية فقط',
+            validation: { required: 'اسم ولي الأمر مطلوب' }
+          },
+          {
+            name: 'guardianPhone',
+            label: 'رقم هاتف ولي الأمر',
+            type: 'tel',
+            required: true,
+            pattern: '^[0-9+\s()-]+$',
+            help: 'يجب إدخال أرقام فقط',
+            validation: { required: 'رقم هاتف ولي الأمر مطلوب' }
+          },
+          {
+            name: 'guardianWorkplace',
+            label: 'مكان العمل',
+            type: 'text',
+            className: 'md:col-span-2',
+            required: true,
+            validation: { required: 'مكان عمل ولي الأمر مطلوب' }
+          }
+        ]
+      },
+      {
+        id: 'documents-upload',
+        title: 'المستندات المطلوبة',
+        fields: [
+          {
+            name: 'basicCertificate',
+            label: 'شهادة الأساس أو ما يعادلها',
+            type: 'file',
+            accept: '.pdf,.jpg,.jpeg,.png',
+            required: true,
+            maxSize: '5MB',
+            validation: { required: 'شهادة الأساس مطلوبة' }
+          },
+          {
+            name: 'personalPhoto',
+            label: 'صورة شخصية حديثة بمقاس صورة الجواز',
+            type: 'file',
+            accept: '.jpg,.jpeg,.png',
+            required: true,
+            maxSize: '2MB',
+            help: 'يجب أن تكون الصورة بمقاس 4×6 سم (مقاس صورة جواز السفر)، خلفية بيضاء، وواضحة',
+            validation: { required: 'الصورة الشخصية مطلوبة' }
+          },
+          {
+            name: 'nationalIdOrPassport',
+            label: 'الرقم الوطني للسودانيين - الجواز لغير السودانيين',
+            type: 'file',
+            accept: '.pdf,.jpg,.jpeg,.png',
+            required: true,
+            maxSize: '5MB',
+            help: 'السودانيون: إرفاق صورة الرقم الوطني | غير السودانيين: إرفاق صورة جواز السفر',
+            validation: { required: 'إرفاق الرقم الوطني أو الجواز مطلوب' }
+          }
+        ]
+      }
+    ]
+  };
+
+  const steps = service.steps.map(step => ({
+    id: step.id,
+    title: step.title
+  }));
+
+  const fillTestData = () => {
+    setFormData({
+      gender: 'female',
+      nationality: 'sudanese',
+      fullName: 'سارة أحمد محمد علي',
+      nationalId: '2234567891',
+      dateOfBirth: '2008-03-20',
+      motherName: 'عائشة محمد أحمد عبدالله',
+      schoolName: 'مدرسة الخرطوم المتوسطة',
+      examLanguage: 'arabic',
+      specialCase: '',
+      specialCaseDescription: '',
+      mobileNumber: '+966503456789',
+      addressRegion: 'makkah',
+      addressCity: 'جدة',
+      addressDistrict: 'النزهة',
+      addressLandmark: 'بجانب مركز النزهة التجاري',
+      guardianName: 'أحمد محمد علي',
+      guardianWorkplace: 'وزارة التعليم',
+      guardianPhone: '+966504567890'
+    });
+  };
+
+  const validateCurrentStep = () => {
+    const currentStepConfig = service.steps[currentStep];
+    const stepErrors = {};
+    
+    currentStepConfig.fields.forEach(field => {
+      // Check conditional fields
+      if (field.conditional) {
+        const conditionField = field.conditional.field;
+        const conditionValues = field.conditional.values;
+        const currentValue = formData[conditionField];
+        
+        if (!conditionValues.includes(currentValue)) {
+          return; // Skip validation for hidden conditional fields
+        }
+      }
+      
+      if (field.required && !formData[field.name]) {
+        stepErrors[field.name] = field.validation?.required || `${field.label} مطلوب`;
+      }
+    });
+    
+    setErrors(stepErrors);
+    return Object.keys(stepErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateCurrentStep()) {
+      if (currentStep < steps.length - 1) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        handleSubmit();
+      }
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    
+    setTimeout(() => {
+      const referenceNumber = `EDU-${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+      
+      console.log('Intermediate Education Application:', { ...formData, referenceNumber });
+      setIsSubmitting(false);
+      
+      navigate('/success', { 
+        state: { 
+          referenceNumber, 
+          serviceTitle: 'امتحانات الشهادة المتوسطة' 
+        } 
+      });
+    }, 2000);
+  };
+
+  const handleInputChange = (field, value) => {
+    const updates = { [field]: value };
+
+    if (field === 'addressRegion') {
+      updates.addressCity = '';
+      updates.addressDistrict = '';
+      updates.addressLandmark = '';
+    } else if (field === 'addressCity') {
+      updates.addressDistrict = '';
+      updates.addressLandmark = '';
+    }
+
+    setFormData(prev => ({ ...prev, ...updates }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: null }));
+    }
+  };
+
+  const currentStepConfig = service.steps[currentStep];
+
+  return (
+    <div className="min-h-screen bg-gray-50" dir={isRTL ? 'rtl' : 'ltr'}>
+      <Header />
+
+      {/* Service Title Banner */}
+      <div className="bg-gradient-to-r from-[#276073] to-[#1e4a5a] text-white py-6 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            {/* زر العودة - يسار */}
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors duration-200 text-sm"
+            >
+              <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
+              <span>العودة</span>
+            </button>
+
+            {/* اسم الخدمة - منتصف */}
+            <div className="flex-1 text-center px-4">
+              <h1 className="text-2xl sm:text-3xl font-bold">امتحانات الشهادة المتوسطة</h1>
+            </div>
+
+            {/* مساحة فارغة للتوازن - يمين */}
+            <div className="w-24 sm:w-32"></div>
+          </div>
+
+          {/* النص التوضيحي */}
+          <div className="text-center mt-3">
+            <p className="text-blue-100 text-sm">
+              يرجى ملء جميع الحقول المطلوبة لإكمال طلب الخدمة
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-3 gap-12" dir="rtl">
+              {/* Form */}
+              <div className="lg:col-span-2 lg:order-2">
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                  {/* Progress Steps */}
+                  <div className="p-6 border-b border-gray-200">
+                    <ProgressSteps steps={steps} currentStep={currentStep} />
+                  </div>
+
+                  {/* Test Data Button */}
+                  <div className="p-6 bg-green-50 border-b border-green-200">
+                    <button
+                      type="button"
+                      onClick={fillTestData}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 rtl:space-x-reverse"
+                    >
+                      <Star className="w-4 h-4" />
+                      <span>ملء البيانات التجريبية</span>
+                    </button>
+                  </div>
+
+                  {/* Form Content */}
+                  <div className="p-6">
+                    <FormStep
+                      title={currentStepConfig.title}
+                      fields={currentStepConfig.fields}
+                      formData={formData}
+                      errors={errors}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+
+                  {/* Navigation Buttons */}
+                  <div className="p-6 border-t border-gray-200 flex justify-between">
+                    <button
+                      onClick={handlePrevious}
+                      disabled={currentStep === 0}
+                      className="px-6 py-3 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-700 rounded-lg font-semibold transition-colors duration-200 flex items-center space-x-2 rtl:space-x-reverse"
+                    >
+                      <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
+                      <span>السابق</span>
+                    </button>
+
+                    <button
+                      onClick={handleNext}
+                      disabled={isSubmitting}
+                      className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-semibold transition-colors duration-200 flex items-center space-x-2 rtl:space-x-reverse"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>جاري الإرسال...</span>
+                        </>
+                      ) : currentStep === steps.length - 1 ? (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>إرسال الطلب</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>التالي</span>
+                          <ChevronRight className="w-4 h-4 rtl:rotate-180" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sidebar */}
+              <div className="lg:col-span-1 lg:order-1">
+                <div className="space-y-6 sticky top-8">
+                  <SidebarSummary service={service} formData={formData} />
+                  
+                  {/* Back Button */}
+                  <button
+                    onClick={() => navigate('/services/education')}
+                    className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center space-x-2 rtl:space-x-reverse"
+                  >
+                    <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
+                    <span>العودة لخدمات التعليم</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default IntermediateEducation;

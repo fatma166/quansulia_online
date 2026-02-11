@@ -1,0 +1,363 @@
+/* Print Styles for Consular Services */
+
+@media print {
+  /* Exam Card Print Styles */
+  .print-card {
+    width: 210mm !important;
+    height: 148mm !important;
+    transform: none !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: 2pt solid #276073 !important;
+    page-break-inside: avoid;
+  }
+
+  .exam-card {
+    font-size: 10pt !important;
+    line-height: 1.2 !important;
+  }
+
+  .exam-card h1 {
+    font-size: 14pt !important;
+  }
+
+  .exam-card h2 {
+    font-size: 16pt !important;
+  }
+
+  .exam-card .text-2xl {
+    font-size: 14pt !important;
+  }
+
+  .exam-card .text-xl {
+    font-size: 12pt !important;
+  }
+
+  .exam-card .text-lg {
+    font-size: 11pt !important;
+  }
+
+  /* Hide non-essential elements */
+  .no-print,
+  nav,
+  .sidebar,
+  button,
+  .bg-gradient-to-r,
+  .bg-gradient-to-br,
+  .shadow-lg,
+  .shadow-xl,
+  .hover\:shadow-xl,
+  .transition-all,
+  .animate-pulse {
+    display: none !important;
+  }
+
+  /* Reset page margins */
+  @page {
+    margin: 2cm;
+    size: A4;
+  }
+
+  /* Body styles */
+  body {
+    font-family: 'Cairo', Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+    background: white;
+  }
+
+  /* Container */
+  .container {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Headers */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000;
+    page-break-after: avoid;
+    margin-top: 0;
+  }
+
+  h1 {
+    font-size: 18pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20pt;
+    border-bottom: 2pt solid #276073;
+    padding-bottom: 10pt;
+  }
+
+  h2 {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-top: 20pt;
+    margin-bottom: 10pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 15pt;
+    margin-bottom: 8pt;
+  }
+
+  /* Paragraphs */
+  p {
+    margin-bottom: 8pt;
+    text-align: justify;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15pt;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1pt solid #000;
+    padding: 8pt;
+    text-align: right;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  /* Form elements */
+  .form-field {
+    margin-bottom: 15pt;
+    page-break-inside: avoid;
+  }
+
+  .form-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5pt;
+  }
+
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    border: 1pt solid #000;
+    padding: 5pt;
+    width: 100%;
+    background: white;
+  }
+
+  /* Reference number styling */
+  .reference-number {
+    font-size: 16pt;
+    font-weight: bold;
+    text-align: center;
+    border: 2pt solid #276073;
+    padding: 15pt;
+    margin: 20pt 0;
+    background-color: #f8f9fa;
+  }
+
+  /* Service details */
+  .service-details {
+    border: 1pt solid #000;
+    padding: 15pt;
+    margin-bottom: 20pt;
+  }
+
+  .service-details h3 {
+    margin-top: 0;
+    color: #276073;
+  }
+
+  /* Requirements list */
+  .requirements-list {
+    margin: 15pt 0;
+  }
+
+  .requirements-list ul {
+    list-style-type: disc;
+    margin-right: 20pt;
+  }
+
+  .requirements-list li {
+    margin-bottom: 5pt;
+  }
+
+  /* Footer */
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10pt;
+    color: #666;
+    border-top: 1pt solid #ccc;
+    padding-top: 10pt;
+  }
+
+  /* Page breaks */
+  .page-break {
+    page-break-before: always;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid;
+  }
+
+  /* Hide colors and backgrounds */
+  * {
+    background: white !important;
+    color: black !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Specific overrides for form elements */
+  .bg-white,
+  .bg-gray-50,
+  .bg-gray-100,
+  .bg-blue-50,
+  .bg-green-50,
+  .bg-red-50 {
+    background: white !important;
+  }
+
+  .text-white,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900 {
+    color: black !important;
+  }
+
+  /* Borders */
+  .border,
+  .border-gray-200,
+  .border-gray-300 {
+    border: 1pt solid #000 !important;
+  }
+
+  /* Rounded corners - remove for print */
+  .rounded,
+  .rounded-lg,
+  .rounded-xl,
+  .rounded-2xl {
+    border-radius: 0 !important;
+  }
+
+  /* Spacing adjustments */
+  .p-4,
+  .p-6,
+  .p-8 {
+    padding: 10pt !important;
+  }
+
+  .m-4,
+  .m-6,
+  .m-8 {
+    margin: 10pt !important;
+  }
+
+  .mb-4,
+  .mb-6,
+  .mb-8 {
+    margin-bottom: 10pt !important;
+  }
+
+  .mt-4,
+  .mt-6,
+  .mt-8 {
+    margin-top: 10pt !important;
+  }
+
+  /* Grid layouts - convert to block */
+  .grid {
+    display: block !important;
+  }
+
+  .grid > * {
+    display: block !important;
+    margin-bottom: 10pt;
+  }
+
+  /* Flex layouts - convert to block */
+  .flex {
+    display: block !important;
+  }
+
+  .flex > * {
+    display: block !important;
+    margin-bottom: 5pt;
+  }
+
+  /* Icons - hide or replace with text */
+  svg {
+    display: none !important;
+  }
+
+  /* Success page specific styles */
+  .success-header {
+    text-align: center;
+    margin-bottom: 30pt;
+  }
+
+  .success-details {
+    border: 2pt solid #000;
+    padding: 20pt;
+    margin-bottom: 20pt;
+  }
+
+  .success-details h2 {
+    text-align: center;
+    margin-bottom: 20pt;
+    color: #276073;
+  }
+
+  /* QR Code placeholder */
+  .qr-placeholder {
+    width: 100pt;
+    height: 100pt;
+    border: 1pt solid #000;
+    text-align: center;
+    line-height: 100pt;
+    margin: 20pt auto;
+    font-size: 10pt;
+  }
+}
+
+/* Print-specific utility classes */
+@media print {
+  .print-only {
+    display: block !important;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  .print-page-break {
+    page-break-before: always;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid;
+  }
+
+  .print-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50pt;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1pt solid #000;
+    padding-bottom: 10pt;
+  }
+}

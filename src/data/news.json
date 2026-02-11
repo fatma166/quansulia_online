@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "title": {
+      "ar": "بيان رسمي حول الأوضاع الأمنية في السودان",
+      "en": "Official Statement on Security Situation in Sudan"
+    },
+    "excerpt": {
+      "ar": "أصدرت وزارة الخارجية السودانية بياناً رسمياً حول آخر التطورات الأمنية في البلاد وتأكيد الاستقرار",
+      "en": "The Sudanese Ministry of Foreign Affairs issued an official statement on the latest security developments and stability confirmation"
+    },
+    "image": "https://images.pexels.com/photos/6077326/pexels-photo-6077326.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2025-01-15",
+    "category": "official"
+  },
+  {
+    "id": 2,
+    "title": {
+      "ar": "فرص استثمارية جديدة في قطاع الزراعة السوداني",
+      "en": "New Investment Opportunities in Sudan's Agricultural Sector"
+    },
+    "excerpt": {
+      "ar": "تفتح الحكومة السودانية المجال أمام استثمارات جديدة في القطاع الزراعي مع حوافز مالية مجزية ودعم حكومي شامل",
+      "en": "Sudan opens new agricultural investment opportunities with attractive financial incentives and comprehensive government support"
+    },
+    "image": "https://images.pexels.com/photos/2132227/pexels-photo-2132227.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2025-01-12",
+    "category": "latest"
+  },
+  {
+    "id": 3,
+    "title": {
+      "ar": "افتتاح معرض الثقافة السودانية في جدة",
+      "en": "Opening of Sudanese Culture Exhibition in Jeddah"
+    },
+    "excerpt": {
+      "ar": "ينظم القنصلية معرضاً ثقافياً شاملاً يستعرض التراث والحضارة السودانية العريقة بمشاركة فنانين محليين",
+      "en": "The consulate organizes a comprehensive cultural exhibition showcasing Sudan's rich heritage with local artists participation"
+    },
+    "image": "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2025-01-10",
+    "category": "latest"
+  },
+  {
+    "id": 4,
+    "title": {
+      "ar": "تحديث إجراءات الحصول على جوازات السفر",
+      "en": "Updated Passport Application Procedures"
+    },
+    "excerpt": {
+      "ar": "تعلن القنصلية عن تحديث إجراءات إصدار وتجديد جوازات السفر لتسهيل الخدمة على المواطنين وتقليل أوقات الانتظار",
+      "en": "The consulate announces updated passport procedures to facilitate services for citizens and reduce waiting times"
+    },
+    "image": "https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2025-01-08",
+    "category": "official"
+  },
+  {
+    "id": 5,
+    "title": {
+      "ar": "توقيع اتفاقية تعاون تعليمي مع الجامعات السعودية",
+      "en": "Educational Cooperation Agreement with Saudi Universities"
+    },
+    "excerpt": {
+      "ar": "وقعت القنصلية اتفاقية تعاون مع عدة جامعات سعودية لتبادل الطلاب وتقديم منح دراسية للطلاب السودانيين",
+      "en": "The consulate signed cooperation agreements with Saudi universities for student exchange and scholarships for Sudanese students"
+    },
+    "image": "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2025-01-05",
+    "category": "latest"
+  },
+  {
+    "id": 6,
+    "title": {
+      "ar": "إطلاق برنامج دعم رجال الأعمال السودانيين",
+      "en": "Launch of Sudanese Businessmen Support Program"
+    },
+    "excerpt": {
+      "ar": "أطلقت القنصلية برنامجاً شاملاً لدعم رجال الأعمال السودانيين في المملكة وتسهيل إجراءات الاستثمار والتجارة",
+      "en": "The consulate launched a comprehensive program to support Sudanese businessmen in the Kingdom and facilitate investment procedures"
+    },
+    "image": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2025-01-03",
+    "category": "official"
+  },
+  {
+    "id": 7,
+    "title": {
+      "ar": "مؤتمر الاستثمار السوداني السعودي المشترك",
+      "en": "Joint Sudanese-Saudi Investment Conference"
+    },
+    "excerpt": {
+      "ar": "يستعد لانعقاد مؤتمر اقتصادي كبير لتعزيز الاستثمارات المشتركة بين البلدين في مختلف القطاعات الاقتصادية",
+      "en": "Preparing for a major economic conference to promote joint investments between the two countries in various economic sectors"
+    },
+    "image": "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2025-01-01",
+    "category": "latest"
+  },
+  {
+    "id": 8,
+    "title": {
+      "ar": "تدشين خدمات إلكترونية جديدة للمواطنين",
+      "en": "Launch of New Electronic Services for Citizens"
+    },
+    "excerpt": {
+      "ar": "دشنت القنصلية منصة إلكترونية متطورة تتيح للمواطنين إنجاز معاملاتهم عبر الإنترنت بسهولة وأمان",
+      "en": "The consulate launched an advanced electronic platform allowing citizens to complete their transactions online safely and easily"
+    },
+    "image": "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "date": "2024-12-28",
+    "category": "official"
+  }
+]

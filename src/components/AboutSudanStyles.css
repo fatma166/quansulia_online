@@ -1,0 +1,214 @@
+/* About Sudan Page Styles */
+
+/* Container System */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Responsive Typography */
+.hero-title {
+  font-size: clamp(28px, 3vw, 48px);
+}
+
+.section-title {
+  font-size: clamp(24px, 2.5vw, 36px);
+}
+
+.body-text {
+  font-size: clamp(14px, 1.2vw, 18px);
+}
+
+/* Gallery Swiper Styles */
+.gallery-swiper {
+  padding: 40px 0;
+}
+
+.gallery-swiper .swiper-slide {
+  width: 320px;
+  height: 256px;
+}
+
+.gallery-swiper .swiper-slide-active {
+  transform: scale(1.1);
+}
+
+.gallery-swiper .swiper-pagination-bullet {
+  background: #276073;
+  opacity: 0.5;
+}
+
+.gallery-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: #87ceeb;
+}
+
+.gallery-swiper .swiper-button-next,
+.gallery-swiper .swiper-button-prev {
+  color: #276073;
+  background: rgba(255, 255, 255, 0.9);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin-top: -22px;
+}
+
+.gallery-swiper .swiper-button-next:after,
+.gallery-swiper .swiper-button-prev:after {
+  font-size: 18px;
+}
+
+/* Parallax Effects */
+.parallax-bg {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .animate-pulse,
+  .animate-bounce {
+    animation: none;
+  }
+}
+
+/* Responsive Breakpoints */
+
+/* Extra Small Devices */
+@media (max-width: 360px) {
+  .container {
+    padding: 0 12px;
+  }
+  
+  .hero-title {
+    font-size: 24px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+  }
+  
+  .gallery-swiper .swiper-slide {
+    width: 280px;
+  }
+}
+
+/* Small Devices */
+@media (min-width: 480px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Medium Devices (Tablets) */
+@media (min-width: 768px) {
+  .hero-section {
+    height: 60vh;
+    min-height: 500px;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .gallery-swiper .swiper-slide {
+    width: 300px;
+  }
+}
+
+/* Large Devices (Desktop) */
+@media (min-width: 1024px) {
+  .hero-section {
+    height: 70vh;
+    min-height: 600px;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .section-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Extra Large Devices */
+@media (min-width: 1440px) {
+  .container {
+    padding: 0 24px;
+  }
+  
+  .hero-section {
+    height: 80vh;
+    min-height: 700px;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .swiper-button-next {
+  left: 10px;
+  right: auto;
+}
+
+[dir="rtl"] .swiper-button-prev {
+  right: 10px;
+  left: auto;
+}
+
+/* Touch Interactions */
+@media (hover: none) and (pointer: coarse) {
+  .hover-effects:hover {
+    transform: none;
+  }
+  
+  .touch-friendly {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .bg-gradient-to-r {
+    background: #276073 !important;
+  }
+  
+  .text-gray-600 {
+    color: #000000 !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .hero-section {
+    height: auto !important;
+    min-height: auto !important;
+  }
+  
+  .container {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+}

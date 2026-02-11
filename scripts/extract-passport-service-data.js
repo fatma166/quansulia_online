@@ -1,0 +1,314 @@
+const passportServiceData = {
+  requirements: [
+    {
+      requirement_ar: "صورة شخصية حديثة بخلفية بيضاء",
+      requirement_en: "Recent photo with white background"
+    },
+    {
+      requirement_ar: "صورة من الهوية الوطنية",
+      requirement_en: "Copy of National ID"
+    },
+    {
+      requirement_ar: "صورة من الجواز القديم (للتجديد)",
+      requirement_en: "Copy of old passport (for renewal)",
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "renewal"
+          }
+        ],
+        logic: "AND"
+      }
+    },
+    {
+      requirement_ar: "بلاغ فقدان من الشرطة (لبدل الفاقد)",
+      requirement_en: "Police report (for lost passport replacement)",
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "lost"
+          }
+        ],
+        logic: "AND"
+      }
+    }
+  ],
+  documents: [
+    {
+      document_name_ar: "صورة شخصية",
+      document_name_en: "Personal Photo",
+      description_ar: "صورة شخصية حديثة بخلفية بيضاء 4×6",
+      description_en: "Recent photo with white background 4x6",
+      is_required: true,
+      max_size_mb: 2,
+      allowed_types: ["jpg", "jpeg", "png"]
+    },
+    {
+      document_name_ar: "صورة الهوية الوطنية",
+      document_name_en: "National ID Copy",
+      description_ar: "صورة واضحة من الهوية الوطنية من الوجهين",
+      description_en: "Clear copy of National ID (both sides)",
+      is_required: true,
+      max_size_mb: 5,
+      allowed_types: ["pdf", "jpg", "jpeg", "png"]
+    },
+    {
+      document_name_ar: "صورة الجواز القديم",
+      document_name_en: "Old Passport Copy",
+      description_ar: "صورة من صفحة البيانات في الجواز القديم",
+      description_en: "Copy of data page from old passport",
+      is_required: true,
+      max_size_mb: 5,
+      allowed_types: ["pdf", "jpg", "jpeg", "png"],
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "renewal"
+          }
+        ],
+        logic: "AND"
+      }
+    },
+    {
+      document_name_ar: "بلاغ الفقدان",
+      document_name_en: "Loss Report",
+      description_ar: "بلاغ فقدان من الشرطة",
+      description_en: "Police loss report",
+      is_required: true,
+      max_size_mb: 5,
+      allowed_types: ["pdf", "jpg", "jpeg", "png"],
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "lost"
+          }
+        ],
+        logic: "AND"
+      }
+    }
+  ],
+  fields: [
+    {
+      name: "service_type",
+      label_ar: "نوع الخدمة",
+      label_en: "Service Type",
+      type: "select",
+      is_required: true,
+      placeholder_ar: "اختر نوع الخدمة",
+      placeholder_en: "Select service type",
+      config: {
+        options: [
+          {
+            value: "new",
+            label_ar: "جواز جديد",
+            label_en: "New Passport"
+          },
+          {
+            value: "renewal",
+            label_ar: "تجديد جواز",
+            label_en: "Passport Renewal"
+          },
+          {
+            value: "lost",
+            label_ar: "بدل فاقد",
+            label_en: "Lost Passport Replacement"
+          },
+          {
+            value: "damaged",
+            label_ar: "بدل تالف",
+            label_en: "Damaged Passport Replacement"
+          }
+        ]
+      },
+      order_index: 0,
+      step_number: 1
+    },
+    {
+      name: "full_name_ar",
+      label_ar: "الاسم الكامل بالعربية",
+      label_en: "Full Name in Arabic",
+      type: "text",
+      is_required: true,
+      placeholder_ar: "أدخل الاسم الكامل",
+      placeholder_en: "Enter full name",
+      order_index: 1,
+      step_number: 1
+    },
+    {
+      name: "full_name_en",
+      label_ar: "الاسم الكامل بالإنجليزية",
+      label_en: "Full Name in English",
+      type: "text",
+      is_required: true,
+      placeholder_ar: "Enter full name",
+      placeholder_en: "Enter full name",
+      order_index: 2,
+      step_number: 1
+    },
+    {
+      name: "national_id",
+      label_ar: "رقم الهوية الوطنية",
+      label_en: "National ID Number",
+      type: "text",
+      is_required: true,
+      placeholder_ar: "أدخل رقم الهوية",
+      placeholder_en: "Enter national ID",
+      validation: {
+        pattern: "^[0-9]{10}$",
+        message_ar: "يجب أن يكون رقم الهوية 10 أرقام",
+        message_en: "National ID must be 10 digits"
+      },
+      order_index: 3,
+      step_number: 1
+    },
+    {
+      name: "birth_date",
+      label_ar: "تاريخ الميلاد",
+      label_en: "Date of Birth",
+      type: "date",
+      is_required: true,
+      order_index: 4,
+      step_number: 1
+    },
+    {
+      name: "gender",
+      label_ar: "الجنس",
+      label_en: "Gender",
+      type: "radio",
+      is_required: true,
+      config: {
+        options: [
+          {
+            value: "male",
+            label_ar: "ذكر",
+            label_en: "Male"
+          },
+          {
+            value: "female",
+            label_ar: "أنثى",
+            label_en: "Female"
+          }
+        ]
+      },
+      order_index: 5,
+      step_number: 1
+    },
+    {
+      name: "mobile",
+      label_ar: "رقم الجوال",
+      label_en: "Mobile Number",
+      type: "tel",
+      is_required: true,
+      placeholder_ar: "05xxxxxxxx",
+      placeholder_en: "05xxxxxxxx",
+      validation: {
+        pattern: "^05[0-9]{8}$",
+        message_ar: "رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام",
+        message_en: "Mobile number must start with 05 and be 10 digits"
+      },
+      order_index: 6,
+      step_number: 1
+    },
+    {
+      name: "email",
+      label_ar: "البريد الإلكتروني",
+      label_en: "Email Address",
+      type: "email",
+      is_required: true,
+      placeholder_ar: "example@email.com",
+      placeholder_en: "example@email.com",
+      order_index: 7,
+      step_number: 1
+    },
+    {
+      name: "old_passport_number",
+      label_ar: "رقم الجواز القديم",
+      label_en: "Old Passport Number",
+      type: "text",
+      is_required: true,
+      placeholder_ar: "أدخل رقم الجواز القديم",
+      placeholder_en: "Enter old passport number",
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "renewal"
+          }
+        ],
+        logic: "AND"
+      },
+      order_index: 8,
+      step_number: 1
+    },
+    {
+      name: "old_passport_issue_date",
+      label_ar: "تاريخ إصدار الجواز القديم",
+      label_en: "Old Passport Issue Date",
+      type: "date",
+      is_required: true,
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "renewal"
+          }
+        ],
+        logic: "AND"
+      },
+      order_index: 9,
+      step_number: 1
+    },
+    {
+      name: "loss_report_number",
+      label_ar: "رقم بلاغ الفقدان",
+      label_en: "Loss Report Number",
+      type: "text",
+      is_required: true,
+      placeholder_ar: "أدخل رقم بلاغ الفقدان",
+      placeholder_en: "Enter loss report number",
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "lost"
+          }
+        ],
+        logic: "AND"
+      },
+      order_index: 10,
+      step_number: 1
+    },
+    {
+      name: "loss_date",
+      label_ar: "تاريخ الفقدان",
+      label_en: "Loss Date",
+      type: "date",
+      is_required: true,
+      conditions: {
+        show_when: [
+          {
+            field: "service_type",
+            operator: "equals",
+            value: "lost"
+          }
+        ],
+        logic: "AND"
+      },
+      order_index: 11,
+      step_number: 1
+    }
+  ]
+};
+
+console.log(JSON.stringify(passportServiceData, null, 2));

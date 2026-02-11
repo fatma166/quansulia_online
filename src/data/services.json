@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "title": {
+      "ar": "المعاملات القنصلية",
+      "en": "Consular Services"
+    },
+    "icon": "FileText",
+    "summary": {
+      "ar": "جوازات السفر، التصديقات، الشهادات القنصلية",
+      "en": "Passports, Attestations, Consular Certificates"
+    },
+    "link": "/services"
+  },
+  {
+    "id": 3,
+    "title": {
+      "ar": "الاستثمار في السودان",
+      "en": "Investment in Sudan"
+    },
+    "icon": "TrendingUp",
+    "summary": {
+      "ar": "الفرص الاستثمارية، التراخيص، الدعم اللوجستي",
+      "en": "Investment Opportunities, Licenses, Logistical Support"
+    },
+    "link": "/services/investment"
+  },
+  {
+    "id": 4,
+    "title": {
+      "ar": "السياحة في السودان",
+      "en": "Tourism in Sudan"
+    },
+    "icon": "MapPin",
+    "summary": {
+      "ar": "التأشيرات السياحية، البرامج السياحية، المعالم الأثرية",
+      "en": "Tourist Visas, Tourism Programs, Archaeological Sites"
+    },
+    "link": "/services/tourism"
+  }
+]

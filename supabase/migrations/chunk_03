@@ -1,0 +1,500 @@
+   true, '{"required":"رقم الهاتف مطلوب"}'::jsonb, '[]'::jsonb, 20, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]},{"field":"fatherAttending","values":["no"]}]}]'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'correctedName', 'text',
+   'الاسم المعدل', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الاسم المعدل مطلوب"}'::jsonb, '[]'::jsonb, 21, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'nameCorrectionReason', 'textarea',
+   'وضح أسباب التعديل', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"أسباب التعديل مطلوبة"}'::jsonb, '[]'::jsonb, 22, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'wrongBirthDate', 'date',
+   'تاريخ الميلاد الخطأ', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"تاريخ الميلاد الخطأ مطلوب"}'::jsonb, '[]'::jsonb, 23, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'correctBirthDate', 'date',
+   'تاريخ الميلاد الصحيح', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"تاريخ الميلاد الصحيح مطلوب"}'::jsonb, '[]'::jsonb, 24, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'ageCorrectionReason', 'textarea',
+   'وضح أسباب التعديل', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"أسباب التعديل مطلوبة"}'::jsonb, '[]'::jsonb, 25, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'nationalNumber', 'text',
+   'الرقم الوطني', NULL, NULL, NULL, 'أدخل الرقم الوطني', NULL, NULL,
+   true, '{"required":"الرقم الوطني مطلوب"}'::jsonb, '[]'::jsonb, 26, TRUE, '{"field":"recordType","values":["conduct_certificate"]}'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'motherFullName', 'text',
+   'اسم الأم رباعي', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"اسم الأم رباعي مطلوب"}'::jsonb, '[]'::jsonb, 27, TRUE, '{"field":"recordType","values":["conduct_certificate"]}'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'requestingAuthority', 'text',
+   'الجهة الطالبة للفيش', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الجهة الطالبة مطلوبة"}'::jsonb, '[]'::jsonb, 28, TRUE, '{"field":"recordType","values":["conduct_certificate"]}'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'requestReason', 'select',
+   'سبب طلب الفيش', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"سبب الطلب مطلوب"}'::jsonb, '[{"value":"work","label":"للعمل"},{"value":"study","label":"للدراسة"},{"value":"travel","label":"للسفر"},{"value":"residence","label":"للإقامة"},{"value":"marriage","label":"للزواج"},{"value":"government","label":"للجهات الحكومية"},{"value":"other","label":"أخرى"}]'::jsonb, 29, TRUE, '{"field":"recordType","values":["conduct_certificate"]}'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'concernSubject', 'text',
+   'الموضوع', NULL, NULL, NULL, 'عنوان أو موضوع الإفادة', NULL, NULL,
+   true, '{"required":"الموضوع مطلوب"}'::jsonb, '[]'::jsonb, 30, TRUE, '{"field":"recordType","values":["towhomitmayconcern"]}'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'civilRegistryData', 'textarea',
+   'بيانات السجل المدني', NULL, NULL, NULL, 'أدخل بياناتك من السجل المدني (الاسم الرباعي، الرقم الوطني، تاريخ الميلاد، مكان الميلاد، إلخ)', NULL, NULL,
+   true, '{"required":"بيانات السجل المدني مطلوبة"}'::jsonb, '[]'::jsonb, 31, TRUE, '{"field":"recordType","values":["towhomitmayconcern"]}'::jsonb),
+  ('service-details', 'تفاصيل الخدمة', NULL, 'requestExplanation', 'textarea',
+   'شرح الطلب', NULL, NULL, NULL, 'اشرح تفاصيل الطلب والغرض من الإفادة والمعلومات المطلوب إثباتها', NULL, NULL,
+   true, '{"required":"شرح الطلب مطلوب"}'::jsonb, '[]'::jsonb, 32, TRUE, '{"field":"recordType","values":["towhomitmayconcern"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'replacementIdOrPassport', 'file',
+   'صورة من الرقم الوطني أو الجواز', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة من الرقم الوطني أو الجواز مطلوبة"}'::jsonb, '[]'::jsonb, 0, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["replacement"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'replacementPhoto', 'file',
+   'صورة حديثة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الصورة الحديثة مطلوبة"}'::jsonb, '[]'::jsonb, 1, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["replacement"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'newbornFatherIdOrPassport', 'file',
+   'صورة من الجواز أو الرقم الوطني للوالد', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة من الجواز أو الرقم الوطني للوالد مطلوبة"}'::jsonb, '[]'::jsonb, 2, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'newbornMotherIdOrPassport', 'file',
+   'صورة من الجواز أو الرقم الوطني للوالدة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة من الجواز أو الرقم الوطني للوالدة مطلوبة"}'::jsonb, '[]'::jsonb, 3, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'newbornBirthCertificate', 'file',
+   'شهادة ميلاد أو تبليغ ولادة معتمد (للأطفال تحت 90 يوم)', NULL, NULL, NULL, 'شهادة ميلاد أو تبليغ ولادة معتمد من دولة التمثيل في حالة الطفل لا يتجاوز 90 يوم', NULL, NULL,
+   true, '{"required":"شهادة الميلاد أو تبليغ الولادة مطلوبة"}'::jsonb, '[]'::jsonb, 4, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'newbornMarriageCertificate', 'file',
+   'قسيمة الزواج', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"قسيمة الزواج مطلوبة"}'::jsonb, '[]'::jsonb, 5, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'newbornChildPhoto', 'file',
+   'صورة فوتوغرافية حديثة للطفل', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة الطفل مطلوبة"}'::jsonb, '[]'::jsonb, 6, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'under12FatherIdOrPassport', 'file',
+   'صورة من الجواز أو الرقم الوطني للوالد', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة من الجواز أو الرقم الوطني للوالد مطلوبة"}'::jsonb, '[]'::jsonb, 7, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'under12MotherIdOrPassport', 'file',
+   'صورة من الجواز أو الرقم الوطني للوالدة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة من الجواز أو الرقم الوطني للوالدة مطلوبة"}'::jsonb, '[]'::jsonb, 8, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'under12BirthCertificate', 'file',
+   'شهادة الميلاد', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"شهادة الميلاد مطلوبة"}'::jsonb, '[]'::jsonb, 9, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'under12MarriageCertificate', 'file',
+   'قسيمة الزواج', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"قسيمة الزواج مطلوبة"}'::jsonb, '[]'::jsonb, 10, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'under12Photo', 'file',
+   'صورة فوتوغرافية حديثة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الصورة الفوتوغرافية مطلوبة"}'::jsonb, '[]'::jsonb, 11, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'witness1Passport', 'file',
+   'صورة جواز الشاهد الأول', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة جواز الشاهد الأول مطلوبة"}'::jsonb, '[]'::jsonb, 12, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]},{"field":"fatherAttending","values":["no"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'witness2Passport', 'file',
+   'صورة جواز الشاهد الثاني', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة جواز الشاهد الثاني مطلوبة"}'::jsonb, '[]'::jsonb, 13, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]},{"field":"fatherAttending","values":["no"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionNationalId', 'file',
+   'صورة من الرقم الوطني', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة الرقم الوطني مطلوبة"}'::jsonb, '[]'::jsonb, 14, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionBirthCertificate', 'file',
+   'شهادة الميلاد', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"شهادة الميلاد مطلوبة"}'::jsonb, '[]'::jsonb, 15, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionPassport', 'file',
+   'صورة من الجواز', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة الجواز مطلوبة"}'::jsonb, '[]'::jsonb, 16, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionLegalAffidavit', 'file',
+   'إشهاد شرعي', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الإشهاد الشرعي مطلوب"}'::jsonb, '[]'::jsonb, 17, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionGazettePublication', 'file',
+   'نشر الجريدة الرسمية', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"نشر الجريدة الرسمية مطلوب"}'::jsonb, '[]'::jsonb, 18, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionSanctionsClearance', 'file',
+   'إفادة قوائم الحظر والسيطرة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"إفادة قوائم الحظر والسيطرة مطلوبة"}'::jsonb, '[]'::jsonb, 19, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionInterpolClearance', 'file',
+   'إفادة من الإنتربول', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"إفادة من الإنتربول مطلوبة"}'::jsonb, '[]'::jsonb, 20, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionHandwrittenRequest', 'file',
+   'كتابة طلب لتوضيح الأسباب بخط اليد', NULL, NULL, NULL, 'يجب أن يكون الطلب مكتوباً بخط اليد', NULL, NULL,
+   true, '{"required":"الطلب المكتوب بخط اليد مطلوب"}'::jsonb, '[]'::jsonb, 21, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'nameCorrectionPhoto', 'file',
+   'صورة حديثة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الصورة الحديثة مطلوبة"}'::jsonb, '[]'::jsonb, 22, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'ageCorrectionNationalId', 'file',
+   'صورة من الرقم الوطني', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة الرقم الوطني مطلوبة"}'::jsonb, '[]'::jsonb, 23, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'ageCorrectionBirthCertificate', 'file',
+   'شهادة الميلاد', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"شهادة الميلاد مطلوبة"}'::jsonb, '[]'::jsonb, 24, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'ageCorrectionPassport', 'file',
+   'صورة من الجواز', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة الجواز مطلوبة"}'::jsonb, '[]'::jsonb, 25, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'ageCorrectionHandwrittenRequest', 'file',
+   'كتابة طلب لتوضيح الأسباب بخط اليد', NULL, NULL, NULL, 'يجب أن يكون الطلب مكتوباً بخط اليد', NULL, NULL,
+   true, '{"required":"الطلب المكتوب بخط اليد مطلوب"}'::jsonb, '[]'::jsonb, 26, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'ageCorrectionSupportingDocs', 'file',
+   'مستندات داعمة ذات صلة', NULL, NULL, NULL, 'أي مستندات تدعم طلب تعديل العمر', NULL, NULL,
+   true, '{"required":"المستندات الداعمة مطلوبة"}'::jsonb, '[]'::jsonb, 27, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'ageCorrectionPhoto', 'file',
+   'صورة حديثة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الصورة الحديثة مطلوبة"}'::jsonb, '[]'::jsonb, 28, TRUE, '[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'conductPassportCopy', 'file',
+   'صورة من الجواز', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة من الجواز مطلوبة"}'::jsonb, '[]'::jsonb, 29, TRUE, '{"field":"recordType","values":["conduct_certificate"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'conductRecentPhoto', 'file',
+   'صورة حديثة', NULL, NULL, NULL, 'صورة شخصية حديثة', NULL, NULL,
+   true, '{"required":"صورة حديثة مطلوبة"}'::jsonb, '[]'::jsonb, 30, TRUE, '{"field":"recordType","values":["conduct_certificate"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'concernPassportCopy', 'file',
+   'صورة من الجواز', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة من الجواز مطلوبة"}'::jsonb, '[]'::jsonb, 31, TRUE, '{"field":"recordType","values":["towhomitmayconcern"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'concernRelatedFiles', 'file',
+   'ملفات ذات صلة (إن وجدت)', NULL, NULL, NULL, 'أي ملفات أو مستندات ذات صلة بالطلب (اختياري)', NULL, NULL,
+   false, '{}'::jsonb, '[]'::jsonb, 32, TRUE, '{"field":"recordType","values":["towhomitmayconcern"]}'::jsonb)
+) AS fld(
+  step_id, step_title_ar, step_title_en, field_name, field_type, label_ar, label_en,
+  placeholder_ar, placeholder_en, help_text_ar, help_text_en, default_value,
+  is_required, validation_rules, options, order_index, is_active, conditions
+)
+WHERE services.slug = 'civilRegistry';
+
+-- إدراج المرفقات
+INSERT INTO service_documents (
+  service_id, document_name_ar, document_name_en, description_ar, description_en,
+  is_required, max_size_mb, accepted_formats, order_index, is_active, conditions
+)
+SELECT id, * FROM services, (VALUES
+  ('صورة من الرقم الوطني أو الجواز', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 0, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["replacement"]}]}]}'::jsonb),
+  ('صورة حديثة', NULL, NULL, NULL,
+   true, 2, '["jpg","jpeg","png"]'::jsonb, 1, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["replacement"]}]}]}'::jsonb),
+  ('صورة من الجواز أو الرقم الوطني للوالد', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 2, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]}'::jsonb),
+  ('صورة من الجواز أو الرقم الوطني للوالدة', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 3, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]}'::jsonb),
+  ('شهادة ميلاد أو تبليغ ولادة معتمد (للأطفال تحت 90 يوم)', NULL, 'شهادة ميلاد أو تبليغ ولادة معتمد من دولة التمثيل في حالة الطفل لا يتجاوز 90 يوم', NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 4, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]}'::jsonb),
+  ('قسيمة الزواج', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 5, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]}'::jsonb),
+  ('صورة فوتوغرافية حديثة للطفل', NULL, NULL, NULL,
+   true, 2, '["jpg","jpeg","png"]'::jsonb, 6, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["newborn"]}]}]}'::jsonb),
+  ('صورة من الجواز أو الرقم الوطني للوالد', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 7, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]}'::jsonb),
+  ('صورة من الجواز أو الرقم الوطني للوالدة', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 8, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]}'::jsonb),
+  ('شهادة الميلاد', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 9, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]}'::jsonb),
+  ('قسيمة الزواج', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 10, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]}'::jsonb),
+  ('صورة فوتوغرافية حديثة', NULL, NULL, NULL,
+   true, 2, '["jpg","jpeg","png"]'::jsonb, 11, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]}]}]}'::jsonb),
+  ('صورة جواز الشاهد الأول', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 12, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]},{"field":"fatherAttending","values":["no"]}]}]}'::jsonb),
+  ('صورة جواز الشاهد الثاني', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 13, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["under12"]},{"field":"fatherAttending","values":["no"]}]}]}'::jsonb),
+  ('صورة من الرقم الوطني', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 14, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('شهادة الميلاد', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 15, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('صورة من الجواز', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 16, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('إشهاد شرعي', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 17, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('نشر الجريدة الرسمية', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 18, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('إفادة قوائم الحظر والسيطرة', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 19, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('إفادة من الإنتربول', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 20, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('كتابة طلب لتوضيح الأسباب بخط اليد', NULL, 'يجب أن يكون الطلب مكتوباً بخط اليد', NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 21, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('صورة حديثة', NULL, NULL, NULL,
+   true, 2, '["jpg","jpeg","png"]'::jsonb, 22, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["name_correction"]}]}]}'::jsonb),
+  ('صورة من الرقم الوطني', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 23, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]}'::jsonb),
+  ('شهادة الميلاد', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 24, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]}'::jsonb),
+  ('صورة من الجواز', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 25, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]}'::jsonb),
+  ('كتابة طلب لتوضيح الأسباب بخط اليد', NULL, 'يجب أن يكون الطلب مكتوباً بخط اليد', NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 26, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]}'::jsonb),
+  ('مستندات داعمة ذات صلة', NULL, 'أي مستندات تدعم طلب تعديل العمر', NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 27, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]}'::jsonb),
+  ('صورة حديثة', NULL, NULL, NULL,
+   true, 2, '["jpg","jpeg","png"]'::jsonb, 28, TRUE, '{"show_when":[{"operator":"AND","conditions":[{"field":"recordType","values":["national_id"]},{"field":"idType","values":["age_correction"]}]}]}'::jsonb),
+  ('صورة من الجواز', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 29, TRUE, '{"show_when":[{"operator":"OR","conditions":[{"field":"recordType","operator":"equals","value":["conduct_certificate"]}]}]}'::jsonb),
+  ('صورة حديثة', NULL, 'صورة شخصية حديثة', NULL,
+   true, 5, '["jpg","jpeg","png"]'::jsonb, 30, TRUE, '{"show_when":[{"operator":"OR","conditions":[{"field":"recordType","operator":"equals","value":["conduct_certificate"]}]}]}'::jsonb),
+  ('صورة من الجواز', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 31, TRUE, '{"show_when":[{"operator":"OR","conditions":[{"field":"recordType","operator":"equals","value":["towhomitmayconcern"]}]}]}'::jsonb),
+  ('ملفات ذات صلة (إن وجدت)', NULL, 'أي ملفات أو مستندات ذات صلة بالطلب (اختياري)', NULL,
+   false, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 32, TRUE, '{"show_when":[{"operator":"OR","conditions":[{"field":"recordType","operator":"equals","value":["towhomitmayconcern"]}]}]}'::jsonb)
+) AS doc(document_name_ar, document_name_en, description_ar, description_en,
+  is_required, max_size_mb, accepted_formats, order_index, is_active, conditions)
+WHERE services.slug = 'civilRegistry';
+
+-- ========================================
+-- خدمة: الشؤون القانونية والأسرية
+-- ========================================
+
+-- إدراج الخدمة
+INSERT INTO services (
+    name_ar, name_en, slug, description_ar, description_en,
+    icon, category, fees, duration, is_active, config
+  ) VALUES (
+    'الشؤون القانونية والأسرية',
+    NULL,
+    'familyAffairs',
+    'خدمات قانونية وأسرية متنوعة',
+    NULL,
+    'Heart',
+    'legal',
+    '{"base":150,"currency":"ريال سعودي"}',
+    '3-7 أيام عمل',
+    TRUE,
+    '{"process":["تحديد نوع القضية","تقديم المستندات المطلوبة","مراجعة الحالة","دفع الرسوم","إصدار الوثيقة أو القرار"],"hasSubcategories":false,"subcategories":[]}'::jsonb
+  )
+  ON CONFLICT (slug)
+  DO UPDATE SET
+    name_ar = EXCLUDED.name_ar,
+    description_ar = EXCLUDED.description_ar,
+    fees = EXCLUDED.fees,
+    duration = EXCLUDED.duration,
+    config = EXCLUDED.config,
+    updated_at = NOW();
+
+
+-- حذف البيانات القديمة للخدمة
+DO $$
+DECLARE
+  service_uuid uuid;
+BEGIN
+  SELECT id INTO service_uuid FROM services WHERE slug = 'familyAffairs';
+
+  IF service_uuid IS NOT NULL THEN
+    DELETE FROM service_dynamic_list_fields
+    WHERE parent_field_id IN (SELECT id FROM service_fields WHERE service_id = service_uuid);
+
+    DELETE FROM service_requirements WHERE service_id = service_uuid;
+    DELETE FROM service_documents WHERE service_id = service_uuid;
+    DELETE FROM service_fields WHERE service_id = service_uuid;
+  END IF;
+END $$;
+
+
+-- إدراج المتطلبات
+INSERT INTO service_requirements (service_id, requirement_ar, requirement_en, order_index, is_active, conditions)
+SELECT id, * FROM services, (VALUES
+  ('إثباتات هوية الأطراف', NULL, 0, TRUE, '{}'::jsonb),
+  ('المستندات الداعمة حسب نوع القضية', NULL, 1, TRUE, '{}'::jsonb),
+  ('شهود (عند الحاجة)', NULL, 2, TRUE, '{}'::jsonb)
+) AS req(requirement_ar, requirement_en, order_index, is_active, conditions)
+WHERE services.slug = 'familyAffairs';
+
+-- إدراج الحقول
+INSERT INTO service_fields (
+  service_id, step_id, step_title_ar, step_title_en, field_name, field_type,
+  label_ar, label_en, placeholder_ar, placeholder_en, help_text_ar, help_text_en,
+  default_value, is_required, validation_rules, options, order_index, is_active, conditions
+)
+SELECT id, * FROM services, (VALUES
+  ('case-details', 'تفاصيل القضية', NULL, 'visaType', 'select',
+   'نوع التأشيرة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"نوع التأشيرة مطلوب"}'::jsonb, '[{"value":"resident","label":"مقيم"},{"value":"visit","label":"زيارة"},{"value":"umrah","label":"عمرة"},{"value":"other","label":"أخرى"}]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('case-details', 'تفاصيل القضية', NULL, 'iqamaNumber', 'text',
+   'رقم الإقامة', NULL, NULL, NULL, 'أدخل 10 أرقام', NULL, NULL,
+   true, '{"required":"رقم الإقامة مطلوب"}'::jsonb, '[]'::jsonb, 1, TRUE, '{}'::jsonb),
+  ('case-details', 'تفاصيل القضية', NULL, 'issuePlace', 'text',
+   'مكان الإصدار', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"مكان الإصدار مطلوب"}'::jsonb, '[]'::jsonb, 2, TRUE, '{}'::jsonb),
+  ('case-details', 'تفاصيل القضية', NULL, 'issueDate', 'date',
+   'تاريخ الإصدار', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"تاريخ الإصدار مطلوب"}'::jsonb, '[]'::jsonb, 3, TRUE, '{}'::jsonb),
+  ('case-details', 'تفاصيل القضية', NULL, 'maritalStatus', 'select',
+   'الحالة الاجتماعية', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الحالة الاجتماعية مطلوبة"}'::jsonb, '[{"value":"single","label":"عازب/ة"},{"value":"married","label":"متزوج/ة"},{"value":"widowed","label":"أرمل/ة"},{"value":"divorced","label":"مطلق/ة"}]'::jsonb, 4, TRUE, '{}'::jsonb),
+  ('case-details', 'تفاصيل القضية', NULL, 'caseType', 'select',
+   'نوع الطلب', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"نوع الطلب مطلوب"}'::jsonb, '[{"value":"legal-case","label":"قضايا قانونية"},{"value":"legal-consultation","label":"استشارة قانونية"},{"value":"legal-support","label":"طلب دعم قانوني"},{"value":"family-disputes","label":"خلافات أسرية"},{"value":"external-relations","label":"مخاطبة الجهات ذات العلاقة الخارجية (جوازات - شرطة - سجون - تعليم - أخرى)"},{"value":"aid","label":"مساعدات"},{"value":"other","label":"أخرى"}]'::jsonb, 5, TRUE, '{}'::jsonb),
+  ('case-details', 'تفاصيل القضية', NULL, 'caseDescription', 'textarea',
+   'وصف القضية', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"وصف القضية مطلوب"}'::jsonb, '[]'::jsonb, 6, TRUE, '{}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'passportCopy', 'file',
+   'صورة الجواز', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة الجواز مطلوبة"}'::jsonb, '[]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'iqamaCopy', 'file',
+   'صورة الإقامة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة الإقامة مطلوبة"}'::jsonb, '[]'::jsonb, 1, TRUE, '{}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'requestDocuments', 'file',
+   'إرفاق المستندات الخاصة بالطلب', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"المستندات الخاصة بالطلب مطلوبة"}'::jsonb, '[]'::jsonb, 2, TRUE, '{}'::jsonb)
+) AS fld(
+  step_id, step_title_ar, step_title_en, field_name, field_type, label_ar, label_en,
+  placeholder_ar, placeholder_en, help_text_ar, help_text_en, default_value,
+  is_required, validation_rules, options, order_index, is_active, conditions
+)
+WHERE services.slug = 'familyAffairs';
+
+-- إدراج المرفقات
+INSERT INTO service_documents (
+  service_id, document_name_ar, document_name_en, description_ar, description_en,
+  is_required, max_size_mb, accepted_formats, order_index, is_active, conditions
+)
+SELECT id, * FROM services, (VALUES
+  ('صورة الجواز', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('صورة الإقامة', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 1, TRUE, '{}'::jsonb),
+  ('إرفاق المستندات الخاصة بالطلب', NULL, NULL, NULL,
+   true, 5, '["pdf","jpg","jpeg","png"]'::jsonb, 2, TRUE, '{}'::jsonb)
+) AS doc(document_name_ar, document_name_en, description_ar, description_en,
+  is_required, max_size_mb, accepted_formats, order_index, is_active, conditions)
+WHERE services.slug = 'familyAffairs';
+
+-- ========================================
+-- خدمة: التأشيرات
+-- ========================================
+
+-- إدراج الخدمة
+INSERT INTO services (
+    name_ar, name_en, slug, description_ar, description_en,
+    icon, category, fees, duration, is_active, config
+  ) VALUES (
+    'التأشيرات',
+    NULL,
+    'visas',
+    'إصدار تأشيرات دخول للسودان',
+    NULL,
+    'Plane',
+    'travel',
+    '{"regular":{"base":375,"currency":"ريال سعودي"},"american":{"base":572,"currency":"ريال سعودي"}}',
+    '3-5 أيام عمل',
+    TRUE,
+    '{"process":["تحديد نوع التأشيرة","تقديم المستندات المطلوبة","مراجعة الطلب","دفع الرسوم","إصدار التأشيرة"],"hasSubcategories":false,"subcategories":[]}'::jsonb
+  )
+  ON CONFLICT (slug)
+  DO UPDATE SET
+    name_ar = EXCLUDED.name_ar,
+    description_ar = EXCLUDED.description_ar,
+    fees = EXCLUDED.fees,
+    duration = EXCLUDED.duration,
+    config = EXCLUDED.config,
+    updated_at = NOW();
+
+
+-- حذف البيانات القديمة للخدمة
+DO $$
+DECLARE
+  service_uuid uuid;
+BEGIN
+  SELECT id INTO service_uuid FROM services WHERE slug = 'visas';
+
+  IF service_uuid IS NOT NULL THEN
+    DELETE FROM service_dynamic_list_fields
+    WHERE parent_field_id IN (SELECT id FROM service_fields WHERE service_id = service_uuid);
+
+    DELETE FROM service_requirements WHERE service_id = service_uuid;
+    DELETE FROM service_documents WHERE service_id = service_uuid;
+    DELETE FROM service_fields WHERE service_id = service_uuid;
+  END IF;
+END $$;
+
+
+-- إدراج المتطلبات
+INSERT INTO service_requirements (service_id, requirement_ar, requirement_en, order_index, is_active, conditions)
+SELECT id, * FROM services, (VALUES
+  ('أصل جواز السفر ساري المفعول (صلاحية 6 أشهر على الأقل)', NULL, 0, TRUE, '{"type":"general"}'::jsonb),
+  ('صورة شخصية', NULL, 1, TRUE, '{"type":"general"}'::jsonb),
+  ('الرسوم: 375 ريال لكل الجنسيات ماعدا الجنسية الأمريكية 572 ريال', NULL, 2, TRUE, '{"type":"general"}'::jsonb),
+  ('تقديم الطلب بواسطة صاحب الطلب أو ولي أمره أو المندوب الرسمي لجهة العمل الضامنة', NULL, 3, TRUE, '{"type":"general"}'::jsonb),
+  ('صورة من مستند سوداني لصاحب الطلب (جواز سفر - رقم وطني - بطاقة شخصية - بطاقة أصول سودانية)', NULL, 4, TRUE, '{"type":"sudanese_origin"}'::jsonb),
+  ('صورة مستند سوداني لضامن من الدرجة الأولى (أب - أم - أخ - أخت - ابن - ابنة - زوجة)', NULL, 5, TRUE, '{"type":"sudanese_origin"}'::jsonb),
+  ('في حالة الزوجة: إرفاق صورة من قسيمة الزواج', NULL, 6, TRUE, '{"type":"sudanese_origin"}'::jsonb),
+  ('في حالة الأم: إرفاق شهادة الميلاد أو الرقم الوطني لصاحب الطلب', NULL, 7, TRUE, '{"type":"sudanese_origin"}'::jsonb),
+  ('زيارة شخصية (شخصية إعتبارية - قاضي - وزير)', NULL, 8, TRUE, '{"type":"personal_visit"}'::jsonb),
+  ('خطاب من جهة العمل المسجلة بجوازات الأجانب', NULL, 9, TRUE, '{"type":"business_visit"}'::jsonb),
+  ('إرفاق هوية المندوب الرسمي المسجل بجوازات الأجانب', NULL, 10, TRUE, '{"type":"business_visit"}'::jsonb)
+) AS req(requirement_ar, requirement_en, order_index, is_active, conditions)
+WHERE services.slug = 'visas';
+
+-- إدراج الحقول
+INSERT INTO service_fields (
+  service_id, step_id, step_title_ar, step_title_en, field_name, field_type,
+  label_ar, label_en, placeholder_ar, placeholder_en, help_text_ar, help_text_en,
+  default_value, is_required, validation_rules, options, order_index, is_active, conditions
+)
+SELECT id, * FROM services, (VALUES
+  ('visa-details', 'تفاصيل الخدمة', NULL, 'visaType', 'radio',
+   'نوع التأشيرة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"نوع التأشيرة مطلوب"}'::jsonb, '[{"value":"sudanese_origin","label":"للأصول السودانية","description":"تأشيرة للأصول السودانية"},{"value":"personal_visit","label":"زيارة شخصية","description":"شخصية إعتبارية - قاضي - وزير"},{"value":"business_visit","label":"زيارة الأعمال","description":"للأعمال التجارية"}]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('visa-details', 'تفاصيل الخدمة', NULL, 'passportExpiry', 'date',
+   'تاريخ انتهاء الجواز', NULL, NULL, NULL, 'يجب أن يكون صالحاً لمدة 6 أشهر على الأقل', NULL, NULL,
+   true, '{"required":"تاريخ انتهاء الجواز مطلوب"}'::jsonb, '[]'::jsonb, 1, TRUE, '{}'::jsonb),
+  ('visa-details', 'تفاصيل الخدمة', NULL, 'nationality', 'searchable-select',
+   'الجنسية', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الجنسية مطلوبة"}'::jsonb, '[{"value":"usa","label":"الولايات المتحدة الأمريكية"},{"value":"uk","label":"المملكة المتحدة"},{"value":"canada","label":"كندا"},{"value":"australia","label":"أستراليا"},{"value":"germany","label":"ألمانيا"},{"value":"france","label":"فرنسا"},{"value":"italy","label":"إيطاليا"},{"value":"spain","label":"إسبانيا"},{"value":"egypt","label":"مصر"},{"value":"jordan","label":"الأردن"},{"value":"uae","label":"الإمارات"},{"value":"kuwait","label":"الكويت"},{"value":"qatar","label":"قطر"},{"value":"bahrain","label":"البحرين"},{"value":"oman","label":"عمان"},{"value":"other","label":"أخرى"}]'::jsonb, 2, TRUE, '{}'::jsonb),
+  ('visa-details', 'تفاصيل الخدمة', NULL, 'nationalityOther', 'text',
+   'حدد الجنسية', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الجنسية مطلوبة"}'::jsonb, '[]'::jsonb, 3, TRUE, '{"field":"nationality","values":["other"]}'::jsonb),
+  ('visa-details', 'تفاصيل الخدمة', NULL, 'arrivalDate', 'date',
+   'تاريخ الوصول المتوقع', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"تاريخ الوصول مطلوب"}'::jsonb, '[]'::jsonb, 4, TRUE, '{}'::jsonb),
+  ('applicant-info', 'معلومات المتقدم', NULL, 'applicantType', 'radio',
+   'الشخص المقدم للطلب', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"يرجى تحديد الشخص المقدم للطلب"}'::jsonb, '[{"value":"self","label":"صاحب الطلب"},{"value":"guardian","label":"ولي الأمر"},{"value":"representative","label":"المندوب الرسمي لجهة العمل"}]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('applicant-info', 'معلومات المتقدم', NULL, 'guardianName', 'text',
+   'اسم ولي الأمر', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"اسم ولي الأمر مطلوب"}'::jsonb, '[]'::jsonb, 1, TRUE, '{"field":"applicantType","values":["guardian"]}'::jsonb),
+  ('applicant-info', 'معلومات المتقدم', NULL, 'guardianRelation', 'select',
+   'صلة القرابة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صلة القرابة مطلوبة"}'::jsonb, '[{"value":"father","label":"أب"},{"value":"mother","label":"أم"},{"value":"brother","label":"أخ"},{"value":"sister","label":"أخت"},{"value":"other","label":"أخرى"}]'::jsonb, 2, TRUE, '{"field":"applicantType","values":["guardian"]}'::jsonb),
+  ('applicant-info', 'معلومات المتقدم', NULL, 'representativeName', 'text',
+   'اسم المندوب الرسمي', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"اسم المندوب الرسمي مطلوب"}'::jsonb, '[]'::jsonb, 3, TRUE, '{"field":"applicantType","values":["representative"]}'::jsonb),
+  ('applicant-info', 'معلومات المتقدم', NULL, 'representativeCompany', 'text',
+   'جهة العمل الضامنة', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"جهة العمل الضامنة مطلوبة"}'::jsonb, '[]'::jsonb, 4, TRUE, '{"field":"applicantType","values":["representative"]}'::jsonb),
+  ('sudanese-origin-info', 'معلومات الأصول السودانية', NULL, 'applicantSudaneseDoc', 'radio',
+   'هل لديك مستند سوداني؟', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"يرجى تحديد ما إذا كان لديك مستند سوداني"}'::jsonb, '[{"value":"yes","label":"نعم"},{"value":"no","label":"لا"}]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('sudanese-origin-info', 'معلومات الأصول السودانية', NULL, 'applicantSudaneseDocType', 'select',
+   'نوع المستند السوداني', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"نوع المستند السوداني مطلوب"}'::jsonb, '[{"value":"passport","label":"جواز سفر سوداني"},{"value":"national_id","label":"رقم وطني"},{"value":"personal_card","label":"بطاقة شخصية"},{"value":"sudanese_origin_card","label":"بطاقة أصول سودانية"}]'::jsonb, 1, TRUE, '{"field":"applicantSudaneseDoc","values":["yes"]}'::jsonb),
+  ('sudanese-origin-info', 'معلومات الأصول السودانية', NULL, 'applicantSudaneseDocNumber', 'text',
+   'رقم المستند السوداني', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"رقم المستند السوداني مطلوب"}'::jsonb, '[]'::jsonb, 2, TRUE, '{"field":"applicantSudaneseDoc","values":["yes"]}'::jsonb),
+  ('sudanese-origin-info', 'معلومات الأصول السودانية', NULL, 'guarantorName', 'text',
+   'اسم الضامن (من الدرجة الأولى)', NULL, NULL, NULL, 'أب - أم - أخ - أخت - ابن - ابنة - زوجة', NULL, NULL,
+   true, '{"required":"اسم الضامن مطلوب"}'::jsonb, '[]'::jsonb, 3, TRUE, '{}'::jsonb),
+  ('sudanese-origin-info', 'معلومات الأصول السودانية', NULL, 'guarantorRelation', 'select',
+   'صلة القرابة بالضامن', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صلة القرابة مطلوبة"}'::jsonb, '[{"value":"father","label":"أب"},{"value":"mother","label":"أم"},{"value":"brother","label":"أخ"},{"value":"sister","label":"أخت"},{"value":"son","label":"ابن"},{"value":"daughter","label":"ابنة"},{"value":"wife","label":"زوجة"}]'::jsonb, 4, TRUE, '{}'::jsonb),
+  ('sudanese-origin-info', 'معلومات الأصول السودانية', NULL, 'guarantorSudaneseDocType', 'select',
+   'نوع مستند الضامن السوداني', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"نوع مستند الضامن مطلوب"}'::jsonb, '[{"value":"passport","label":"جواز سفر سوداني"},{"value":"national_id","label":"رقم وطني"},{"value":"personal_card","label":"بطاقة شخصية"},{"value":"sudanese_origin_card","label":"بطاقة أصول سودانية"}]'::jsonb, 5, TRUE, '{}'::jsonb),
+  ('sudanese-origin-info', 'معلومات الأصول السودانية', NULL, 'guarantorSudaneseDocNumber', 'text',
+   'رقم مستند الضامن السوداني', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"رقم مستند الضامن مطلوب"}'::jsonb, '[]'::jsonb, 6, TRUE, '{}'::jsonb),
+  ('business-info', 'معلومات زيارة الأعمال', NULL, 'companyName', 'text',
+   'اسم جهة العمل', NULL, NULL, NULL, 'يجب أن تكون مسجلة بجوازات الأجانب', NULL, NULL,
+   true, '{"required":"اسم جهة العمل مطلوب"}'::jsonb, '[]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('business-info', 'معلومات زيارة الأعمال', NULL, 'companyRegistrationNumber', 'text',
+   'رقم التسجيل بجوازات الأجانب', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"رقم التسجيل مطلوب"}'::jsonb, '[]'::jsonb, 1, TRUE, '{}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'passportOriginal', 'file',
+   'أصل جواز السفر ساري المفعول', NULL, NULL, NULL, 'يجب أن يكون صالحاً لمدة 6 أشهر على الأقل', NULL, NULL,
+   true, '{"required":"أصل جواز السفر مطلوب"}'::jsonb, '[]'::jsonb, 0, TRUE, '{}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'personalPhoto', 'file',
+   'صورة شخصية', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"الصورة الشخصية مطلوبة"}'::jsonb, '[]'::jsonb, 1, TRUE, '{}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'applicantSudaneseDocCopy', 'file',
+   'صورة من المستند السوداني لصاحب الطلب', NULL, NULL, NULL, 'جواز سفر - رقم وطني - بطاقة شخصية - بطاقة أصول سودانية', NULL, NULL,
+   true, '{"required":"صورة المستند السوداني مطلوبة"}'::jsonb, '[]'::jsonb, 2, TRUE, '{"field":"visaType","values":["sudanese_origin"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'guarantorSudaneseDocCopy', 'file',
+   'صورة المستند السوداني للضامن', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"صورة مستند الضامن مطلوبة"}'::jsonb, '[]'::jsonb, 3, TRUE, '{"field":"visaType","values":["sudanese_origin"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'marriageCertificate', 'file',
+   'صورة من قسيمة الزواج', NULL, NULL, NULL, 'في حالة الزوجة', NULL, NULL,
+   true, '{"required":"صورة قسيمة الزواج مطلوبة"}'::jsonb, '[]'::jsonb, 4, TRUE, '{"field":"guarantorRelation","values":["wife"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'birthCertificate', 'file',
+   'صورة من شهادة الميلاد أو الرقم الوطني', NULL, NULL, NULL, 'في حالة الأم كضامن', NULL, NULL,
+   true, '{"required":"صورة شهادة الميلاد أو الرقم الوطني مطلوبة"}'::jsonb, '[]'::jsonb, 5, TRUE, '{"field":"guarantorRelation","values":["mother"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'companyLetter', 'file',
+   'خطاب من جهة العمل المسجلة بجوازات الأجانب', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"خطاب جهة العمل مطلوب"}'::jsonb, '[]'::jsonb, 6, TRUE, '{"field":"visaType","values":["business_visit"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'representativeId', 'file',
+   'هوية المندوب الرسمي المسجل بجوازات الأجانب', NULL, NULL, NULL, NULL, NULL, NULL,
+   true, '{"required":"هوية المندوب الرسمي مطلوبة"}'::jsonb, '[]'::jsonb, 7, TRUE, '{"field":"visaType","values":["business_visit"]}'::jsonb),
+  ('documents-upload', 'المستندات المطلوبة', NULL, 'supportingDocs', 'file',
+   'مستندات أخرى داعمة', NULL, NULL, NULL, 'ملاحظة: قد يتطلب الإجراء إحضار بعض المستندات الأخرى المؤيدة لطلب الحصول على التأشيرة', NULL, NULL,
+   false, '{}'::jsonb, '[]'::jsonb, 8, TRUE, '{}'::jsonb)
+) AS fld(
+  step_id, step_title_ar, step_title_en, field_name, field_type, label_ar, label_en,
+  placeholder_ar, placeholder_en, help_text_ar, help_text_en, default_value,
+  is_required, validation_rules, options, order_index, is_active, conditions
+)
+WHERE services.slug = 'visas';

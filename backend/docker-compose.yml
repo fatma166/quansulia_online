@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: consulate-db
+    environment:
+      POSTGRES_DB: consulate_db
+      POSTGRES_USER: consulate_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../supabase/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U consulate_user -d consulate_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: consulate-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://consulate_user:${DB_PASSWORD:-secure_password}@postgres:5432/consulate_db
+      PORT: 3000
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

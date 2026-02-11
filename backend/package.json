@@ -1,0 +1,33 @@
+{
+  "name": "consulate-backend-api",
+  "version": "1.0.0",
+  "description": "Backend API for Sudanese Consulate Management System",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "create-admin": "node scripts/create-super-admin.js",
+    "generate-secret": "node scripts/generate-jwt-secret.js"
+  },
+  "keywords": ["consulate", "api", "express", "postgresql"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "multer": "^1.4.5-lts.1",
+    "express-validator": "^7.0.1",
+    "nodemailer": "^6.9.7",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

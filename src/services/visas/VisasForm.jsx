@@ -1,0 +1,71 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import DynamicServiceForm from '../../components/DynamicServiceForm';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
+const VisasForm = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (formData) => {
+    const referenceNumber = `VIS-${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+
+    console.log('Visa Application:', { ...formData, referenceNumber });
+
+    navigate('/success', {
+      state: {
+        referenceNumber,
+        serviceTitle: 'التأشيرات'
+      }
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+
+      {/* Service Title Banner */}
+      <div className="bg-gradient-to-r from-[#276073] to-[#1e4a5a] text-white py-6 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            {/* زر العودة - يسار */}
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors duration-200 text-sm"
+            >
+              <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
+              <span>العودة</span>
+            </button>
+
+            {/* اسم الخدمة - منتصف */}
+            <div className="flex-1 text-center px-4">
+              <h1 className="text-2xl sm:text-3xl font-bold">التأشيرات</h1>
+            </div>
+
+            {/* مساحة فارغة للتوازن - يمين */}
+            <div className="w-24 sm:w-32"></div>
+          </div>
+
+          {/* النص التوضيحي */}
+          <div className="text-center mt-3">
+            <p className="text-blue-100 text-sm">
+              يرجى ملء جميع الحقول المطلوبة لإكمال طلب الخدمة
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="py-8">
+        <DynamicServiceForm
+          serviceSlug="visas"
+          onSubmit={handleSubmit}
+        />
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default VisasForm;

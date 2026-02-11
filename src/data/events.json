@@ -1,0 +1,230 @@
+[
+  {
+    "id": 1,
+    "title": {
+      "ar": "ورشة عمل حول فرص الاستثمار في السودان",
+      "en": "Workshop on Investment Opportunities in Sudan"
+    },
+    "date": "2025-01-16",
+    "time": "10:00 AM",
+    "place": {
+      "ar": "قاعة المؤتمرات - القنصلية",
+      "en": "Conference Hall - Consulate"
+    },
+    "description": {
+      "ar": "ورشة تفاعلية للتعريف بالفرص الاستثمارية المتاحة في مختلف القطاعات السودانية",
+      "en": "Interactive workshop introducing available investment opportunities in various Sudanese sectors"
+    },
+    "image": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "today"
+  },
+  {
+    "id": 2,
+    "title": {
+      "ar": "لقاء مفتوح مع الجالية السودانية",
+      "en": "Open Meeting with Sudanese Community"
+    },
+    "date": "2025-01-16",
+    "time": "7:00 PM",
+    "place": {
+      "ar": "القاعة الكبرى - القنصلية",
+      "en": "Main Hall - Consulate"
+    },
+    "description": {
+      "ar": "لقاء مفتوح لمناقشة احتياجات الجالية والإجابة على الاستفسارات",
+      "en": "Open meeting to discuss community needs and answer inquiries"
+    },
+    "image": "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "today"
+  },
+  {
+    "id": 3,
+    "title": {
+      "ar": "دورة تدريبية للطلاب السودانيين",
+      "en": "Training Course for Sudanese Students"
+    },
+    "date": "2025-01-16",
+    "time": "2:00 PM",
+    "place": {
+      "ar": "القاعة التدريبية - القنصلية",
+      "en": "Training Hall - Consulate"
+    },
+    "description": {
+      "ar": "دورة تدريبية متخصصة للطلاب السودانيين حول الفرص التعليمية والمنح الدراسية",
+      "en": "Specialized training course for Sudanese students on educational opportunities and scholarships"
+    },
+    "image": "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "today"
+  },
+  {
+    "id": 4,
+    "title": {
+      "ar": "احتفالية اليوم الوطني السوداني",
+      "en": "Sudanese National Day Celebration"
+    },
+    "date": "2025-01-17",
+    "time": "6:00 PM",
+    "place": {
+      "ar": "مركز الملك عبدالعزيز الثقافي",
+      "en": "King Abdulaziz Cultural Center"
+    },
+    "description": {
+      "ar": "احتفالية خاصة بمناسبة اليوم الوطني مع فعاليات ثقافية وتراثية",
+      "en": "Special celebration for National Day with cultural and heritage activities"
+    },
+    "image": "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "tomorrow"
+  },
+  {
+    "id": 5,
+    "title": {
+      "ar": "معرض الثقافة والتراث السوداني",
+      "en": "Sudanese Culture and Heritage Exhibition"
+    },
+    "date": "2025-01-17",
+    "time": "4:00 PM",
+    "place": {
+      "ar": "صالة المعارض - القنصلية",
+      "en": "Exhibition Hall - Consulate"
+    },
+    "description": {
+      "ar": "معرض شامل يستعرض التراث والثقافة السودانية الأصيلة",
+      "en": "Comprehensive exhibition showcasing authentic Sudanese heritage and culture"
+    },
+    "image": "https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "tomorrow"
+  },
+  {
+    "id": 6,
+    "title": {
+      "ar": "ندوة حول الخدمات القنصلية الجديدة",
+      "en": "Seminar on New Consular Services"
+    },
+    "date": "2025-01-17",
+    "time": "11:00 AM",
+    "place": {
+      "ar": "قاعة الاجتماعات - القنصلية",
+      "en": "Meeting Hall - Consulate"
+    },
+    "description": {
+      "ar": "ندوة تعريفية حول الخدمات القنصلية الجديدة والإجراءات المحدثة",
+      "en": "Introductory seminar on new consular services and updated procedures"
+    },
+    "image": "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "tomorrow"
+  },
+  {
+    "id": 7,
+    "title": {
+      "ar": "مؤتمر الاستثمار السوداني السعودي",
+      "en": "Sudanese-Saudi Investment Conference"
+    },
+    "date": "2025-01-18",
+    "time": "9:00 AM",
+    "place": {
+      "ar": "فندق الريتز كارلتون - جدة",
+      "en": "Ritz Carlton Hotel - Jeddah"
+    },
+    "description": {
+      "ar": "مؤتمر اقتصادي لتعزيز الاستثمارات المشتركة بين السودان والسعودية",
+      "en": "Economic conference to promote joint investments between Sudan and Saudi Arabia"
+    },
+    "image": "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "afterTomorrow"
+  },
+  {
+    "id": 8,
+    "title": {
+      "ar": "أمسية شعرية سودانية",
+      "en": "Sudanese Poetry Evening"
+    },
+    "date": "2025-01-18",
+    "time": "8:00 PM",
+    "place": {
+      "ar": "المركز الثقافي - جدة",
+      "en": "Cultural Center - Jeddah"
+    },
+    "description": {
+      "ar": "أمسية شعرية تحتفي بالأدب والشعر السوداني الأصيل",
+      "en": "Poetry evening celebrating authentic Sudanese literature and poetry"
+    },
+    "image": "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "afterTomorrow"
+  },
+  {
+    "id": 9,
+    "title": {
+      "ar": "ورشة عمل للحرف اليدوية السودانية",
+      "en": "Sudanese Handicrafts Workshop"
+    },
+    "date": "2025-01-18",
+    "time": "3:00 PM",
+    "place": {
+      "ar": "مركز الفنون - القنصلية",
+      "en": "Arts Center - Consulate"
+    },
+    "description": {
+      "ar": "ورشة تعليمية للحرف اليدوية التقليدية السودانية",
+      "en": "Educational workshop on traditional Sudanese handicrafts"
+    },
+    "image": "https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "afterTomorrow"
+  },
+  {
+    "id": 10,
+    "title": {
+      "ar": "لقاء رجال الأعمال السودانيين",
+      "en": "Sudanese Businessmen Meeting"
+    },
+    "date": "2025-01-23",
+    "time": "10:00 AM",
+    "place": {
+      "ar": "قاعة الأعمال - فندق الهيلتون",
+      "en": "Business Hall - Hilton Hotel"
+    },
+    "description": {
+      "ar": "لقاء تجاري لتبادل الخبرات وتطوير الشراكات التجارية",
+      "en": "Business meeting to exchange experiences and develop commercial partnerships"
+    },
+    "image": "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "nextWeek"
+  },
+  {
+    "id": 11,
+    "title": {
+      "ar": "مهرجان الطعام السوداني",
+      "en": "Sudanese Food Festival"
+    },
+    "date": "2025-01-24",
+    "time": "5:00 PM",
+    "place": {
+      "ar": "حديقة الأندلس - جدة",
+      "en": "Al-Andalus Park - Jeddah"
+    },
+    "description": {
+      "ar": "مهرجان للتعريف بالمأكولات السودانية التقليدية والشعبية",
+      "en": "Festival introducing traditional and popular Sudanese cuisine"
+    },
+    "image": "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "nextWeek"
+  },
+  {
+    "id": 12,
+    "title": {
+      "ar": "دورة اللغة العربية للأطفال",
+      "en": "Arabic Language Course for Children"
+    },
+    "date": "2025-01-25",
+    "time": "4:00 PM",
+    "place": {
+      "ar": "قاعة التعليم - القنصلية",
+      "en": "Education Hall - Consulate"
+    },
+    "description": {
+      "ar": "دورة تعليمية للأطفال السودانيين لتعزيز اللغة العربية",
+      "en": "Educational course for Sudanese children to enhance Arabic language skills"
+    },
+    "image": "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "tabGroup": "nextWeek"
+  }
+]

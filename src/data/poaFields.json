@@ -1,0 +1,535 @@
+{
+  "general": {
+    "new_id_card": {
+      "title": "استخراج بطاقة جديدة",
+      "description": "توكيل لاستخراج بطاقة هوية جديدة من شركة الاتصالات",
+      "fields": [
+        {
+          "name": "telecomCompany",
+          "label": "اسم شركة الاتصالات",
+          "type": "select",
+          "options": [
+            { "value": "stc", "label": "STC - شركة الاتصالات السعودية" },
+            { "value": "mobily", "label": "Mobily - اتحاد اتصالات" },
+            { "value": "zain", "label": "Zain - زين السعودية" },
+            { "value": "virgin", "label": "Virgin Mobile - فيرجن موبايل" },
+            { "value": "lebara", "label": "Lebara - ليبارا" },
+            { "value": "other", "label": "أخرى" }
+          ],
+          "required": true,
+          "validation": { "required": "اسم شركة الاتصالات مطلوب" }
+        },
+        {
+          "name": "telecomCompanyOther",
+          "label": "اسم الشركة الأخرى",
+          "type": "text",
+          "required": true,
+          "conditional": { "field": "telecomCompany", "values": ["other"] },
+          "validation": { "required": "اسم الشركة مطلوب" }
+        }
+      ]
+    },
+    "replacement_sim": {
+      "title": "استخرج شريحة بدل فاقد",
+      "description": "توكيل لاستخراج شريحة بديلة في حالة الفقدان",
+      "fields": [
+        {
+          "name": "phoneNumber",
+          "label": "رقم الهاتف المفقود",
+          "type": "tel",
+          "required": true,
+          "validation": { "required": "رقم الهاتف المفقود مطلوب" }
+        },
+        {
+          "name": "lostPhoneCompany",
+          "label": "شركة الاتصالات للهاتف المفقود",
+          "type": "select",
+          "options": [
+            { "value": "stc", "label": "STC" },
+            { "value": "mobily", "label": "Mobily" },
+            { "value": "zain", "label": "Zain" },
+            { "value": "other", "label": "أخرى" }
+          ],
+          "required": true,
+          "validation": { "required": "شركة الاتصالات مطلوبة" }
+        }
+      ]
+    },
+    "account_management": {
+      "title": "ادارة حساب",
+      "description": "توكيل لإدارة الحسابات البنكية والمالية",
+      "fields": [
+        {
+          "name": "accountNumber",
+          "label": "رقم الحساب",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم الحساب مطلوب" }
+        },
+        {
+          "name": "bankName",
+          "label": "اسم البنك",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم البنك مطلوب" }
+        }
+      ]
+    },
+    "other_general": {
+      "title": "اخري",
+      "description": "توكيل عام لأغراض أخرى",
+      "fields": [
+        {
+          "name": "otherPurpose",
+          "label": "الغرض من التوكيل",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "الغرض من التوكيل مطلوب" }
+        }
+      ]
+    }
+  },
+  "courts": {
+    "land_litigation": {
+      "title": "تقاضي بشأن قطعة ارض",
+      "description": "توكيل للمرافعة في قضايا الأراضي",
+      "fields": [
+        {
+          "name": "landLocation",
+          "label": "موقع قطعة الأرض",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "موقع قطعة الأرض مطلوب" }
+        },
+        {
+          "name": "landArea",
+          "label": "مساحة الأرض",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "مساحة الأرض مطلوبة" }
+        }
+      ]
+    },
+    "property_litigation": {
+      "title": "تقاضي بشأن عقار",
+      "description": "توكيل للمرافعة في قضايا العقارات",
+      "fields": [
+        {
+          "name": "propertyAddress",
+          "label": "عنوان العقار",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "عنوان العقار مطلوب" }
+        }
+      ]
+    },
+    "file_lawsuit": {
+      "title": "إقامة دعوى",
+      "description": "توكيل لإقامة دعوى قضائية",
+      "fields": [
+        {
+          "name": "caseDescription",
+          "label": "وصف القضية",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "وصف القضية مطلوب" }
+        }
+      ]
+    },
+    "other_courts": {
+      "title": "اخري",
+      "description": "توكيل لقضايا قانونية أخرى",
+      "fields": [
+        {
+          "name": "caseDescription",
+          "label": "وصف القضية",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "وصف القضية مطلوب" }
+        }
+      ]
+    }
+  },
+  "inheritance": {
+    "inheritance_inventory_form": {
+      "title": "استمارة حصر ورثة",
+      "description": "توكيل لحصر الورثة وتحديد الأنصبة",
+      "fields": [
+        {
+          "name": "deceasedName",
+          "label": "اسم المتوفى",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم المتوفى مطلوب" }
+        },
+        {
+          "name": "deathDate",
+          "label": "تاريخ الوفاة",
+          "type": "date",
+          "required": true,
+          "validation": { "required": "تاريخ الوفاة مطلوب" }
+        }
+      ]
+    },
+    "inheritance_waiver": {
+      "title": "تنازل عن نصيب في ورثة",
+      "description": "توكيل للتنازل عن نصيب في الميراث",
+      "fields": [
+        {
+          "name": "inheritanceAmount",
+          "label": "مبلغ النصيب",
+          "type": "number",
+          "required": true,
+          "validation": { "required": "مبلغ النصيب مطلوب" }
+        }
+      ]
+    },
+    "inheritance_receipt": {
+      "title": "استلام ورثة",
+      "description": "توكيل لاستلام نصيب الميراث",
+      "fields": [
+        {
+          "name": "inheritanceType",
+          "label": "نوع الميراث",
+          "type": "select",
+          "options": [
+            { "value": "money", "label": "أموال" },
+            { "value": "property", "label": "عقارات" },
+            { "value": "land", "label": "أراضي" }
+          ],
+          "required": true,
+          "validation": { "required": "نوع الميراث مطلوب" }
+        }
+      ]
+    },
+    "other_inheritance": {
+      "title": "اخرى",
+      "description": "توكيل لشؤون ميراث أخرى",
+      "fields": [
+        {
+          "name": "inheritanceDetails",
+          "label": "تفاصيل الميراث",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "تفاصيل الميراث مطلوبة" }
+        }
+      ]
+    }
+  },
+  "real_estate": {
+    "buy_land_property": {
+      "title": "شراء ارض أو عقار",
+      "description": "توكيل لشراء الأراضي والعقارات",
+      "fields": [
+        {
+          "name": "propertyLocation",
+          "label": "موقع العقار/الأرض",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "موقع العقار مطلوب" }
+        },
+        {
+          "name": "propertyArea",
+          "label": "المساحة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "المساحة مطلوبة" }
+        }
+      ]
+    },
+    "land_sale": {
+      "title": "بيع قطعة أرض",
+      "description": "توكيل لبيع قطعة أرض",
+      "fields": [
+        {
+          "name": "landLocation",
+          "label": "موقع الأرض",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "موقع الأرض مطلوب" }
+        }
+      ]
+    },
+    "property_sale": {
+      "title": "بيع عقار",
+      "description": "توكيل لبيع عقار",
+      "fields": [
+        {
+          "name": "propertyAddress",
+          "label": "عنوان العقار",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "عنوان العقار مطلوب" }
+        }
+      ]
+    },
+    "other_real_estate": {
+      "title": "اخري",
+      "description": "توكيل لمعاملات عقارية أخرى",
+      "fields": [
+        {
+          "name": "realEstateDetails",
+          "label": "تفاصيل المعاملة العقارية",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "تفاصيل المعاملة مطلوبة" }
+        }
+      ]
+    }
+  },
+  "vehicles": {
+    "vehicle_sale": {
+      "title": "بيع سيارة",
+      "description": "توكيل لبيع مركبة",
+      "fields": [
+        {
+          "name": "vehicleMake",
+          "label": "ماركة السيارة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "ماركة السيارة مطلوبة" }
+        },
+        {
+          "name": "vehicleModel",
+          "label": "موديل السيارة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "موديل السيارة مطلوب" }
+        }
+      ]
+    },
+    "vehicle_receipt": {
+      "title": "استلام سيارة",
+      "description": "توكيل لاستلام مركبة",
+      "fields": [
+        {
+          "name": "vehicleDetails",
+          "label": "تفاصيل السيارة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "تفاصيل السيارة مطلوبة" }
+        }
+      ]
+    },
+    "vehicle_licensing": {
+      "title": "ترخيص سيارة",
+      "description": "توكيل لترخيص مركبة",
+      "fields": [
+        {
+          "name": "plateNumber",
+          "label": "رقم اللوحة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم اللوحة مطلوب" }
+        }
+      ]
+    },
+    "other_vehicles": {
+      "title": "اخري",
+      "description": "توكيل لمعاملات مركبات أخرى",
+      "fields": [
+        {
+          "name": "vehicleDetails",
+          "label": "تفاصيل المعاملة",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "تفاصيل المعاملة مطلوبة" }
+        }
+      ]
+    }
+  },
+  "companies": {
+    "company_registration_form": {
+      "title": "استمارة تسجيل شركة",
+      "description": "توكيل لتسجيل شركة جديدة",
+      "fields": [
+        {
+          "name": "companyName",
+          "label": "اسم الشركة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الشركة مطلوب" }
+        },
+        {
+          "name": "companyType",
+          "label": "نوع الشركة",
+          "type": "select",
+          "options": [
+            { "value": "llc", "label": "شركة ذات مسؤولية محدودة" },
+            { "value": "joint_stock", "label": "شركة مساهمة" },
+            { "value": "partnership", "label": "شركة تضامن" }
+          ],
+          "required": true,
+          "validation": { "required": "نوع الشركة مطلوب" }
+        }
+      ]
+    },
+    "business_name_form": {
+      "title": "استمارة تأسيس اسم عمل",
+      "description": "توكيل لتسجيل اسم تجاري",
+      "fields": [
+        {
+          "name": "businessName",
+          "label": "اسم العمل التجاري",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم العمل التجاري مطلوب" }
+        }
+      ]
+    },
+    "other_companies": {
+      "title": "اخرى",
+      "description": "توكيل لمعاملات شركات أخرى",
+      "fields": [
+        {
+          "name": "companyDetails",
+          "label": "تفاصيل المعاملة",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "تفاصيل المعاملة مطلوبة" }
+        }
+      ]
+    }
+  },
+  "marriage_divorce": {
+    "marriage_contract": {
+      "title": "عقد زواج",
+      "description": "توكيل لإجراء عقد زواج",
+      "fields": [
+        {
+          "name": "brideName",
+          "label": "اسم العروس",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم العروس مطلوب" }
+        },
+        {
+          "name": "groomName",
+          "label": "اسم العريس",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم العريس مطلوب" }
+        }
+      ]
+    },
+    "divorce_procedures": {
+      "title": "إجراءات طلاق",
+      "description": "توكيل لإجراءات الطلاق",
+      "fields": [
+        {
+          "name": "divorceReason",
+          "label": "سبب الطلاق",
+          "type": "textarea",
+          "required": true,
+          "rows": 3,
+          "validation": { "required": "سبب الطلاق مطلوب" }
+        }
+      ]
+    },
+    "other_marriage": {
+      "title": "اخرى",
+      "description": "توكيل لإجراءات زواج أو طلاق أخرى",
+      "fields": [
+        {
+          "name": "marriageDetails",
+          "label": "تفاصيل الإجراء",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "تفاصيل الإجراء مطلوبة" }
+        }
+      ]
+    }
+  },
+  "birth_certificates": {
+    "birth_certificate_issuance": {
+      "title": "استخراج شهادات ميلاد",
+      "description": "توكيل لاستخراج شهادة ميلاد",
+      "fields": [
+        {
+          "name": "childName",
+          "label": "اسم الطفل",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الطفل مطلوب" }
+        },
+        {
+          "name": "birthDate",
+          "label": "تاريخ الميلاد",
+          "type": "date",
+          "required": true,
+          "validation": { "required": "تاريخ الميلاد مطلوب" }
+        }
+      ]
+    }
+  },
+  "educational": {
+    "educational_certificate_issuance": {
+      "title": "إستخراج شهادة دراسية",
+      "description": "توكيل لاستخراج شهادة دراسية",
+      "fields": [
+        {
+          "name": "studentName",
+          "label": "اسم الطالب",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الطالب مطلوب" }
+        },
+        {
+          "name": "certificateType",
+          "label": "نوع الشهادة",
+          "type": "select",
+          "options": [
+            { "value": "primary", "label": "ابتدائية" },
+            { "value": "intermediate", "label": "متوسطة" },
+            { "value": "secondary", "label": "ثانوية" },
+            { "value": "university", "label": "جامعية" }
+          ],
+          "required": true,
+          "validation": { "required": "نوع الشهادة مطلوب" }
+        }
+      ]
+    },
+    "university_egypt": {
+      "title": "دراسة جامعية بمصر",
+      "description": "توكيل للدراسة الجامعية في مصر",
+      "fields": [
+        {
+          "name": "universityName",
+          "label": "اسم الجامعة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الجامعة مطلوب" }
+        },
+        {
+          "name": "major",
+          "label": "التخصص",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "التخصص مطلوب" }
+        }
+      ]
+    },
+    "other_educational": {
+      "title": "اخرى",
+      "description": "توكيل لشؤون تعليمية أخرى",
+      "fields": [
+        {
+          "name": "educationalDetails",
+          "label": "تفاصيل الخدمة التعليمية",
+          "type": "textarea",
+          "required": true,
+          "rows": 4,
+          "validation": { "required": "تفاصيل الخدمة مطلوبة" }
+        }
+      ]
+    }
+  }
+}

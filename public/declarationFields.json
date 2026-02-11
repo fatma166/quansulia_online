@@ -1,0 +1,406 @@
+{
+  "regular": {
+    "family_travel_consent": {
+      "title": "موافقة بالسفر لأفراد أسرة",
+      "description": "إقرار موافقة على سفر أفراد الأسرة",
+      "fields": [
+        {
+          "name": "familyMembers",
+          "label": "أسماء أفراد الأسرة المسافرين",
+          "type": "textarea",
+          "required": true,
+          "rows": 3,
+          "validation": { "required": "أسماء أفراد الأسرة مطلوبة" },
+          "help": "اكتب أسماء جميع أفراد الأسرة المسافرين"
+        },
+        {
+          "name": "travelDestination",
+          "label": "وجهة السفر",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "وجهة السفر مطلوبة" }
+        },
+        {
+          "name": "travelPurpose",
+          "label": "الغرض من السفر",
+          "type": "select",
+          "options": [
+            { "value": "tourism", "label": "سياحة" },
+            { "value": "medical", "label": "علاج" },
+            { "value": "education", "label": "تعليم" },
+            { "value": "work", "label": "عمل" },
+            { "value": "family_visit", "label": "زيارة أقارب" },
+            { "value": "other", "label": "أخرى" }
+          ],
+          "required": true,
+          "validation": { "required": "الغرض من السفر مطلوب" }
+        },
+        {
+          "name": "travelDuration",
+          "label": "مدة السفر",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "مدة السفر مطلوبة" }
+        }
+      ]
+    },
+    "wife_travel_consent": {
+      "title": "موافقة سفر الزوجة",
+      "description": "إقرار موافقة على سفر الزوجة",
+      "fields": [
+        {
+          "name": "wifeName",
+          "label": "اسم الزوجة الكامل",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الزوجة مطلوب" }
+        },
+        {
+          "name": "wifeNationalId",
+          "label": "رقم هوية الزوجة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم هوية الزوجة مطلوب" }
+        },
+        {
+          "name": "travelDestination",
+          "label": "وجهة السفر",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "وجهة السفر مطلوبة" }
+        },
+        {
+          "name": "travelPurpose",
+          "label": "الغرض من السفر",
+          "type": "select",
+          "options": [
+            { "value": "tourism", "label": "سياحة" },
+            { "value": "medical", "label": "علاج" },
+            { "value": "education", "label": "تعليم" },
+            { "value": "family_visit", "label": "زيارة أقارب" },
+            { "value": "business", "label": "أعمال" },
+            { "value": "other", "label": "أخرى" }
+          ],
+          "required": true,
+          "validation": { "required": "الغرض من السفر مطلوب" }
+        },
+        {
+          "name": "accompaniedByHusband",
+          "label": "هل ستسافر بصحبة الزوج؟",
+          "type": "radio",
+          "options": [
+            { "value": "yes", "label": "نعم" },
+            { "value": "no", "label": "لا" }
+          ],
+          "required": true,
+          "validation": { "required": "يرجى تحديد ما إذا كانت ستسافر مع الزوج" }
+        }
+      ]
+    },
+    "marriage_no_objection": {
+      "title": "استمارة عدم ممانعة وشهادة كفاءة زواج",
+      "description": "إقرار عدم الممانعة وشهادة الكفاءة للزواج",
+      "fields": [
+        {
+          "name": "groomName",
+          "label": "اسم العريس الكامل",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم العريس مطلوب" }
+        },
+        {
+          "name": "groomNationalId",
+          "label": "رقم هوية العريس",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم هوية العريس مطلوب" }
+        },
+        {
+          "name": "brideName",
+          "label": "اسم العروس الكامل",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم العروس مطلوب" }
+        },
+        {
+          "name": "brideNationalId",
+          "label": "رقم هوية العروس",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم هوية العروس مطلوب" }
+        },
+        {
+          "name": "marriageDate",
+          "label": "تاريخ الزواج المتوقع",
+          "type": "date",
+          "required": true,
+          "validation": { "required": "تاريخ الزواج مطلوب" }
+        },
+        {
+          "name": "marriageLocation",
+          "label": "مكان إجراء الزواج",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "مكان الزواج مطلوب" }
+        }
+      ]
+    },
+    "family_support": {
+      "title": "إقرار إعالة أسرية",
+      "description": "إقرار بالإعالة الأسرية",
+      "fields": [
+        {
+          "name": "supportedPersonName",
+          "label": "اسم الشخص المُعال",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الشخص المُعال مطلوب" }
+        },
+        {
+          "name": "relationshipToSupported",
+          "label": "صلة القرابة",
+          "type": "select",
+          "options": [
+            { "value": "son", "label": "ابن" },
+            { "value": "daughter", "label": "ابنة" },
+            { "value": "wife", "label": "زوجة" },
+            { "value": "father", "label": "والد" },
+            { "value": "mother", "label": "والدة" },
+            { "value": "brother", "label": "أخ" },
+            { "value": "sister", "label": "أخت" },
+            { "value": "other", "label": "أخرى" }
+          ],
+          "required": true,
+          "validation": { "required": "صلة القرابة مطلوبة" }
+        },
+        {
+          "name": "monthlySupport",
+          "label": "مبلغ الإعالة الشهرية",
+          "type": "number",
+          "required": true,
+          "validation": { "required": "مبلغ الإعالة مطلوب" }
+        },
+        {
+          "name": "supportReason",
+          "label": "سبب الإعالة",
+          "type": "textarea",
+          "required": true,
+          "rows": 3,
+          "validation": { "required": "سبب الإعالة مطلوب" }
+        }
+      ]
+    }
+  },
+  "sworn": {
+    "general_sworn": {
+      "title": "إقرار مشفوع باليمين",
+      "description": "إقرار عام مشفوع باليمين",
+      "fields": [
+        {
+          "name": "declarationSubject",
+          "label": "موضوع الإقرار",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "موضوع الإقرار مطلوب" }
+        },
+        {
+          "name": "declarationContent",
+          "label": "نص الإقرار",
+          "type": "textarea",
+          "required": true,
+          "rows": 5,
+          "validation": { "required": "نص الإقرار مطلوب" }
+        },
+        {
+          "name": "witnessName1",
+          "label": "اسم الشاهد الأول",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الشاهد الأول مطلوب" }
+        },
+        {
+          "name": "witnessId1",
+          "label": "رقم هوية الشاهد الأول",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم هوية الشاهد الأول مطلوب" }
+        }
+      ]
+    },
+    "age_of_majority": {
+      "title": "إقرار مشفوع باليمين (بلوغ سن الرشد)",
+      "description": "إثبات بلوغ سن الرشد",
+      "fields": [
+        {
+          "name": "personName",
+          "label": "اسم الشخص",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الشخص مطلوب" }
+        },
+        {
+          "name": "personNationalId",
+          "label": "رقم الهوية",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم الهوية مطلوب" }
+        },
+        {
+          "name": "dateOfBirth",
+          "label": "تاريخ الميلاد",
+          "type": "date",
+          "required": true,
+          "validation": { "required": "تاريخ الميلاد مطلوب" }
+        },
+        {
+          "name": "currentAge",
+          "label": "العمر الحالي",
+          "type": "number",
+          "required": true,
+          "validation": { "required": "العمر الحالي مطلوب" }
+        },
+        {
+          "name": "majorityPurpose",
+          "label": "الغرض من إثبات بلوغ سن الرشد",
+          "type": "textarea",
+          "required": true,
+          "rows": 3,
+          "validation": { "required": "الغرض من الإثبات مطلوب" }
+        }
+      ]
+    },
+    "paternity_proof": {
+      "title": "إقرار مشفوع باليمين (إقرار إثبات نسب)",
+      "description": "إثبات النسب والقرابة",
+      "fields": [
+        {
+          "name": "childName",
+          "label": "اسم الطفل/الشخص",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الطفل مطلوب" }
+        },
+        {
+          "name": "fatherName",
+          "label": "اسم الوالد",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الوالد مطلوب" }
+        },
+        {
+          "name": "motherName",
+          "label": "اسم الوالدة",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الوالدة مطلوب" }
+        },
+        {
+          "name": "birthDate",
+          "label": "تاريخ الميلاد",
+          "type": "date",
+          "required": true,
+          "validation": { "required": "تاريخ الميلاد مطلوب" }
+        },
+        {
+          "name": "birthPlace",
+          "label": "مكان الميلاد",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "مكان الميلاد مطلوب" }
+        },
+        {
+          "name": "paternityReason",
+          "label": "سبب طلب إثبات النسب",
+          "type": "textarea",
+          "required": true,
+          "rows": 3,
+          "validation": { "required": "سبب طلب إثبات النسب مطلوب" }
+        }
+      ]
+    },
+    "proof_of_life": {
+      "title": "إقرار مشفوع باليمين (إثبات حياة)",
+      "description": "إثبات أن الشخص على قيد الحياة",
+      "fields": [
+        {
+          "name": "personName",
+          "label": "اسم الشخص المراد إثبات حياته",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "اسم الشخص مطلوب" }
+        },
+        {
+          "name": "personNationalId",
+          "label": "رقم هوية الشخص",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم الهوية مطلوب" }
+        },
+        {
+          "name": "lastSeenDate",
+          "label": "تاريخ آخر مشاهدة",
+          "type": "date",
+          "required": true,
+          "validation": { "required": "تاريخ آخر مشاهدة مطلوب" }
+        },
+        {
+          "name": "currentLocation",
+          "label": "المكان الحالي للشخص",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "المكان الحالي مطلوب" }
+        },
+        {
+          "name": "proofPurpose",
+          "label": "الغرض من إثبات الحياة",
+          "type": "textarea",
+          "required": true,
+          "rows": 3,
+          "validation": { "required": "الغرض من الإثبات مطلوب" }
+        }
+      ]
+    },
+    "marital_status_single": {
+      "title": "إثبات حالة إجتماعية (غير متزوج/ة)",
+      "description": "إثبات الحالة الاجتماعية - أعزب",
+      "fields": [
+        {
+          "name": "personName",
+          "label": "الاسم الكامل",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "الاسم الكامل مطلوب" }
+        },
+        {
+          "name": "personNationalId",
+          "label": "رقم الهوية",
+          "type": "text",
+          "required": true,
+          "validation": { "required": "رقم الهوية مطلوب" }
+        },
+        {
+          "name": "dateOfBirth",
+          "label": "تاريخ الميلاد",
+          "type": "date",
+          "required": true,
+          "validation": { "required": "تاريخ الميلاد مطلوب" }
+        },
+        {
+          "name": "currentAge",
+          "label": "العمر الحالي",
+          "type": "number",
+          "required": true,
+          "validation": { "required": "العمر الحالي مطلوب" }
+        },
+        {
+          "name": "statusPurpose",
+          "label": "الغرض من إثبات الحالة الاجتماعية",
+          "type": "textarea",
+          "required": true,
+          "rows": 3,
+          "validation": { "required": "الغرض من الإثبات مطلوب" }
+        }
+      ]
+    }
+  }
+}

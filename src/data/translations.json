@@ -1,0 +1,160 @@
+{
+  "ar": {
+    "nav": {
+      "home": "الرئيسية",
+      "services": "الخدمات",
+      "about_consulate": "عن القنصلية",
+      "track": "تتبع المعاملة",
+      "services_guide": "دليل المعاملات",
+      "news": "الأخبار",
+      "events": "الفعاليات",
+      "about_sudan": "عن السودان",
+      "important_links": "صفحات مهمة",
+      "karama_battle": "معركة الكرامة",
+      "contact": "تواصل معنا"
+    },
+    "search": {
+      "placeholder": "ابحث عن معاملة",
+      "button": "استعلام",
+      "success": "تم العثور على المعاملة بنجاح",
+      "notFound": "لم يتم العثور على المعاملة",
+      "close": "إغلاق"
+    },
+    "hero": {
+      "welcome": "مرحباً بكم في القنصلية السودانية بجدة",
+      "welcomeText": "نسعد بخدمتكم وتقديم كافة الخدمات القنصلية للمواطنين السودانيين والمقيمين في المملكة العربية السعودية",
+      "ambassadorMessage": "تعرف على رسالة السفير",
+      "servicesTitle": "خدماتنا المتميزة",
+      "servicesText": "نقدم مجموعة شاملة من الخدمات القنصلية والاستثمارية والتعليمية لخدمة الجالية السودانية",
+      "allServices": "جميع الخدمات",
+      "latestNews": "آخر الأخبار",
+      "readMore": "اقرأ المزيد"
+    },
+    "services": {
+      "consular": "المعاملات القنصلية",
+      "education": "التعليم",
+      "investment": "الاستثمار في السودان",
+      "tourism": "السياحة في السودان"
+    },
+    "news": {
+      "title": "آخر الأخبار",
+      "all": "الكل",
+      "latest": "آخر الأخبار",
+      "official": "بيانات رسمية"
+    },
+    "events": {
+      "title": "الفعاليات القادمة",
+      "today": "اليوم",
+      "tomorrow": "الغد",
+      "afterTomorrow": "بعد الغد",
+      "nextWeek": "الأسبوع القادم",
+      "participate": "طلب المشاركة"
+    },
+    "newsletter": {
+      "title": "اشترك في القائمة البريدية",
+      "description": "كن أول من يعلم بآخر الأخبار والفعاليات",
+      "placeholder": "البريد الإلكتروني",
+      "subscribe": "اشترك الآن",
+      "success": "تم الاشتراك بنجاح",
+      "error": "حدث خطأ، يرجى المحاولة مرة أخرى"
+    },
+    "identity": {
+      "title": "الهوية السودانية",
+      "anthem": "النشيد الوطني",
+      "ambassadorWord": "كلمة معالي السفير",
+      "aboutSudan": "عن السودان"
+    },
+    "footer": {
+      "about": "عن القنصلية",
+      "quickLinks": "روابط سريعة",
+      "contact": "معلومات الاتصال",
+      "message": "إرسال رسالة",
+      "rights": "جميع الحقوق محفوظة للقنصلية السودانية بجدة",
+      "name": "الاسم",
+      "phone": "الهاتف",
+      "messageText": "نص الرسالة",
+      "send": "إرسال"
+    },
+    "booking": "احجز موعداً",
+    "breakingNews": "خبر عاجل:"
+  },
+  "en": {
+    "nav": {
+      "home": "Home",
+      "services": "Services",
+      "about_consulate": "About Consulate",
+      "track": "Track Transaction",
+      "services_guide": "Services Guide",
+      "news": "News",
+      "events": "Events",
+      "about_sudan": "About Sudan",
+      "important_links": "Important Links",
+      "karama_battle": "Battle of Dignity",
+      "contact": "Contact"
+    },
+    "search": {
+      "placeholder": "Search for transaction",
+      "button": "Inquiry",
+      "success": "Transaction found successfully",
+      "notFound": "Transaction not found",
+      "close": "Close"
+    },
+    "hero": {
+      "welcome": "Welcome to the Sudanese Consulate in Jeddah",
+      "welcomeText": "We are pleased to serve you and provide all consular services to Sudanese citizens and residents in the Kingdom of Saudi Arabia",
+      "ambassadorMessage": "Read Ambassador's Message",
+      "servicesTitle": "Our Distinguished Services",
+      "servicesText": "We provide a comprehensive range of consular, investment, and educational services for the Sudanese community",
+      "allServices": "All Services",
+      "latestNews": "Latest News",
+      "readMore": "Read More"
+    },
+    "services": {
+      "consular": "Consular Services",
+      "education": "Education",
+      "investment": "Investment in Sudan",
+      "tourism": "Tourism in Sudan"
+    },
+    "news": {
+      "title": "Latest News",
+      "all": "All",
+      "latest": "Latest News",
+      "official": "Official Statements"
+    },
+    "events": {
+      "title": "Upcoming Events",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "afterTomorrow": "Day After Tomorrow",
+      "nextWeek": "Next Week",
+      "participate": "Request Participation"
+    },
+    "newsletter": {
+      "title": "Subscribe to Newsletter",
+      "description": "Be the first to know about latest news and events",
+      "placeholder": "Email Address",
+      "subscribe": "Subscribe Now",
+      "success": "Successfully subscribed",
+      "error": "An error occurred, please try again"
+    },
+    "identity": {
+      "title": "Sudanese Identity",
+      "anthem": "National Anthem",
+      "ambassadorWord": "Ambassador's Word",
+      "aboutSudan": "About Sudan"
+    },
+    "footer": {
+      "about": "About the Consulate",
+      "quickLinks": "Quick Links",
+      "contact": "Contact Information",
+      "message": "Send Message",
+      "rights": "All rights reserved to Sudanese Consulate in Jeddah",
+      "name": "Name",
+      "phone": "Phone",
+      "messageText": "Message",
+      "send": "Send"
+    },
+    "booking": "Book Appointment",
+    "breakingNews": "Breaking News:"
+  }
+}

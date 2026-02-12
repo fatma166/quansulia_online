@@ -9,6 +9,7 @@ import StaffManagement from './StaffManagement';
 import ContentManagement from './ContentManagement';
 import ChatManagement from './ChatManagement';
 import ChatStaffManagement from './ChatStaffManagement';
+import { supabase } from '../lib/supabase';
 
 const AdminDashboard = () => {
   const { user, isSuperAdmin, hasPermission, canAccessStatus, canAccessRegion } = useAuth();
@@ -876,14 +877,55 @@ const AdminDashboard = () => {
     }
   }, [searchParams]);
 
-  const loadApplications = () => {
+  const loadApplications = async () => {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setApplications(mockApplications);
-      calculateStats(mockApplications);
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error) {
+        console.error('Error loading applications:', error);
+        setIsLoading(false);
+        return;
+      }
+
+      // Transform Supabase data to match the expected format
+      const transformedData = (data || []).map(app => ({
+        id: app.id,
+        serviceType: app.service_id || 'unknown',
+        serviceName: app.service_title || 'خدمة غير محددة',
+        status: app.status || 'pending',
+        submissionDate: app.created_at ? new Date(app.created_at).toISOString().split('T')[0] : '',
+        lastUpdate: app.updated_at ? new Date(app.updated_at).toISOString().split('T')[0] : '',
+        referenceNumber: app.reference_number || '',
+        applicantData: {
+          fullName: app.form_data?.fullName || app.form_data?.applicant_name || 'غير محدد',
+          nationalId: app.form_data?.nationalId || app.form_data?.national_id || '',
+          phone: app.form_data?.phoneNumber || app.form_data?.phone || '',
+          email: app.form_data?.email || '',
+          region: app.applicant_region || '',
+          city: app.applicant_city || '',
+          district: app.applicant_district || ''
+        },
+        fees: {
+          base: app.total_fees || 0,
+          currency: 'ريال سعودي'
+        },
+        priority: app.priority || 'normal',
+        assignedTo: app.assigned_to || null,
+        formData: app.form_data || {}
+      }));
+
+      setApplications(transformedData);
+      calculateStats(transformedData);
       setIsLoading(false);
-    }, 1000);
+    } catch (error) {
+      console.error('Error loading applications:', error);
+      setIsLoading(false);
+    }
   };
 
   const loadNews = () => {

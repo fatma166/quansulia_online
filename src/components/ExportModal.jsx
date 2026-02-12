@@ -3,7 +3,7 @@ import { X, FileText, Download, FileSpreadsheet, CheckSquare, Square, Save, Tras
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { supabase } from '../lib/supabase';
 
 const AVAILABLE_FIELDS = [
@@ -628,7 +628,11 @@ export default function ExportModal({
         return;
       }
 
-      const doc = new jsPDF('l', 'mm', 'a4');
+      const doc = new jsPDF({
+        orientation: 'l',
+        unit: 'mm',
+        format: 'a4'
+      });
 
       doc.setFont('helvetica');
       doc.setFontSize(16);
@@ -640,7 +644,7 @@ export default function ExportModal({
       const headers = [Object.keys(data[0] || {})];
       const rows = data.map(row => Object.values(row));
 
-      doc.autoTable({
+      autoTable(doc, {
         head: headers,
         body: rows,
         startY: 30,
@@ -648,16 +652,21 @@ export default function ExportModal({
           font: 'helvetica',
           fontSize: 9,
           cellPadding: 3,
+          halign: 'right',
+          fontStyle: 'normal'
         },
         headStyles: {
           fillColor: [39, 96, 115],
           textColor: 255,
           fontStyle: 'bold',
+          halign: 'center'
         },
         alternateRowStyles: {
           fillColor: [245, 245, 245],
         },
         margin: { top: 30, right: 10, bottom: 10, left: 10 },
+        tableWidth: 'auto',
+        theme: 'grid'
       });
 
       const fileName = `applications_${new Date().toISOString().split('T')[0]}.pdf`;

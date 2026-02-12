@@ -40,6 +40,7 @@ export default function ApplicationDetail() {
   const [statusHistory, setStatusHistory] = useState([]);
   const [showShippingModal, setShowShippingModal] = useState(false);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [appointment, setAppointment] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -109,6 +110,19 @@ export default function ApplicationDetail() {
         );
         setStatusHistory(historyWithStatuses);
       }
+
+      // Load appointment if exists
+      if (appData.status === 'appointment_required' || appData.status === 'appointment_booked') {
+        const { data: appointmentData } = await supabase
+          .from('appointments')
+          .select('*')
+          .eq('application_id', id)
+          .maybeSingle();
+
+        if (appointmentData) {
+          setAppointment(appointmentData);
+        }
+      }
     } catch (error) {
       console.error('Error loading application:', error);
     } finally {
@@ -177,7 +191,9 @@ export default function ApplicationDetail() {
                   <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                     application.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
                     application.status === 'in_review' ? 'bg-yellow-100 text-yellow-800' :
-                    application.status === 'processing' ? 'bg-purple-100 text-purple-800' :
+                    application.status === 'appointment_required' ? 'bg-purple-100 text-purple-800' :
+                    application.status === 'appointment_booked' ? 'bg-purple-100 text-purple-800' :
+                    application.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                     application.status === 'ready' ? 'bg-green-100 text-green-800' :
                     application.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
                     application.status === 'rejected' ? 'bg-red-100 text-red-800' :
@@ -185,6 +201,8 @@ export default function ApplicationDetail() {
                   }`}>
                     {application.status === 'submitted' ? 'مستلم' :
                      application.status === 'in_review' ? 'قيد المراجعة' :
+                     application.status === 'appointment_required' ? 'يتطلب موعد' :
+                     application.status === 'appointment_booked' ? 'تم حجز الموعد' :
                      application.status === 'processing' ? 'قيد المعالجة' :
                      application.status === 'ready' ? 'جاهز' :
                      application.status === 'completed' ? 'مكتمل' :
@@ -257,9 +275,79 @@ export default function ApplicationDetail() {
               </div>
             </motion.div>
 
+            {/* Appointment Booking Section */}
+            {(application.status === 'appointment_required' || application.status === 'appointment_booked') && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg shadow-md p-6 border-2 border-purple-200"
+              >
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Calendar className="w-6 h-6 ml-2 text-purple-600" />
+                  {appointment ? 'معلومات الموعد' : 'يتطلب حجز موعد'}
+                </h2>
+
+                {appointment ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                      <Calendar className="w-5 h-5 text-purple-600" />
+                      <div>
+                        <p className="text-sm text-gray-500">تاريخ الموعد</p>
+                        <p className="font-semibold text-gray-900">
+                          {new Date(appointment.appointment_date).toLocaleDateString('ar-SA', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                      <Clock className="w-5 h-5 text-purple-600" />
+                      <div>
+                        <p className="text-sm text-gray-500">الوقت</p>
+                        <p className="font-semibold text-gray-900">{appointment.appointment_time}</p>
+                      </div>
+                    </div>
+
+                    {appointment.notes && (
+                      <div className="p-3 bg-white rounded-lg">
+                        <p className="text-sm text-gray-500 mb-1">ملاحظات</p>
+                        <p className="text-gray-900">{appointment.notes}</p>
+                      </div>
+                    )}
+
+                    <div className="p-3 bg-green-100 border border-green-200 rounded-lg">
+                      <p className="text-sm text-green-800">
+                        ✓ تم حجز الموعد بنجاح. يرجى الحضور في الوقت المحدد.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <p className="text-gray-700">
+                      يتطلب طلبك حجز موعد لإكمال الإجراءات. يرجى حجز موعد مناسب لك.
+                    </p>
+                    <button
+                      onClick={() => navigate(`/admin/appointments/daily`)}
+                      className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                    >
+                      <Calendar className="w-5 h-5" />
+                      <span>حجز موعد الآن</span>
+                    </button>
+                    <p className="text-sm text-gray-500 text-center">
+                      يمكنك حجز الموعد من خلال نظام المواعيد
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
             {/* Processing Status */}
             {application.status && (
-              <ProcessingStatus status={application.status} />
+              <ProcessingStatus application={application} />
             )}
 
             {/* Rejection Details */}
@@ -307,7 +395,7 @@ export default function ApplicationDetail() {
             {(isSuperAdmin || canAccessStatus(application.status)) && (
               <AdminApplicationStatusManager
                 application={application}
-                onStatusChange={loadApplicationDetail}
+                onUpdate={loadApplicationDetail}
               />
             )}
 

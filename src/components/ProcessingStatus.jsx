@@ -34,8 +34,10 @@ const ProcessingStatus = ({ application }) => {
   ];
 
   const getProgressPercentage = () => {
+    if (!application?.created_at) return 0;
+
     const daysSinceSubmission = Math.floor(
-      (new Date() - new Date(application.submission_date)) / (1000 * 60 * 60 * 24)
+      (new Date() - new Date(application.created_at)) / (1000 * 60 * 60 * 24)
     );
 
     const estimatedDays = 7;
@@ -55,7 +57,9 @@ const ProcessingStatus = ({ application }) => {
   const progressPercentage = getProgressPercentage();
 
   const getEstimatedCompletion = () => {
-    const submissionDate = new Date(application.submission_date);
+    if (!application?.created_at) return 'غير محدد';
+
+    const submissionDate = new Date(application.created_at);
     const estimatedDate = new Date(submissionDate);
     estimatedDate.setDate(estimatedDate.getDate() + 7);
 
@@ -102,7 +106,10 @@ const ProcessingStatus = ({ application }) => {
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">تاريخ التقديم</span>
           <span className="font-semibold text-gray-900">
-            {new Date(application.submission_date).toLocaleDateString('ar-SA')}
+            {application?.created_at
+              ? new Date(application.created_at).toLocaleDateString('ar-SA')
+              : 'غير محدد'
+            }
           </span>
         </div>
       </div>

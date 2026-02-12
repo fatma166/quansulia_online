@@ -10,9 +10,11 @@ import ContentManagement from './ContentManagement';
 import ChatManagement from './ChatManagement';
 import ChatStaffManagement from './ChatStaffManagement';
 import { supabase } from '../lib/supabase';
+import { useStatuses } from '../hooks/useStatuses';
 
 const AdminDashboard = () => {
   const { user, isSuperAdmin, hasPermission, canAccessStatus, canAccessRegion } = useAuth();
+  const { statuses, getStatusLabel, getStatusColor } = useStatuses();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
@@ -726,22 +728,6 @@ const AdminDashboard = () => {
     customerSatisfaction: 0
   });
 
-  // Available statuses
-  const availableStatuses = [
-    { id: 'all', label: 'جميع الحالات', color: 'bg-gray-100 text-gray-800' },
-    { id: 'pending', label: 'قيد الانتظار', color: 'bg-yellow-100 text-yellow-800' },
-    { id: 'review', label: 'قيد المراجعة', color: 'bg-blue-100 text-blue-800' },
-    { id: 'approved', label: 'تمت الموافقة', color: 'bg-green-100 text-green-800' },
-    { id: 'paid', label: 'تم الدفع', color: 'bg-purple-100 text-purple-800' },
-    { id: 'appointment_booking', label: 'حجز الموعد', color: 'bg-indigo-100 text-indigo-800' },
-    { id: 'appointment_booked', label: 'تم حجز الموعد', color: 'bg-indigo-100 text-indigo-800' },
-    { id: 'appointment_scheduled', label: 'تم حجز موعد', color: 'bg-indigo-100 text-indigo-800' },
-    { id: 'in_progress', label: 'قيد المعالجة', color: 'bg-orange-100 text-orange-800' },
-    { id: 'shipping', label: 'في الشحن', color: 'bg-cyan-100 text-cyan-800' },
-    { id: 'completed', label: 'مكتمل', color: 'bg-green-100 text-green-800' },
-    { id: 'rejected', label: 'مرفوض', color: 'bg-red-100 text-red-800' }
-  ];
-
   // Available services
   // Main service categories
   const mainServices = [
@@ -1068,16 +1054,6 @@ const AdminDashboard = () => {
       averageProcessingTime: 3.5,
       customerSatisfaction: 4.8
     });
-  };
-
-  const getStatusColor = (status) => {
-    const statusObj = availableStatuses.find(s => s.id === status);
-    return statusObj ? statusObj.color : 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusLabel = (status) => {
-    const statusObj = availableStatuses.find(s => s.id === status);
-    return statusObj ? statusObj.label : status;
   };
 
   const getRegionLabel = (regionId) => {
@@ -1828,9 +1804,10 @@ const AdminDashboard = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#276073] focus:border-transparent outline-none"
           >
-            {availableStatuses.map((status) => (
-              <option key={status.id} value={status.id}>
-                {status.label}
+            <option value="all">جميع الحالات</option>
+            {statuses.map((status) => (
+              <option key={status.status_key} value={status.status_key}>
+                {status.label_ar}
               </option>
             ))}
           </select>
@@ -2541,9 +2518,9 @@ const AdminDashboard = () => {
                             onChange={(e) => handleStatusChange(selectedApplication.id, e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#276073] focus:border-transparent"
                           >
-                            {availableStatuses.filter(s => s.id !== 'all').map((status) => (
-                              <option key={status.id} value={status.id}>
-                                {status.label}
+                            {statuses.map((status) => (
+                              <option key={status.status_key} value={status.status_key}>
+                                {status.label_ar}
                               </option>
                             ))}
                           </select>

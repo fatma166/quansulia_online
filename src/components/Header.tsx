@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Menu, X, Shield } from 'lucide-react';
+import { Globe, Menu, X, Shield, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
 const Header: React.FC = () => {
@@ -20,7 +20,13 @@ const Header: React.FC = () => {
     { key: 'contact', href: '/contact' }
   ];
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (href: string, openInNewTab = false) => {
+    if (openInNewTab) {
+      window.open(href, '_blank', 'noopener,noreferrer');
+      setIsMenuOpen(false);
+      return;
+    }
+
     if (href === '/services' || href === '/consular-services') {
       window.location.href = '/services';
     } else if (href === '/about-consulate') {
@@ -76,14 +82,26 @@ const Header: React.FC = () => {
               <nav className="hidden lg:block mr-8 rtl:mr-0 rtl:ml-8">
                 <ul className="flex items-center space-x-6 rtl:space-x-reverse">
                   {navigationItems.map((item) => (
-                    <li key={item.key}>
-                      <button
-                        onClick={() => handleNavClick(item.href)}
-                        className="text-gray-700 hover:text-[#276073] font-medium transition-colors duration-200 relative group whitespace-nowrap"
-                      >
-                        {t(`nav.${item.key}`)}
-                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#276073] group-hover:w-full transition-all duration-300"></span>
-                      </button>
+                    <li key={item.key} className="group/nav-item relative">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleNavClick(item.href)}
+                          className="text-gray-700 hover:text-[#276073] font-medium transition-colors duration-200 relative group whitespace-nowrap"
+                        >
+                          {t(`nav.${item.key}`)}
+                          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#276073] group-hover:w-full transition-all duration-300"></span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleNavClick(item.href, true);
+                          }}
+                          className="opacity-0 group-hover/nav-item:opacity-100 p-1 text-gray-400 hover:text-[#276073] hover:bg-gray-100 rounded transition-all duration-200"
+                          title="فتح في نافذة جديدة"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -95,11 +113,14 @@ const Header: React.FC = () => {
               {/* Admin Login Button */}
               <a
                 href="/admin/login"
-                className="hidden md:flex items-center space-x-2 rtl:space-x-reverse p-2 text-gray-600 hover:text-[#276073] hover:bg-gray-100 rounded-lg transition-colors duration-200"
-                title="لوحة تحكم الإدارة"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:flex items-center space-x-2 rtl:space-x-reverse p-2 text-gray-600 hover:text-[#276073] hover:bg-gray-100 rounded-lg transition-colors duration-200 group"
+                title="لوحة تحكم الإدارة - فتح في نافذة جديدة"
               >
                 <Shield className="w-5 h-5" />
                 <span className="text-sm font-medium">إدارة</span>
+                <ExternalLink className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
               </a>
 
               {/* Language Toggle */}
@@ -129,20 +150,35 @@ const Header: React.FC = () => {
               <ul className="space-y-2">
                 {navigationItems.map((item) => (
                   <li key={item.key}>
-                    <button
-                      onClick={() => handleNavClick(item.href)}
-                      className="block w-full text-right rtl:text-right py-2 px-4 text-gray-700 hover:text-[#276073] hover:bg-gray-50 rounded-lg font-medium transition-colors duration-200"
-                    >
-                      {t(`nav.${item.key}`)}
-                    </button>
+                    <div className="flex items-center gap-2 px-4">
+                      <button
+                        onClick={() => handleNavClick(item.href)}
+                        className="flex-1 text-right rtl:text-right py-2 text-gray-700 hover:text-[#276073] hover:bg-gray-50 rounded-lg font-medium transition-colors duration-200"
+                      >
+                        {t(`nav.${item.key}`)}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNavClick(item.href, true);
+                        }}
+                        className="p-2 text-gray-400 hover:text-[#276073] hover:bg-gray-100 rounded-lg transition-colors"
+                        title="فتح في نافذة جديدة"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </button>
+                    </div>
                   </li>
                 ))}
                 <li>
                   <a
                     href="/admin/login"
-                    className="block w-full text-right rtl:text-right py-2 px-4 text-gray-700 hover:text-[#276073] hover:bg-gray-50 rounded-lg font-medium transition-colors duration-200"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between w-full text-right rtl:text-right py-2 px-4 text-gray-700 hover:text-[#276073] hover:bg-gray-50 rounded-lg font-medium transition-colors duration-200"
                   >
-                    لوحة تحكم الإدارة
+                    <span>لوحة تحكم الإدارة</span>
+                    <ExternalLink className="w-4 h-4 opacity-50" />
                   </a>
                 </li>
               </ul>

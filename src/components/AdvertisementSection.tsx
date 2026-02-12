@@ -5,8 +5,8 @@ const AdvertisementSection: React.FC = () => {
   const { language } = useLanguage();
 
   return (
-    <section className="relative">
-      <div className="grid md:grid-cols-2 gap-1 bg-gray-200">
+    <section className="relative overflow-x-hidden max-w-full">
+      <div className="grid md:grid-cols-2 gap-1 bg-gray-200 max-w-full overflow-x-hidden">
         {/* Left Advertisement */}
         <div className="relative" data-aos="fade-right">
           <a 

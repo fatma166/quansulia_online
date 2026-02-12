@@ -49,8 +49,8 @@ const EventsSection: React.FC = () => {
 
   return (
     <>
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white overflow-x-hidden max-w-full">
+        <div className="container mx-auto px-4 max-w-full overflow-x-hidden">
           <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 px-4">
               {t('events.title')}

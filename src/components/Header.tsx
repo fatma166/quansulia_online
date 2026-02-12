@@ -60,8 +60,8 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="bg-white shadow-lg sticky top-0 z-50" dir={isRTL ? 'rtl' : 'ltr'}>
-        <div className="container mx-auto px-4">
+      <header className="bg-white shadow-lg sticky top-0 z-50 overflow-x-hidden max-w-full" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="container mx-auto px-4 max-w-full overflow-x-hidden">
           {/* Single Line Header */}
           <div className="flex items-center justify-between py-3 md:py-4">
             {/* Logo, Title and Navigation */}

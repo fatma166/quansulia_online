@@ -65,8 +65,8 @@ const NewsSection: React.FC = () => {
 
   if (loading) {
     return (
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white overflow-x-hidden max-w-full">
+        <div className="container mx-auto px-4 max-w-full overflow-x-hidden">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-[#276073] border-t-transparent rounded-full animate-spin mx-auto"></div>
             <p className="mt-4 text-gray-600">جاري تحميل الأخبار...</p>
@@ -77,8 +77,8 @@ const NewsSection: React.FC = () => {
   }
 
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-white overflow-x-hidden max-w-full">
+      <div className="container mx-auto px-4 max-w-full overflow-x-hidden">
         {/* Section Title */}
         <div className="text-center mb-16" data-aos="fade-up">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 px-4">

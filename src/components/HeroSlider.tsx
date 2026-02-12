@@ -112,7 +112,7 @@ const HeroSlider: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="relative overflow-hidden bg-gray-900" style={{ minHeight: '80vh' }}>
+      <div className="relative overflow-hidden bg-gray-900 max-w-full" style={{ minHeight: '80vh' }}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-16 h-16 border-4 border-[#276073] border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -123,7 +123,7 @@ const HeroSlider: React.FC = () => {
   const currentItem = sliderItems[currentSlide];
 
   return (
-    <div className="relative overflow-hidden" style={{ minHeight: '80vh' }}>
+    <div className="relative overflow-hidden max-w-full" style={{ minHeight: '80vh' }}>
       {/* Background Image with transition */}
       <div className="absolute inset-0">
         {sliderItems.map((item, index) => (

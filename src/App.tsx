@@ -155,7 +155,7 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <div className="min-h-screen">
+        <div className="min-h-screen overflow-x-hidden max-w-full">
           <AnnouncementBanner />
           <ErrorBoundary>
             <BrowserRouter>

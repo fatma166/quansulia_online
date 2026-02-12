@@ -864,10 +864,13 @@ const AdminDashboard = () => {
 
   // Load applications data
   useEffect(() => {
-    loadApplications();
+    if (user) {
+      loadApplications();
+    }
     loadNews();
     loadEvents();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isSuperAdmin]);
 
   // Update activeTab when URL changes
   useEffect(() => {
@@ -880,6 +883,8 @@ const AdminDashboard = () => {
   const loadApplications = async () => {
     setIsLoading(true);
     try {
+      console.log('Loading applications from Supabase...');
+
       // Fetch real applications from Supabase
       let query = supabase
         .from('applications')
@@ -889,6 +894,12 @@ const AdminDashboard = () => {
 
       // Apply staff permissions filters if not super admin
       if (!isSuperAdmin && user) {
+        console.log('Applying staff permissions filters', {
+          allowedStatuses: user.allowedStatuses,
+          allowedRegions: user.allowedRegions,
+          allowedServices: user.allowedServices
+        });
+
         // Filter by allowed statuses
         if (user.allowedStatuses && user.allowedStatuses.length > 0) {
           query = query.in('status', user.allowedStatuses);
@@ -907,7 +918,12 @@ const AdminDashboard = () => {
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
+      }
+
+      console.log(`Loaded ${data?.length || 0} applications from database`);
 
       // Transform the data to match the component's expected format
       const transformedData = (data || []).map(app => ({
@@ -937,10 +953,12 @@ const AdminDashboard = () => {
         activities: []
       }));
 
+      console.log('Transformed applications:', transformedData.length);
       setApplications(transformedData);
       calculateStats(transformedData);
     } catch (error) {
       console.error('Error loading applications:', error);
+      console.error('Full error details:', JSON.stringify(error, null, 2));
       // Fallback to mock data on error
       setApplications(mockApplications);
       calculateStats(mockApplications);

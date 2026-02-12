@@ -41,9 +41,7 @@
   .no-print,
   nav,
   .sidebar,
-  button,
-  .bg-gradient-to-r,
-  .bg-gradient-to-br,
+  button:not(.print-visible),
   .shadow-lg,
   .shadow-xl,
   .hover\:shadow-xl,
@@ -210,30 +208,48 @@
     page-break-inside: avoid;
   }
 
-  /* Hide colors and backgrounds */
-  * {
+  /* Reset backgrounds and shadows */
+  body,
+  .container,
+  .main-content {
     background: white !important;
-    color: black !important;
+  }
+
+  * {
     text-shadow: none !important;
     box-shadow: none !important;
   }
 
   /* Specific overrides for form elements */
   .bg-white,
-  .bg-gray-50,
-  .bg-gray-100,
-  .bg-blue-50,
-  .bg-green-50,
-  .bg-red-50 {
+  .bg-gray-100 {
     background: white !important;
   }
 
-  .text-white,
+  .bg-gray-50 {
+    background: #f9f9f9 !important;
+  }
+
+  .bg-blue-50 {
+    background: #e3f2fd !important;
+  }
+
+  .bg-green-50 {
+    background: #e8f5e9 !important;
+  }
+
+  .bg-red-50 {
+    background: #ffebee !important;
+  }
+
   .text-gray-600,
-  .text-gray-700,
+  .text-gray-700 {
+    color: #555 !important;
+  }
+
   .text-gray-800,
   .text-gray-900 {
-    color: black !important;
+    color: #000 !important;
   }
 
   /* Borders */
@@ -359,5 +375,164 @@
     font-weight: bold;
     border-bottom: 1pt solid #000;
     padding-bottom: 10pt;
+  }
+
+  /* Invoice specific styles */
+  #invoice-content {
+    display: block !important;
+    background: white !important;
+    padding: 20pt !important;
+  }
+
+  #invoice-content * {
+    color: black !important;
+    background: transparent !important;
+  }
+
+  #invoice-content .border-2 {
+    border: 2pt solid #000 !important;
+  }
+
+  #invoice-content .bg-gray-100 {
+    background: #f0f0f0 !important;
+  }
+
+  #invoice-content .bg-gray-50 {
+    background: #f9f9f9 !important;
+  }
+
+  #invoice-content .bg-green-50 {
+    background: #e8f5e9 !important;
+  }
+
+  #invoice-content .bg-blue-50 {
+    background: #e3f2fd !important;
+  }
+
+  #invoice-content .text-green-600,
+  #invoice-content .text-green-700 {
+    color: #2e7d32 !important;
+  }
+
+  #invoice-content .text-red-600 {
+    color: #c62828 !important;
+  }
+
+  #invoice-content .text-gray-600,
+  #invoice-content .text-gray-700 {
+    color: #555 !important;
+  }
+
+  #invoice-content .text-gray-900 {
+    color: #000 !important;
+  }
+
+  #invoice-content table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  #invoice-content table th,
+  #invoice-content table td {
+    border: 1pt solid #000 !important;
+    padding: 8pt !important;
+  }
+
+  #invoice-content .border-gray-200,
+  #invoice-content .border-gray-300 {
+    border-color: #000 !important;
+  }
+
+  #invoice-content .bg-green-100 {
+    background: #c8e6c9 !important;
+  }
+
+  #invoice-content .border-green-200 {
+    border-color: #2e7d32 !important;
+  }
+
+  #invoice-content .border-blue-200 {
+    border-color: #1976d2 !important;
+  }
+
+  /* Keep QR codes visible */
+  #invoice-content img {
+    display: block !important;
+  }
+
+  /* Success Page / Receipt Card styles */
+  #receipt-card {
+    display: block !important;
+    background: white !important;
+    page-break-inside: avoid;
+    margin: 0 auto !important;
+    max-width: 800px !important;
+  }
+
+  /* Header gradient - keep the color for professional look */
+  #receipt-card > div:first-child {
+    background: #276073 !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #receipt-card > div:first-child * {
+    color: white !important;
+  }
+
+  /* Content section */
+  #receipt-card > div:not(:first-child) * {
+    color: inherit !important;
+  }
+
+  #receipt-card .text-white {
+    color: white !important;
+  }
+
+  #receipt-card .text-gray-600,
+  #receipt-card .text-gray-700 {
+    color: #555 !important;
+  }
+
+  #receipt-card .text-gray-900 {
+    color: #000 !important;
+  }
+
+  #receipt-card .bg-white {
+    background: white !important;
+  }
+
+  #receipt-card .bg-gray-50 {
+    background: #f9f9f9 !important;
+  }
+
+  #receipt-card .bg-gradient-to-r {
+    background: #276073 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #receipt-card .border-gray-200 {
+    border-color: #ddd !important;
+  }
+
+  #receipt-card .border-gray-300 {
+    border-color: #ccc !important;
+  }
+
+  /* QR Code - must be visible */
+  #receipt-card svg {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Hide navigation elements */
+  header,
+  footer,
+  .header,
+  .footer {
+    display: none !important;
   }
 }

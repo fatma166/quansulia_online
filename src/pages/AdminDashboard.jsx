@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart3, Users, FileText, Calendar, TrendingUp, Eye, CreditCard as Edit, Trash2, CheckCircle, Clock, AlertCircle, Search, Filter, Download, RefreshCw, Settings, Bell, Plus, UserPlus, FileCheck, CreditCard, Truck, Package, MapPin, Phone, Mail, Building, Award, Star, ChevronRight, ChevronDown, ChevronLeft, ChevronRight as ChevronRightIcon, X, Upload, Camera, MessageSquare, MessageCircle, User, Play, LayoutGrid as Layout, ExternalLink } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { getRegionsList, getCitiesByRegion, getDistrictsByCity } from '../data/saudiRegions';
-import { supabase } from '../lib/supabase';
 import AdminLayout from '../components/AdminLayout';
 import StaffManagement from './StaffManagement';
 import ContentManagement from './ContentManagement';
@@ -864,13 +863,10 @@ const AdminDashboard = () => {
 
   // Load applications data
   useEffect(() => {
-    if (user) {
-      loadApplications();
-    }
+    loadApplications();
     loadNews();
     loadEvents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isSuperAdmin]);
+  }, []);
 
   // Update activeTab when URL changes
   useEffect(() => {
@@ -880,91 +876,14 @@ const AdminDashboard = () => {
     }
   }, [searchParams]);
 
-  const loadApplications = async () => {
+  const loadApplications = () => {
     setIsLoading(true);
-    try {
-      console.log('Loading applications from Supabase...');
-
-      // Fetch real applications from Supabase
-      let query = supabase
-        .from('applications')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50); // Get last 50 applications
-
-      // Apply staff permissions filters if not super admin
-      if (!isSuperAdmin && user) {
-        console.log('Applying staff permissions filters', {
-          allowedStatuses: user.allowedStatuses,
-          allowedRegions: user.allowedRegions,
-          allowedServices: user.allowedServices
-        });
-
-        // Filter by allowed statuses
-        if (user.allowedStatuses && user.allowedStatuses.length > 0) {
-          query = query.in('status', user.allowedStatuses);
-        }
-
-        // Filter by allowed regions
-        if (user.allowedRegions && user.allowedRegions.length > 0 && !user.canAccessAllRegions) {
-          query = query.in('applicant_region', user.allowedRegions);
-        }
-
-        // Filter by allowed services
-        if (!user.canAccessAllServices && user.allowedServices && user.allowedServices.length > 0) {
-          query = query.in('service_id', user.allowedServices);
-        }
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Supabase query error:', error);
-        throw error;
-      }
-
-      console.log(`Loaded ${data?.length || 0} applications from database`);
-
-      // Transform the data to match the component's expected format
-      const transformedData = (data || []).map(app => ({
-        id: app.id, // Use the actual UUID for navigation
-        referenceNumber: app.reference_number,
-        serviceType: app.service_id,
-        serviceName: app.service_title || 'غير محدد',
-        status: app.status,
-        submissionDate: app.created_at?.split('T')[0] || '',
-        lastUpdate: app.updated_at?.split('T')[0] || app.created_at?.split('T')[0] || '',
-        applicantData: {
-          fullName: app.form_data?.fullName || app.form_data?.applicantName || 'غير محدد',
-          nationalId: app.form_data?.nationalId || app.form_data?.iqamaNumber || '',
-          phone: app.applicant_phone || app.form_data?.phoneNumber || '',
-          email: app.form_data?.email || '',
-          region: app.applicant_region || '',
-          city: app.form_data?.city || '',
-          district: app.form_data?.district || ''
-        },
-        fees: {
-          base: app.pricing_breakdown?.total_price || 0,
-          currency: 'ریال سعودي'
-        },
-        priority: 'normal',
-        formData: app.form_data || {},
-        attachments: [],
-        activities: []
-      }));
-
-      console.log('Transformed applications:', transformedData.length);
-      setApplications(transformedData);
-      calculateStats(transformedData);
-    } catch (error) {
-      console.error('Error loading applications:', error);
-      console.error('Full error details:', JSON.stringify(error, null, 2));
-      // Fallback to mock data on error
+    // Simulate API call
+    setTimeout(() => {
       setApplications(mockApplications);
       calculateStats(mockApplications);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
   const loadNews = () => {
@@ -1812,13 +1731,7 @@ const AdminDashboard = () => {
         
         <div className="p-6">
           <div className="space-y-4">
-            {filteredApplications.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <FileText className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                <p>لا توجد طلبات بعد</p>
-              </div>
-            ) : (
-              filteredApplications.slice(0, 5).map((app) => (
+            {filteredApplications.slice(0, 5).map((app) => (
               <div key={app.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                 <div className="flex items-center space-x-4 rtl:space-x-reverse">
                   <div className="w-10 h-10 bg-[#276073] rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -1829,9 +1742,6 @@ const AdminDashboard = () => {
                       {app.applicantData?.fullName || 'غير محدد'}
                     </p>
                     <p className="text-sm text-gray-600">{app.serviceName}</p>
-                    {app.referenceNumber && (
-                      <p className="text-xs text-gray-500 font-mono">{app.referenceNumber}</p>
-                    )}
                   </div>
                 </div>
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -1846,7 +1756,7 @@ const AdminDashboard = () => {
                   </button>
                 </div>
               </div>
-            )))}
+            ))}
           </div>
         </div>
       </div>

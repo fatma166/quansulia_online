@@ -11,6 +11,8 @@ import ChatManagement from './ChatManagement';
 import ChatStaffManagement from './ChatStaffManagement';
 import { supabase } from '../lib/supabase';
 import { useStatuses } from '../hooks/useStatuses';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const AdminDashboard = () => {
   const { user, isSuperAdmin, hasPermission, canAccessStatus, canAccessRegion } = useAuth();
@@ -1198,101 +1200,81 @@ const AdminDashboard = () => {
     setShowExportMenu(false);
   };
 
-  // Export to PDF
+  // Export to PDF with Arabic support
   const exportToPDF = () => {
-    const printWindow = window.open('', '', 'height=600,width=800');
+    try {
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html dir="rtl" lang="ar">
-      <head>
-        <meta charset="UTF-8">
-        <title>تقرير الطلبات</title>
-        <style>
-          body {
-            font-family: 'Arial', sans-serif;
-            direction: rtl;
-            padding: 20px;
-          }
-          h1 {
-            text-align: center;
-            color: #276073;
-            margin-bottom: 20px;
-          }
-          .info {
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #f0f0f0;
-            border-radius: 5px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-          }
-          th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: right;
-          }
-          th {
-            background-color: #276073;
-            color: white;
-          }
-          tr:nth-child(even) {
-            background-color: #f9f9f9;
-          }
-          @media print {
-            body { margin: 0; }
-          }
-        </style>
-      </head>
-      <body>
-        <h1>تقرير الطلبات</h1>
-        <div class="info">
-          <p><strong>تاريخ التقرير:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
-          <p><strong>عدد الطلبات:</strong> ${filteredApplications.length}</p>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>رقم المعاملة</th>
-              <th>المتقدم</th>
-              <th>الخدمة</th>
-              <th>المنطقة</th>
-              <th>الحالة</th>
-              <th>تاريخ التقديم</th>
-              <th>الرسوم</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${filteredApplications.map(app => `
-              <tr>
-                <td>${app.id}</td>
-                <td>${app.applicantData?.fullName || '-'}</td>
-                <td>${app.serviceName || '-'}</td>
-                <td>${getRegionLabel(app.applicantData?.region) || '-'}</td>
-                <td>${getStatusLabel(app.status)}</td>
-                <td>${app.submissionDate}</td>
-                <td>${app.fees?.base || 0} ${app.fees?.currency || ''}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </body>
-      </html>
-    `;
+      // Add Arabic font support
+      doc.setLanguage("ar");
+      doc.setR2L(true);
 
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-    printWindow.focus();
+      // Title
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.text('تقرير الطلبات', doc.internal.pageSize.getWidth() / 2, 15, { align: 'center' });
 
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 250);
+      // Report info
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      const reportDate = new Date().toLocaleDateString('ar-SA');
+      doc.text(`تاريخ التقرير: ${reportDate}`, doc.internal.pageSize.getWidth() - 20, 25, { align: 'right' });
+      doc.text(`عدد الطلبات: ${filteredApplications.length}`, doc.internal.pageSize.getWidth() - 20, 30, { align: 'right' });
 
-    setShowExportMenu(false);
+      // Prepare table data
+      const tableHeaders = [['الرسوم', 'تاريخ التقديم', 'الحالة', 'المنطقة', 'الخدمة', 'المتقدم', 'رقم المعاملة']];
+
+      const tableData = filteredApplications.map(app => [
+        `${app.fees?.base || 0} ${app.fees?.currency || ''}`,
+        app.submissionDate || '-',
+        getStatusLabel(app.status) || '-',
+        getRegionLabel(app.applicantData?.region) || '-',
+        app.serviceName || '-',
+        app.applicantData?.fullName || '-',
+        app.referenceNumber || app.id || '-'
+      ]);
+
+      // Add table using autoTable
+      doc.autoTable({
+        head: tableHeaders,
+        body: tableData,
+        startY: 35,
+        styles: {
+          font: 'helvetica',
+          fontSize: 9,
+          cellPadding: 3,
+          halign: 'right',
+          valign: 'middle',
+          lineColor: [200, 200, 200],
+          lineWidth: 0.1
+        },
+        headStyles: {
+          fillColor: [39, 96, 115],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          halign: 'center'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        margin: { top: 35, right: 10, bottom: 10, left: 10 },
+        theme: 'grid',
+        tableWidth: 'auto'
+      });
+
+      // Save the PDF
+      const fileName = `applications_${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+
+      setShowExportMenu(false);
+    } catch (error) {
+      console.error('Error exporting to PDF:', error);
+      alert('حدث خطأ أثناء التصدير: ' + error.message);
+    }
   };
 
   const handleStatusChange = (applicationId, newStatus) => {

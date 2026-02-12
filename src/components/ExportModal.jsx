@@ -3,7 +3,7 @@ import { X, FileText, Download, FileSpreadsheet, CheckSquare, Square, Save, Tras
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 import { supabase } from '../lib/supabase';
 
 const AVAILABLE_FIELDS = [
@@ -617,7 +617,7 @@ export default function ExportModal({
     }
   };
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
     setIsExporting(true);
     try {
       const data = prepareExportData();
@@ -628,49 +628,161 @@ export default function ExportModal({
         return;
       }
 
-      const doc = new jsPDF({
+      // إنشاء عنصر HTML مؤقت للجدول
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.right = '-9999px';
+      tempDiv.style.background = 'white';
+      tempDiv.style.padding = '20px';
+      tempDiv.style.direction = 'rtl';
+      tempDiv.style.fontFamily = 'Arial, sans-serif';
+
+      // إضافة العنوان
+      const title = document.createElement('h1');
+      title.textContent = 'تقرير الطلبات';
+      title.style.textAlign = 'center';
+      title.style.marginBottom = '10px';
+      title.style.fontSize = '24px';
+      title.style.color = '#276073';
+      tempDiv.appendChild(title);
+
+      // إضافة التاريخ
+      const dateText = document.createElement('p');
+      dateText.textContent = `تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}`;
+      dateText.style.textAlign = 'center';
+      dateText.style.marginBottom = '20px';
+      dateText.style.fontSize = '14px';
+      dateText.style.color = '#666';
+      tempDiv.appendChild(dateText);
+
+      // إنشاء الجدول
+      const table = document.createElement('table');
+      table.style.width = '100%';
+      table.style.borderCollapse = 'collapse';
+      table.style.fontSize = '12px';
+
+      // إضافة رأس الجدول
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      Object.keys(data[0] || {}).forEach(key => {
+        const th = document.createElement('th');
+        th.textContent = key;
+        th.style.backgroundColor = '#276073';
+        th.style.color = 'white';
+        th.style.padding = '10px';
+        th.style.border = '1px solid #ddd';
+        th.style.textAlign = 'center';
+        th.style.fontWeight = 'bold';
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // إضافة محتوى الجدول
+      const tbody = document.createElement('tbody');
+      data.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        if (index % 2 === 1) {
+          tr.style.backgroundColor = '#f5f5f5';
+        }
+        Object.values(row).forEach(value => {
+          const td = document.createElement('td');
+          td.textContent = value || '-';
+          td.style.padding = '8px';
+          td.style.border = '1px solid #ddd';
+          td.style.textAlign = 'right';
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      tempDiv.appendChild(table);
+
+      document.body.appendChild(tempDiv);
+
+      // تحويل إلى صورة باستخدام html2canvas
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      // إزالة العنصر المؤقت
+      document.body.removeChild(tempDiv);
+
+      // إنشاء PDF وإضافة الصورة
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
         orientation: 'l',
-        unit: 'mm',
-        format: 'a4'
+        unit: 'px',
+        format: 'a4',
+        compress: true
       });
 
-      doc.setFont('helvetica');
-      doc.setFontSize(16);
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
 
-      doc.text('تقرير الطلبات', doc.internal.pageSize.width / 2, 15, { align: 'center' });
-      doc.setFontSize(10);
-      doc.text(`تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}`, doc.internal.pageSize.width / 2, 22, { align: 'center' });
+      // حساب نسبة التصغير للعرض
+      const widthRatio = (pageWidth - 20) / imgWidth;
+      const scaledWidth = imgWidth * widthRatio;
+      const scaledHeight = imgHeight * widthRatio;
 
-      const headers = [Object.keys(data[0] || {})];
-      const rows = data.map(row => Object.values(row));
+      // إذا كانت الصورة أطول من صفحة واحدة، قسمها
+      let position = 0;
+      const margin = 10;
 
-      autoTable(doc, {
-        head: headers,
-        body: rows,
-        startY: 30,
-        styles: {
-          font: 'helvetica',
-          fontSize: 9,
-          cellPadding: 3,
-          halign: 'right',
-          fontStyle: 'normal'
-        },
-        headStyles: {
-          fillColor: [39, 96, 115],
-          textColor: 255,
-          fontStyle: 'bold',
-          halign: 'center'
-        },
-        alternateRowStyles: {
-          fillColor: [245, 245, 245],
-        },
-        margin: { top: 30, right: 10, bottom: 10, left: 10 },
-        tableWidth: 'auto',
-        theme: 'grid'
-      });
+      if (scaledHeight > pageHeight - 20) {
+        // تقسيم الصورة إلى صفحات متعددة
+        while (position < imgHeight) {
+          const pageCanvas = document.createElement('canvas');
+          const pageCtx = pageCanvas.getContext('2d');
+          const sliceHeight = Math.min((pageHeight - 20) / widthRatio, imgHeight - position);
+
+          pageCanvas.width = imgWidth;
+          pageCanvas.height = sliceHeight;
+
+          pageCtx.drawImage(
+            canvas,
+            0, position,
+            imgWidth, sliceHeight,
+            0, 0,
+            imgWidth, sliceHeight
+          );
+
+          const pageImgData = pageCanvas.toDataURL('image/png');
+
+          if (position > 0) {
+            pdf.addPage();
+          }
+
+          pdf.addImage(
+            pageImgData,
+            'PNG',
+            margin,
+            margin,
+            scaledWidth,
+            sliceHeight * widthRatio
+          );
+
+          position += sliceHeight;
+        }
+      } else {
+        // الصورة تناسب صفحة واحدة
+        pdf.addImage(
+          imgData,
+          'PNG',
+          margin,
+          margin,
+          scaledWidth,
+          scaledHeight
+        );
+      }
 
       const fileName = `applications_${new Date().toISOString().split('T')[0]}.pdf`;
-      doc.save(fileName);
+      pdf.save(fileName);
 
       alert('تم تصدير الملف بنجاح!');
       onClose();

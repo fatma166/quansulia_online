@@ -59,6 +59,16 @@
     overflow-x: hidden;
   }
 
+  /* Hide scrollbar for header navigation */
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  nav {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   .animate-scroll {
     animation: scroll 30s linear infinite;
   }

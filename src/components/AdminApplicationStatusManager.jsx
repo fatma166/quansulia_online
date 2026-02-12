@@ -14,7 +14,7 @@ const AdminApplicationStatusManager = ({ application, onUpdate }) => {
     can_resubmit: true
   });
 
-  const { statuses, getStatusByKey } = useStatuses();
+  const { statuses, getStatusByKey, loading: statusesLoading } = useStatuses();
 
   const iconMap = {
     FileText, Search, CheckCircle, DollarSign, Calendar,
@@ -71,13 +71,16 @@ const AdminApplicationStatusManager = ({ application, onUpdate }) => {
 
       if (updateError) throw updateError;
 
+      const statusOption = getCurrentStatusOption();
+      const statusLabel = statusOption ? statusOption.label : selectedStatus;
+
       const { error: historyError } = await supabase
         .from('status_history')
         .insert({
           application_id: application.id,
           old_status: application.status,
           new_status: selectedStatus,
-          notes: notes || `تم تحديث الحالة إلى: ${getCurrentStatusOption().label}`
+          notes: notes || `تم تحديث الحالة إلى: ${statusLabel}`
         });
 
       if (historyError) throw historyError;
@@ -114,7 +117,34 @@ const AdminApplicationStatusManager = ({ application, onUpdate }) => {
     }
   };
 
+  // عرض شاشة التحميل أثناء تحميل الحالات
+  if (statusesLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">إدارة حالة الطلب</h3>
+        <div className="flex items-center justify-center py-8">
+          <div className="w-8 h-8 border-2 border-gray-300 border-t-[#276073] rounded-full animate-spin"></div>
+          <span className="mr-3 text-gray-600">جاري التحميل...</span>
+        </div>
+      </div>
+    );
+  }
+
   const currentOption = getCurrentStatusOption();
+
+  // إذا لم يتم العثور على الحالة، استخدم القيم الافتراضية
+  if (!currentOption) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">إدارة حالة الطلب</h3>
+        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-yellow-800">لا يمكن تحميل بيانات الحالة. يرجى تحديث الصفحة.</p>
+          <p className="text-sm text-yellow-700 mt-2">الحالة الحالية: {selectedStatus}</p>
+        </div>
+      </div>
+    );
+  }
+
   const StatusIcon = currentOption.icon;
 
   return (

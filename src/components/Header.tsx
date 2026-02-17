@@ -61,90 +61,85 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="bg-white shadow-lg sticky top-0 z-50 w-full" dir={isRTL ? 'rtl' : 'ltr'}>
-        <div className="w-full max-w-full">
-          {/* Two Line Header for better space management */}
-          <div className="border-b border-gray-100">
-            {/* Top Line: Logo, Title and Actions */}
-            <div className="flex items-center justify-between px-3 sm:px-4 py-2">
-              {/* Logo and Title */}
-              <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#276073] rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-base sm:text-lg">SD</span>
-                </div>
-                <div className="min-w-0">
-                  <h1 className="text-base sm:text-lg md:text-xl font-bold text-[#276073] truncate">
-                    {language === 'ar' ? 'القنصلية السودانية' : 'Sudanese Consulate'}
-                  </h1>
-                  <p className="text-xs sm:text-sm text-gray-600 truncate">
-                    {language === 'ar' ? 'جدة - المملكة العربية السعودية' : 'Jeddah - Saudi Arabia'}
-                  </p>
-                </div>
+        <div className="w-full px-2 sm:px-3 max-w-full">
+          {/* Single Line Compact Header */}
+          <div className="flex items-center justify-between py-1.5 md:py-2 gap-1 md:gap-2">
+            {/* Logo and Title */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 min-w-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#276073] rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-xs sm:text-sm">SD</span>
               </div>
-
-              {/* Right Side Actions */}
-              <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-                {/* Admin Login Button */}
-                <a
-                  href="/admin/login"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-gray-600 hover:text-white hover:bg-[#276073] rounded-lg transition-all duration-200 group border border-gray-200"
-                  title="لوحة تحكم الإدارة"
-                >
-                  <Shield className="w-4 h-4" />
-                  <span className="text-sm font-medium">إدارة</span>
-                </a>
-
-                {/* Language Toggle */}
-                <button
-                  onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-gray-600 hover:text-white hover:bg-[#276073] rounded-lg transition-all duration-200 border border-gray-200 flex-shrink-0"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    {language === 'ar' ? 'EN' : 'عر'}
-                  </span>
-                </button>
-
-                {/* Mobile Menu Button */}
-                <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="lg:hidden px-3 py-1.5 text-gray-600 hover:text-white hover:bg-[#276073] rounded-lg transition-all duration-200 border border-gray-200 flex-shrink-0"
-                >
-                  {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                </button>
+              <div className="min-w-0 hidden sm:block">
+                <h1 className="text-xs sm:text-sm md:text-base font-bold text-[#276073] truncate leading-tight">
+                  {language === 'ar' ? 'القنصلية السودانية' : 'Sudanese Consulate'}
+                </h1>
+                <p className="text-[10px] sm:text-xs text-gray-600 truncate hidden md:block leading-tight">
+                  {language === 'ar' ? 'جدة - المملكة العربية السعودية' : 'Jeddah - Saudi Arabia'}
+                </p>
               </div>
             </div>
 
-            {/* Bottom Line: Navigation */}
-            <nav className="hidden lg:block bg-gradient-to-r from-gray-50 to-white px-3 sm:px-4">
-              <div className="overflow-x-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#276073 transparent' }}>
-                <ul className="flex items-center gap-1 py-2 min-w-max">
-                  {navigationItems.map((item) => (
-                    <li key={item.key} className="group/nav-item relative flex-shrink-0">
-                      <div className="flex items-center">
-                        <button
-                          onClick={() => handleNavClick(item.href)}
-                          className="text-gray-700 hover:text-white hover:bg-[#276073] font-medium transition-all duration-200 relative whitespace-nowrap text-sm py-2 px-3 rounded-lg"
-                        >
-                          {t(`nav.${item.key}`)}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleNavClick(item.href, true);
-                          }}
-                          className="opacity-0 group-hover/nav-item:opacity-100 ml-1 p-1.5 text-gray-400 hover:text-[#276073] hover:bg-white rounded transition-all duration-200"
-                          title="فتح في نافذة جديدة"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {/* Navigation - Compact Version */}
+            <nav className="hidden lg:flex flex-1 justify-center overflow-x-auto max-w-full px-1" style={{ scrollbarWidth: 'thin', scrollbarColor: '#276073 transparent' }}>
+              <ul className="flex items-center gap-0.5 xl:gap-1 flex-nowrap">
+                {navigationItems.map((item) => (
+                  <li key={item.key} className="group/nav-item relative flex-shrink-0">
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => handleNavClick(item.href)}
+                        className="text-gray-700 hover:text-white hover:bg-[#276073] font-medium transition-all duration-200 relative whitespace-nowrap text-[11px] xl:text-xs py-1 px-1.5 xl:px-2 rounded"
+                      >
+                        {t(`nav.${item.key}`)}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNavClick(item.href, true);
+                        }}
+                        className="opacity-0 group-hover/nav-item:opacity-100 p-0.5 text-gray-400 hover:text-[#276073] hover:bg-gray-100 rounded transition-all duration-200"
+                        title="فتح في نافذة جديدة"
+                      >
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </nav>
+
+            {/* Right Side Actions - Compact */}
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+              {/* Admin Login Button */}
+              <a
+                href="/admin/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden xl:flex items-center gap-1 px-2 py-1 text-gray-600 hover:text-white hover:bg-[#276073] rounded transition-all duration-200 border border-gray-200"
+                title="لوحة تحكم الإدارة"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-medium">إدارة</span>
+              </a>
+
+              {/* Language Toggle */}
+              <button
+                onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
+                className="flex items-center gap-1 px-2 py-1 text-gray-600 hover:text-white hover:bg-[#276073] rounded transition-all duration-200 border border-gray-200 flex-shrink-0"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-medium">
+                  {language === 'ar' ? 'EN' : 'عر'}
+                </span>
+              </button>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden px-2 py-1 text-gray-600 hover:text-white hover:bg-[#276073] rounded transition-all duration-200 border border-gray-200 flex-shrink-0"
+              >
+                {isMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu */}

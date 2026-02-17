@@ -59,14 +59,27 @@
     overflow-x: hidden;
   }
 
-  /* Hide scrollbar for header navigation */
-  nav::-webkit-scrollbar {
-    display: none;
+  /* Custom scrollbar for header navigation */
+  nav div::-webkit-scrollbar {
+    height: 4px;
   }
 
-  nav {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  nav div::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  nav div::-webkit-scrollbar-thumb {
+    background: #276073;
+    border-radius: 4px;
+  }
+
+  nav div::-webkit-scrollbar-thumb:hover {
+    background: #1e4d5e;
+  }
+
+  /* Smooth scrolling for nav */
+  nav div {
+    scroll-behavior: smooth;
   }
 
   .animate-scroll {

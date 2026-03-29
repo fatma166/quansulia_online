@@ -467,35 +467,60 @@ export default function ApplicationDetail() {
                     المستندات المرفقة
                   </h3>
 
-                  {application.documents && Object.keys(application.documents).length > 0 ? (
-                    <div className="space-y-3">
-                      {Object.entries(application.documents).map(([docName, docUrl], index) => (
-                        <a
-                          key={index}
-                          href={docUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all group"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100">
-                              <FileText className="w-5 h-5 text-blue-600" />
+                  {(() => {
+                    // Collect all documents from both documents and form_data
+                    const allDocuments = [];
+
+                    // Add documents from documents field
+                    if (application.documents && typeof application.documents === 'object') {
+                      Object.entries(application.documents).forEach(([docName, docUrl]) => {
+                        if (docUrl && typeof docUrl === 'string' && docUrl.startsWith('http')) {
+                          allDocuments.push({ name: docName, url: docUrl });
+                        }
+                      });
+                    }
+
+                    // Add documents from form_data
+                    if (application.form_data && typeof application.form_data === 'object') {
+                      Object.entries(application.form_data).forEach(([key, value]) => {
+                        if (typeof value === 'string' && value.startsWith('http') &&
+                            (key.includes('document') || key.includes('file') || key.includes('attachment') ||
+                             key.includes('صورة') || key.includes('مستند'))) {
+                          allDocuments.push({ name: key, url: value });
+                        }
+                      });
+                    }
+
+                    return allDocuments.length > 0 ? (
+                      <div className="space-y-3">
+                        {allDocuments.map((doc, index) => (
+                          <a
+                            key={index}
+                            href={doc.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all group"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100">
+                                <FileText className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-gray-900">{doc.name}</p>
+                                <p className="text-sm text-gray-500">انقر للعرض أو التحميل</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-medium text-gray-900">{docName}</p>
-                              <p className="text-sm text-gray-500">انقر للعرض أو التحميل</p>
-                            </div>
-                          </div>
-                          <Download className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
-                        </a>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-500">لا توجد مستندات مرفقة</p>
-                    </div>
-                  )}
+                            <Download className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
+                          </a>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500">لا توجد مستندات مرفقة</p>
+                      </div>
+                    );
+                  })()}
                 </motion.div>
               )}
             </div>

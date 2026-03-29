@@ -742,28 +742,17 @@ export default function ApplicationsList() {
                           {formatDate(application.created_at)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {(() => {
-                            const status = statuses.find(s => s.status_key === application.status);
-                            if (!status) {
-                              return (
-                                <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                                  {application.status || 'غير محدد'}
-                                </span>
-                              );
-                            }
-
-                            return (
-                              <span
-                                className="inline-flex px-3 py-1 text-xs font-semibold rounded-full"
-                                style={{
-                                  backgroundColor: status.color || '#E5E7EB',
-                                  color: status.text_color || '#1F2937'
-                                }}
-                              >
-                                {status.label_ar || status.name_ar || application.status}
-                              </span>
-                            );
-                          })()}
+                          <select
+                            value={application.status}
+                            onChange={(e) => handleStatusChange(application.id, e.target.value)}
+                            className={`text-xs px-3 py-1 rounded-full font-semibold cursor-pointer ${getStatusColor(application.status)}`}
+                          >
+                            {statuses.map((status) => (
+                              <option key={status.status_key} value={status.status_key}>
+                                {status.label_ar}
+                              </option>
+                            ))}
+                          </select>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button

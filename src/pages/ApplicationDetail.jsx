@@ -1,7 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileText, User, Calendar, MapPin, Phone, Mail, Download, CreditCard as Edit, Trash2, CheckCircle, Clock, XCircle, AlertCircle, Package, Printer, MessageSquare } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileText,
+  User,
+  Calendar,
+  MapPin,
+  Phone,
+  Mail,
+  Download,
+  Edit,
+  Trash2,
+  CheckCircle,
+  Clock,
+  XCircle,
+  AlertCircle,
+  Package,
+  Printer,
+  MessageSquare
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import ProcessingStatus from '../components/ProcessingStatus';
@@ -151,128 +169,131 @@ export default function ApplicationDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6" dir="rtl">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
-        <div className="mb-6">
+        {/* Header */}
+        <div className="mb-8">
           <button
             onClick={() => navigate('/admin/applications')}
-            className="flex items-center text-sm text-gray-600 hover:text-blue-600"
+            className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
           >
-            <span>الصفحة الرئيسية</span>
-            <ArrowLeft className="w-4 h-4 mx-2 rotate-180" />
-            <span className="text-blue-600">الطلبات</span>
+            <ArrowLeft className="w-5 h-5 ml-2" />
+            العودة إلى قائمة الطلبات
           </button>
-        </div>
 
-        {/* Header with title and actions */}
-        <div className="bg-white rounded-lg shadow-sm mb-6 overflow-hidden">
-          <div className="p-6">
+          <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-start justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                  {service?.name_ar || application.service_title || 'جوازات السفر'}
-                </h1>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span>رقم المعاملة:</span>
-                  <span className="text-blue-600 font-medium">
-                    {application.reference_number || `REF-${new Date(application.created_at).getFullYear()}${application.id?.slice(0, 4)}`}
+              <div className="flex-1">
+                <div className="flex items-center gap-4 mb-2">
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    طلب رقم: {application.reference_number || application.id?.slice(0, 8)}
+                  </h1>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    application.status === 'submitted' ? 'bg-blue-100 text-blue-800' :
+                    application.status === 'in_review' ? 'bg-yellow-100 text-yellow-800' :
+                    application.status === 'appointment_required' ? 'bg-purple-100 text-purple-800' :
+                    application.status === 'appointment_booked' ? 'bg-purple-100 text-purple-800' :
+                    application.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                    application.status === 'ready' ? 'bg-green-100 text-green-800' :
+                    application.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
+                    application.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {application.status === 'submitted' ? 'مستلم' :
+                     application.status === 'in_review' ? 'قيد المراجعة' :
+                     application.status === 'appointment_required' ? 'يتطلب موعد' :
+                     application.status === 'appointment_booked' ? 'تم حجز الموعد' :
+                     application.status === 'processing' ? 'قيد المعالجة' :
+                     application.status === 'ready' ? 'جاهز' :
+                     application.status === 'completed' ? 'مكتمل' :
+                     application.status === 'rejected' ? 'مرفوض' :
+                     application.status}
                   </span>
                 </div>
+                <p className="text-gray-600">
+                  الخدمة: {service?.name_ar || application.service_title || 'غير محدد'}
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  تاريخ التقديم: {formatDate(application.created_at)}
+                </p>
               </div>
 
               <div className="flex gap-2">
                 <button
                   onClick={handlePrint}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="p-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg"
+                  title="طباعة"
                 >
-                  <Printer className="w-4 h-4" />
-                  <span className="text-sm">طباعة</span>
+                  <Printer className="w-5 h-5" />
                 </button>
                 <button
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  onClick={() => setShowInvoiceModal(true)}
+                  className="p-2 text-emerald-600 hover:text-emerald-700 border border-emerald-300 rounded-lg"
+                  title="الفاتورة"
                 >
-                  <Download className="w-4 h-4" />
-                  <span className="text-sm">تحميل السجل</span>
+                  <FileText className="w-5 h-5" />
                 </button>
-              </div>
-            </div>
-
-            {/* Info Cards Row */}
-            <div className="grid grid-cols-4 gap-4 mt-6 pt-6 border-t">
-              <div className="text-center">
-                <p className="text-xs text-gray-500 mb-1">تاريخ التقديم</p>
-                <p className="text-sm font-semibold text-gray-900">
-                  {new Date(application.created_at).toLocaleDateString('ar-SA')}
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-gray-500 mb-1">الإصدار الحالي</p>
-                <p className="text-sm font-semibold text-gray-900">غير محدد</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-gray-500 mb-1">آخر تحديث</p>
-                <p className="text-sm font-semibold text-gray-900">
-                  {new Date(application.updated_at || application.created_at).toLocaleDateString('ar-SA')}
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-gray-500 mb-1">الرسوم</p>
-                <p className="text-sm font-semibold text-gray-900">
-                  {application.total_price || '300'} ريال سعودي
-                </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Appointment Info Card */}
-            {(appointment || application.status === 'appointment_required' || application.status === 'appointment_booked') && (
+            {/* Applicant Information */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-lg shadow-md p-6"
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <User className="w-6 h-6 ml-2 text-emerald-600" />
+                بيانات مقدم الطلب
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {application.form_data && Object.entries(application.form_data).map(([key, value]) => {
+                  if (typeof value === 'object' || key.includes('document') || key.includes('file')) {
+                    return null;
+                  }
+
+                  return (
+                    <div key={key} className="border-r-4 border-emerald-500 pr-3">
+                      <p className="text-sm text-gray-500 mb-1">{key}</p>
+                      <p className="text-gray-900">{value || 'غير محدد'}</p>
+                    </div>
+                  );
+                })}
+
+                {application.applicant_region && (
+                  <div className="border-r-4 border-emerald-500 pr-3">
+                    <p className="text-sm text-gray-500 mb-1">المنطقة</p>
+                    <p className="text-gray-900">{application.applicant_region}</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Appointment Booking Section */}
+            {(application.status === 'appointment_required' || application.status === 'appointment_booked') && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200 p-6"
+                className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg shadow-md p-6 border-2 border-purple-200"
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-green-600" />
-                    </div>
-                    <span className="text-sm font-semibold text-green-800">معلومات الموعد</span>
-                  </div>
-                  <span className="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium">
-                    موعد
-                  </span>
-                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Calendar className="w-6 h-6 ml-2 text-purple-600" />
+                  {appointment ? 'معلومات الموعد' : 'يتطلب حجز موعد'}
+                </h2>
 
                 {appointment ? (
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <MapPin className="w-4 h-4 text-green-600" />
-                      <div className="flex-1">
-                        <p className="text-xs text-gray-600 mb-0.5">الموقع</p>
-                        <p className="text-sm font-semibold text-gray-900">
-                          القنصلية - منطقة الرياض
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Clock className="w-4 h-4 text-green-600" />
-                      <div className="flex-1">
-                        <p className="text-xs text-gray-600 mb-0.5">الوقت</p>
-                        <p className="text-sm font-semibold text-gray-900">{appointment.appointment_time || '09:30 - 09:00'}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Calendar className="w-4 h-4 text-green-600" />
-                      <div className="flex-1">
-                        <p className="text-xs text-gray-600 mb-0.5">التاريخ الميلادي</p>
-                        <p className="text-sm font-semibold text-gray-900">
+                    <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                      <Calendar className="w-5 h-5 text-purple-600" />
+                      <div>
+                        <p className="text-sm text-gray-500">تاريخ الموعد</p>
+                        <p className="font-semibold text-gray-900">
                           {new Date(appointment.appointment_date).toLocaleDateString('ar-SA', {
                             weekday: 'long',
                             year: 'numeric',
@@ -283,111 +304,49 @@ export default function ApplicationDetail() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <Calendar className="w-4 h-4 text-green-600" />
-                      <div className="flex-1">
-                        <p className="text-xs text-gray-600 mb-0.5">التاريخ الهجري</p>
-                        <p className="text-sm font-semibold text-gray-900">27 شعبان 1447 هـ</p>
+                    <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
+                      <Clock className="w-5 h-5 text-purple-600" />
+                      <div>
+                        <p className="text-sm text-gray-500">الوقت</p>
+                        <p className="font-semibold text-gray-900">{appointment.appointment_time}</p>
                       </div>
+                    </div>
+
+                    {appointment.notes && (
+                      <div className="p-3 bg-white rounded-lg">
+                        <p className="text-sm text-gray-500 mb-1">ملاحظات</p>
+                        <p className="text-gray-900">{appointment.notes}</p>
+                      </div>
+                    )}
+
+                    <div className="p-3 bg-green-100 border border-green-200 rounded-lg">
+                      <p className="text-sm text-green-800">
+                        ✓ تم حجز الموعد بنجاح. يرجى الحضور في الوقت المحدد.
+                      </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-4">
-                    <p className="text-sm text-gray-600 mb-3">يتطلب طلبك حجز موعد</p>
+                  <div className="space-y-4">
+                    <p className="text-gray-700">
+                      يتطلب طلبك حجز موعد لإكمال الإجراءات. يرجى حجز موعد مناسب لك.
+                    </p>
                     <button
                       onClick={() => navigate(`/admin/appointments/daily`)}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+                      className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
                     >
-                      حجز موعد الآن
+                      <Calendar className="w-5 h-5" />
+                      <span>حجز موعد الآن</span>
                     </button>
+                    <p className="text-sm text-gray-500 text-center">
+                      يمكنك حجز الموعد من خلال نظام المواعيد
+                    </p>
                   </div>
                 )}
               </motion.div>
             )}
 
-            {/* Applicant Information */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-lg shadow-sm p-6"
-            >
-              <div className="flex items-center gap-2 mb-6">
-                <User className="w-5 h-5 text-gray-700" />
-                <h2 className="text-lg font-bold text-gray-900">بيانات المتقدم</h2>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-                {/* Display all form fields */}
-                {application.form_data && Object.entries(application.form_data)
-                  .filter(([key, value]) => {
-                    // Filter out documents and complex objects
-                    if (typeof value === 'object' && value !== null) return false;
-                    if (key.toLowerCase().includes('document')) return false;
-                    if (key.toLowerCase().includes('file')) return false;
-                    return true;
-                  })
-                  .map(([key, value]) => {
-                    // Create label mapping for common fields
-                    const labelMap = {
-                      'fullName': 'الاسم الكامل',
-                      'full_name': 'الاسم الكامل',
-                      'name': 'الاسم',
-                      'email': 'البريد الإلكتروني',
-                      'phone': 'رقم الهاتف',
-                      'phoneNumber': 'رقم الهاتف',
-                      'phone_number': 'رقم الهاتف',
-                      'nationalId': 'رقم الهوية',
-                      'national_id': 'رقم الهوية',
-                      'passportNumber': 'رقم الجواز',
-                      'passport_number': 'رقم الجواز',
-                      'birthDate': 'تاريخ الميلاد',
-                      'birth_date': 'تاريخ الميلاد',
-                      'dateOfBirth': 'تاريخ الميلاد',
-                      'date_of_birth': 'تاريخ الميلاد',
-                      'address': 'العنوان',
-                      'city': 'المدينة',
-                      'nationality': 'الجنسية',
-                      'gender': 'الجنس',
-                      'maritalStatus': 'الحالة الاجتماعية',
-                      'marital_status': 'الحالة الاجتماعية',
-                    };
-
-                    const label = labelMap[key] || key;
-
-                    return (
-                      <div key={key} className="flex items-start gap-3 pb-3 border-b border-gray-100">
-                        <div className="flex-1">
-                          <p className="text-xs text-gray-500 mb-1">{label}</p>
-                          <p className="text-sm font-medium text-gray-900">{value || 'غير محدد'}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-
-                {/* Region */}
-                {application.applicant_region && (
-                  <div className="flex items-start gap-3 pb-3 border-b border-gray-100">
-                    <div className="flex-1">
-                      <p className="text-xs text-gray-500 mb-1">المنطقة</p>
-                      <p className="text-sm font-medium text-gray-900">{application.applicant_region}</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Price */}
-                {application.total_price && (
-                  <div className="flex items-start gap-3 pb-3 border-b border-gray-100">
-                    <div className="flex-1">
-                      <p className="text-xs text-gray-500 mb-1">المبلغ الإجمالي</p>
-                      <p className="text-sm font-medium text-emerald-600">{application.total_price} ريال سعودي</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
             {/* Processing Status */}
-            {application.status && application.status !== 'appointment_required' && application.status !== 'appointment_booked' && (
+            {application.status && (
               <ProcessingStatus application={application} />
             )}
 
@@ -402,12 +361,12 @@ export default function ApplicationDetail() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white rounded-lg shadow-sm p-6"
+                className="bg-white rounded-lg shadow-md p-6"
               >
-                <div className="flex items-center gap-2 mb-4">
-                  <FileText className="w-5 h-5 text-gray-700" />
-                  <h2 className="text-lg font-bold text-gray-900">المستندات المرفقة</h2>
-                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <FileText className="w-6 h-6 ml-2 text-emerald-600" />
+                  المستندات المرفقة
+                </h2>
 
                 <div className="space-y-2">
                   {Object.entries(application.documents).map(([docName, docUrl]) => (
@@ -416,15 +375,13 @@ export default function ApplicationDetail() {
                       href={docUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors group"
+                      className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                          <FileText className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 truncate">{docName}</span>
+                      <div className="flex items-center">
+                        <FileText className="w-5 h-5 text-gray-400 ml-2" />
+                        <span className="text-gray-900">{docName}</span>
                       </div>
-                      <Download className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
+                      <Download className="w-5 h-5 text-gray-400" />
                     </a>
                   ))}
                 </div>
@@ -442,132 +399,74 @@ export default function ApplicationDetail() {
               />
             )}
 
-            {/* Activity Log */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-lg shadow-sm p-6"
-            >
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                <MessageSquare className="w-5 h-5 ml-2 text-gray-700" />
-                سجل الأنشطة
-              </h3>
+            {/* Status History */}
+            {statusHistory.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-white rounded-lg shadow-md p-6"
+              >
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                  <Clock className="w-5 h-5 ml-2 text-emerald-600" />
+                  سجل الحالات
+                </h3>
 
-              <div className="space-y-4">
-                {/* Activity Item - Approved */}
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className="text-sm font-semibold text-gray-900">تغيير الحالة إلى / تمت</p>
-                      <span className="text-xs text-gray-400 whitespace-nowrap">صباح اليوم</span>
-                    </div>
-                    <p className="text-xs text-gray-600 mb-1">
-                      تم تغيير حالة الطلب بنجاح الى المرحلة التالية
-                    </p>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <User className="w-3 h-3" />
-                      <span>الموظف: مدير النظام</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Activity Item - Submitted */}
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className="text-sm font-semibold text-gray-900">تم تقديم الطلب</p>
-                      <span className="text-xs text-gray-400 whitespace-nowrap">صباح اليوم</span>
-                    </div>
-                    <p className="text-xs text-gray-600 mb-1">
-                      تم تقديم الطلب بنجاح الى المرحلة التالية من معالجته
-                    </p>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <User className="w-3 h-3" />
-                      <span>المستخدم</span>
-                    </div>
-                  </div>
-                </div>
-
-                {statusHistory.length > 0 && statusHistory.slice(0, 3).map((history, index) => (
-                  <div key={history.id} className="flex gap-3">
-                    <div
-                      className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: history.application_statuses?.color ? `${history.application_statuses.color}20` : '#F3F4F6' }}
-                    >
-                      <Clock className="w-4 h-4" style={{ color: history.application_statuses?.color || '#6B7280' }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <p className="text-sm font-semibold text-gray-900">
-                          {history.application_statuses?.name_ar || 'تحديث الحالة'}
-                        </p>
-                        <span className="text-xs text-gray-400 whitespace-nowrap">
-                          {new Date(history.created_at).toLocaleDateString('ar-SA', {
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </span>
-                      </div>
-                      {history.notes && (
-                        <p className="text-xs text-gray-600 mb-1">{history.notes}</p>
+                <div className="space-y-3">
+                  {statusHistory.map((history, index) => (
+                    <div key={history.id} className="relative">
+                      {index !== statusHistory.length - 1 && (
+                        <div className="absolute right-2 top-8 bottom-0 w-0.5 bg-gray-200"></div>
                       )}
-                      {history.staff_name && (
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <User className="w-3 h-3" />
-                          <span>الموظف: {history.staff_name}</span>
+
+                      <div className="flex items-start gap-3">
+                        <div
+                          className="w-4 h-4 rounded-full mt-1 relative z-10"
+                          style={{ backgroundColor: history.application_statuses?.color || '#6B7280' }}
+                        ></div>
+
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">
+                            {history.application_statuses?.name_ar}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {formatDate(history.created_at)}
+                          </p>
+                          {history.notes && (
+                            <p className="text-sm text-gray-600 mt-1">{history.notes}</p>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             {/* Quick Actions */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white rounded-lg shadow-sm p-6"
+              className="bg-white rounded-lg shadow-md p-6"
             >
               <h3 className="text-lg font-bold text-gray-900 mb-4">إجراءات سريعة</h3>
 
               <div className="space-y-2">
                 <button
                   onClick={() => setShowShippingModal(true)}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors group"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100"
                 >
-                  <div className="flex-shrink-0 w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                    <Package className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <span className="text-sm font-medium">إضافة شحنة</span>
+                  <Package className="w-5 h-5" />
+                  إضافة شحنة
                 </button>
 
                 <button
                   onClick={() => setShowInvoiceModal(true)}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors group"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100"
                 >
-                  <div className="flex-shrink-0 w-9 h-9 bg-emerald-50 rounded-lg flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
-                    <FileText className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <span className="text-sm font-medium">عرض الفاتورة</span>
-                </button>
-
-                <button
-                  onClick={handlePrint}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors group"
-                >
-                  <div className="flex-shrink-0 w-9 h-9 bg-gray-50 rounded-lg flex items-center justify-center group-hover:bg-gray-100 transition-colors">
-                    <Printer className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <span className="text-sm font-medium">طباعة التفاصيل</span>
+                  <FileText className="w-5 h-5" />
+                  عرض الفاتورة
                 </button>
               </div>
             </motion.div>

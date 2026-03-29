@@ -27,6 +27,8 @@ export default function ApplicationDetail() {
   const [activeTab, setActiveTab] = useState('applicant');
   const [showPriceEditor, setShowPriceEditor] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [availableStatuses, setAvailableStatuses] = useState([]);
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -69,6 +71,17 @@ export default function ApplicationDetail() {
         if (statusData) {
           setCurrentStatus(statusData);
         }
+      }
+
+      // Load all available statuses
+      const { data: statusesData } = await supabase
+        .from('application_statuses')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index');
+
+      if (statusesData) {
+        setAvailableStatuses(statusesData);
       }
 
       // Fetch service data separately if service_id exists
@@ -142,6 +155,45 @@ export default function ApplicationDetail() {
     });
   };
 
+  const handleStatusChange = async (newStatusId) => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const { data: staffData } = await supabase
+        .from('staff')
+        .select('id, full_name')
+        .eq('user_id', userData.user.id)
+        .maybeSingle();
+
+      // Update application status
+      const { error: updateError } = await supabase
+        .from('applications')
+        .update({ status_id: newStatusId })
+        .eq('id', id);
+
+      if (updateError) throw updateError;
+
+      // Log status change in history
+      const { error: historyError } = await supabase
+        .from('status_history')
+        .insert([{
+          application_id: id,
+          status_id: newStatusId,
+          changed_by: staffData?.id,
+          staff_name: staffData?.full_name,
+          notes: 'تم تغيير الحالة'
+        }]);
+
+      if (historyError) throw historyError;
+
+      // Reload data
+      await loadApplicationDetail();
+      setShowStatusDropdown(false);
+    } catch (error) {
+      console.error('Error changing status:', error);
+      alert('حدث خطأ أثناء تغيير الحالة');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -195,17 +247,71 @@ export default function ApplicationDetail() {
           {/* Status and Pricing Section */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 relative">
                 {currentStatus && (
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: currentStatus.color }}
-                    ></div>
-                    <span className="text-lg font-semibold text-gray-900">
-                      {currentStatus.name_ar}
-                    </span>
-                  </div>
+                  <>
+                    <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: currentStatus.color }}
+                      ></div>
+                      <span className="text-lg font-semibold text-gray-900">
+                        {currentStatus.name_ar}
+                      </span>
+                    </div>
+
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                        title="تغيير الحالة"
+                      >
+                        <Info className="w-5 h-5 text-gray-600" />
+                      </button>
+
+                      {showStatusDropdown && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-10"
+                            onClick={() => setShowStatusDropdown(false)}
+                          ></div>
+                          <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-20 max-h-96 overflow-y-auto">
+                            <div className="p-3 border-b border-gray-200">
+                              <p className="text-sm font-semibold text-gray-900">تغيير حالة الطلب</p>
+                            </div>
+                            <div className="p-2">
+                              {availableStatuses.map((status) => (
+                                <button
+                                  key={status.id}
+                                  onClick={() => handleStatusChange(status.id)}
+                                  disabled={status.id === currentStatus.id}
+                                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-right ${
+                                    status.id === currentStatus.id
+                                      ? 'bg-gray-50 cursor-not-allowed opacity-50'
+                                      : 'hover:bg-gray-50'
+                                  }`}
+                                >
+                                  <div
+                                    className="w-3 h-3 rounded-full flex-shrink-0"
+                                    style={{ backgroundColor: status.color }}
+                                  ></div>
+                                  <div className="flex-1">
+                                    <p className="font-medium text-gray-900">{status.name_ar}</p>
+                                    {status.description && (
+                                      <p className="text-xs text-gray-500 mt-0.5">{status.description}</p>
+                                    )}
+                                  </div>
+                                  {status.id === currentStatus.id && (
+                                    <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
 

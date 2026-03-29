@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { X, Plus, Trash2, Save, DollarSign } from 'lucide-react';
 
-export default function PriceEditor({ applicationId, isOpen, onClose, onSaved }) {
+export default function PriceEditor({ application, onClose, onUpdate }) {
+  const applicationId = application?.id;
   const [items, setItems] = useState([]);
   const [discount, setDiscount] = useState(0);
   const [tax, setTax] = useState(0);
@@ -13,10 +14,10 @@ export default function PriceEditor({ applicationId, isOpen, onClose, onSaved })
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isOpen && applicationId) {
+    if (applicationId) {
       loadPricingData();
     }
-  }, [isOpen, applicationId]);
+  }, [applicationId]);
 
   const loadPricingData = async () => {
     try {
@@ -192,7 +193,7 @@ export default function PriceEditor({ applicationId, isOpen, onClose, onSaved })
 
       if (itemsError) throw itemsError;
 
-      if (onSaved) onSaved();
+      if (onUpdate) onUpdate();
       onClose();
     } catch (err) {
       console.error('Error saving pricing:', err);
@@ -201,8 +202,6 @@ export default function PriceEditor({ applicationId, isOpen, onClose, onSaved })
       setSaving(false);
     }
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">

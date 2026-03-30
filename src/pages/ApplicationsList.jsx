@@ -35,7 +35,6 @@ export default function ApplicationsList() {
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [availableStatuses, setAvailableStatuses] = useState([]);
 
   // State for filters
   const [showFilters, setShowFilters] = useState(false);
@@ -67,7 +66,6 @@ export default function ApplicationsList() {
   useEffect(() => {
     loadMainServices();
     loadRegions();
-    loadStatuses();
   }, []);
 
   // Fetch applications when filters change
@@ -137,10 +135,7 @@ export default function ApplicationsList() {
       // Build query
       let query = supabase
         .from('applications')
-        .select(`
-          *,
-          status:application_statuses(id, name_ar, name_en, color, description)
-        `, { count: 'exact' });
+        .select('*', { count: 'exact' });
 
       // Apply search filter
       if (searchQuery) {
@@ -153,7 +148,7 @@ export default function ApplicationsList() {
 
       // Apply status filter
       if (statusFilter !== 'all') {
-        query = query.eq('status_id', statusFilter);
+        query = query.eq('status', statusFilter);
       }
 
       // Apply region filter
@@ -293,60 +288,22 @@ export default function ApplicationsList() {
     }
   };
 
-  // Load available statuses
-  const loadStatuses = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('application_statuses')
-        .select('*')
-        .eq('is_active', true)
-        .order('order_index');
-
-      if (error) throw error;
-      setAvailableStatuses(data || []);
-    } catch (error) {
-      console.error('Error loading statuses:', error);
-    }
-  };
-
   // Handle status change
-  const handleStatusChange = async (applicationId, newStatusId) => {
+  const handleStatusChange = async (applicationId, newStatus) => {
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      const { data: staffData } = await supabase
-        .from('staff')
-        .select('id, full_name')
-        .eq('user_id', userData.user.id)
-        .maybeSingle();
-
-      // Update application status
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from('applications')
         .update({
-          status_id: newStatusId,
+          status: newStatus,
           updated_at: new Date().toISOString()
         })
         .eq('id', applicationId);
 
-      if (updateError) throw updateError;
-
-      // Log status change in history
-      const { error: historyError } = await supabase
-        .from('status_history')
-        .insert([{
-          application_id: applicationId,
-          status_id: newStatusId,
-          changed_by: staffData?.id,
-          staff_name: staffData?.full_name,
-          notes: 'تم تغيير الحالة من قائمة الطلبات'
-        }]);
-
-      if (historyError) {
-        console.warn('Failed to log status change:', historyError);
-      }
+      if (error) throw error;
 
       // Refresh current page
       fetchApplications();
+      alert('تم تحديث حالة الطلب بنجاح');
     } catch (error) {
       console.error('Error updating status:', error);
       alert('حدث خطأ أثناء تحديث الحالة');
@@ -521,9 +478,9 @@ export default function ApplicationsList() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#276073] focus:border-transparent"
                     >
                       <option value="all">جميع الحالات</option>
-                      {availableStatuses.map((status) => (
-                        <option key={status.id} value={status.id}>
-                          {status.name_ar}
+                      {statuses.map((status) => (
+                        <option key={status.status_key} value={status.status_key}>
+                          {status.label_ar}
                         </option>
                       ))}
                     </select>
@@ -784,36 +741,18 @@ export default function ApplicationsList() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {formatDate(application.created_at)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap" dir="rtl">
-                          <div className="relative inline-block">
-                            <select
-                              value={application.status_id || ''}
-                              onChange={(e) => handleStatusChange(application.id, e.target.value)}
-                              className="appearance-none text-sm px-4 py-2 pr-10 rounded-lg font-semibold cursor-pointer border-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-1"
-                              style={{
-                                backgroundColor: application.status?.color ? `${application.status.color}15` : '#f3f4f6',
-                                borderColor: application.status?.color || '#d1d5db',
-                                color: application.status?.color || '#374151'
-                              }}
-                            >
-                              {application.status && (
-                                <option value={application.status_id}>
-                                  {application.status.name_ar}
-                                </option>
-                              )}
-                              {availableStatuses
-                                .filter(s => s.id !== application.status_id)
-                                .map((status) => (
-                                  <option key={status.id} value={status.id}>
-                                    {status.name_ar}
-                                  </option>
-                                ))
-                              }
-                            </select>
-                            <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                              <ChevronDown className="w-4 h-4" style={{ color: application.status?.color || '#6b7280' }} />
-                            </div>
-                          </div>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <select
+                            value={application.status}
+                            onChange={(e) => handleStatusChange(application.id, e.target.value)}
+                            className={`text-xs px-3 py-1 rounded-full font-semibold cursor-pointer ${getStatusColor(application.status)}`}
+                          >
+                            {statuses.map((status) => (
+                              <option key={status.status_key} value={status.status_key}>
+                                {status.label_ar}
+                              </option>
+                            ))}
+                          </select>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button

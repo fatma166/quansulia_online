@@ -124,16 +124,14 @@ export default function ApplicationDetail() {
       }
 
       // Load appointment if exists
-      if (appData.status === 'appointment_required' || appData.status === 'appointment_booked') {
-        const { data: appointmentData } = await supabase
-          .from('appointments')
-          .select('*')
-          .eq('application_id', id)
-          .maybeSingle();
+      const { data: appointmentData } = await supabase
+        .from('appointments')
+        .select('*')
+        .eq('application_id', id)
+        .maybeSingle();
 
-        if (appointmentData) {
-          setAppointment(appointmentData);
-        }
+      if (appointmentData) {
+        setAppointment(appointmentData);
       }
     } catch (error) {
       console.error('Error loading application:', error);
@@ -256,13 +254,6 @@ export default function ApplicationDetail() {
                   تعديل السعر
                 </button>
 
-                <button
-                  onClick={handlePrint}
-                  className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <Printer className="w-5 h-5" />
-                </button>
-
                 <div className="relative">
                   <button
                     onClick={() => setShowStatusDropdown(!showStatusDropdown)}
@@ -296,9 +287,9 @@ export default function ApplicationDetail() {
                             <button
                               key={status.id}
                               onClick={() => handleStatusChange(status.id)}
-                              disabled={status.id === currentStatus.id}
+                              disabled={status.id === currentStatus?.id}
                               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-right ${
-                                status.id === currentStatus.id
+                                status.id === currentStatus?.id
                                   ? 'bg-blue-50 cursor-not-allowed'
                                   : 'hover:bg-gray-50'
                               }`}
@@ -313,7 +304,7 @@ export default function ApplicationDetail() {
                                   <p className="text-xs text-gray-500 mt-0.5">{status.description}</p>
                                 )}
                               </div>
-                              {status.id === currentStatus.id && (
+                              {status.id === currentStatus?.id && (
                                 <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0" />
                               )}
                             </button>
@@ -323,6 +314,13 @@ export default function ApplicationDetail() {
                     </>
                   )}
                 </div>
+
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <Printer className="w-5 h-5" />
+                </button>
               </div>
             </div>
           </div>
@@ -373,54 +371,54 @@ export default function ApplicationDetail() {
                 <span className="bg-green-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
                   مؤكد
                 </span>
-            </div>
+              </div>
 
-            <div className="grid grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
-                  <Calendar className="w-4 h-4" />
-                  <p className="text-sm font-semibold">التاريخ الميلادي</p>
-                </div>
-                <p className="text-lg font-bold text-gray-900 mb-2">
-                  {new Date(appointment.appointment_date).toLocaleDateString('ar-SA', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                  }).replace('،', ', ')}
-                </p>
-                <div className="mt-3 pt-3 border-t border-green-200">
-                  <p className="text-xs text-gray-600 mb-1">التاريخ الهجري</p>
-                  <p className="text-sm font-semibold text-gray-800">
-                    {new Date(appointment.appointment_date).toLocaleDateString('ar-SA-u-ca-islamic', {
+              <div className="grid grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
+                    <Calendar className="w-5 h-5" />
+                    <p className="text-sm font-semibold">التاريخ الميلادي</p>
+                  </div>
+                  <p className="text-lg font-bold text-gray-900 mb-2">
+                    {new Date(appointment.appointment_date).toLocaleDateString('ar-SA', {
+                      weekday: 'long',
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric'
-                    })}
+                    }).replace('،', '')}
+                  </p>
+                  <div className="mt-3 pt-3 border-t border-green-200">
+                    <p className="text-xs text-gray-600 mb-1">التاريخ الهجري</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {new Date(appointment.appointment_date).toLocaleDateString('ar-SA-u-ca-islamic', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
+                    <Clock className="w-5 h-5" />
+                    <p className="text-sm font-semibold">الوقت</p>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {appointment.appointment_time || '09:00 - 09:30'}
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
+                    <MapPin className="w-5 h-5" />
+                    <p className="text-sm font-semibold">الموقع</p>
+                  </div>
+                  <p className="text-lg font-bold text-gray-900">
+                    القنصلية - منطقة الرياض
                   </p>
                 </div>
               </div>
-
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
-                  <Clock className="w-4 h-4" />
-                  <p className="text-sm font-semibold">الوقت</p>
-                </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {appointment.appointment_time || '09:00 - 09:30'}
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
-                  <MapPin className="w-4 h-4" />
-                  <p className="text-sm font-semibold">الموقع</p>
-                </div>
-                <p className="text-lg font-bold text-gray-900">
-                  القنصلية - منطقة الرياض
-                </p>
-              </div>
-            </div>
             </div>
           </div>
         )}

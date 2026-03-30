@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileText, User, Calendar, MapPin, Phone, Mail, Download, CreditCard as Edit, Trash2, CheckCircle, Clock, XCircle, AlertCircle, Package, Printer, MessageSquare, DollarSign, Info, Paperclip } from 'lucide-react';
+import { ArrowLeft, FileText, User, Calendar, MapPin, Phone, Mail, Download, CreditCard as Edit, Trash2, CheckCircle, Clock, XCircle, AlertCircle, Package, Printer, MessageSquare, DollarSign, Info, Paperclip, ChevronDown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import ProcessingStatus from '../components/ProcessingStatus';
@@ -154,6 +154,11 @@ export default function ApplicationDetail() {
   };
 
   const handleStatusChange = async (newStatusId) => {
+    if (!newStatusId) {
+      setShowStatusDropdown(false);
+      return;
+    }
+
     try {
       const { data: userData } = await supabase.auth.getUser();
       const { data: staffData } = await supabase
@@ -254,73 +259,89 @@ export default function ApplicationDetail() {
                   تعديل السعر
                 </button>
 
-                <div className="relative">
+                <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-                    className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                    title="تغيير الحالة"
+                    onClick={handlePrint}
+                    className="flex items-center justify-center w-10 h-10 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    {currentStatus && (
-                      <>
-                        <div
-                          className="w-2.5 h-2.5 rounded-full"
-                          style={{ backgroundColor: currentStatus.color }}
-                        ></div>
-                        <span className="font-medium text-gray-900">{currentStatus.name_ar}</span>
-                      </>
-                    )}
-                    <Info className="w-4 h-4 text-gray-500" />
+                    <Printer className="w-5 h-5" />
                   </button>
 
-                  {showStatusDropdown && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-10"
-                        onClick={() => setShowStatusDropdown(false)}
-                      ></div>
-                      <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-y-auto">
-                        <div className="p-4 border-b border-gray-200">
-                          <p className="text-sm font-bold text-gray-900">تغيير حالة الطلب</p>
-                        </div>
-                        <div className="p-2">
-                          {availableStatuses.map((status) => (
-                            <button
-                              key={status.id}
-                              onClick={() => handleStatusChange(status.id)}
-                              disabled={status.id === currentStatus?.id}
-                              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-right ${
-                                status.id === currentStatus?.id
-                                  ? 'bg-blue-50 cursor-not-allowed'
-                                  : 'hover:bg-gray-50'
-                              }`}
-                            >
-                              <div
-                                className="w-3 h-3 rounded-full flex-shrink-0"
-                                style={{ backgroundColor: status.color }}
-                              ></div>
-                              <div className="flex-1">
-                                <p className="font-medium text-gray-900">{status.name_ar}</p>
-                                {status.description && (
-                                  <p className="text-xs text-gray-500 mt-0.5">{status.description}</p>
-                                )}
-                              </div>
-                              {status.id === currentStatus?.id && (
-                                <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
+                  <div className="relative flex items-center gap-2">
+                    <span className="text-gray-900 font-medium">
+                      {currentStatus?.name_ar || 'يتطلب حجز موعد'}
+                    </span>
 
-                <button
-                  onClick={handlePrint}
-                  className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <Printer className="w-5 h-5" />
-                </button>
+                    <button
+                      onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                      className="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                      title="تغيير الحالة"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+
+                    {showStatusDropdown && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-10"
+                          onClick={() => setShowStatusDropdown(false)}
+                        ></div>
+                        <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-y-auto">
+                          <div className="p-3 flex items-center justify-between border-b border-gray-200">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => setShowStatusDropdown(false)}
+                                className="flex items-center justify-center w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors"
+                                title="إلغاء"
+                              >
+                                <XCircle className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  // Get the currently selected status from the state
+                                  if (currentStatus?.id) {
+                                    handleStatusChange(currentStatus.id);
+                                  }
+                                }}
+                                className="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                                title="حفظ التغييرات"
+                              >
+                                <CheckCircle className="w-4 h-4" />
+                              </button>
+                            </div>
+
+                            <div className="flex-1 mx-3">
+                              <select
+                                value={currentStatus?.id || ''}
+                                onChange={(e) => {
+                                  const newStatusId = e.target.value;
+                                  const newStatus = availableStatuses.find(s => s.id === newStatusId);
+                                  if (newStatus) {
+                                    setCurrentStatus(newStatus);
+                                  }
+                                }}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-center font-medium"
+                              >
+                                {availableStatuses.map((status) => (
+                                  <option key={status.id} value={status.id}>
+                                    {status.name_ar}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            <button
+                              onClick={() => setShowStatusDropdown(false)}
+                              className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                              <ChevronDown className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

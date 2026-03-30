@@ -153,7 +153,7 @@ export default function ApplicationsList() {
 
       // Apply status filter
       if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
+        query = query.eq('status_id', statusFilter);
       }
 
       // Apply region filter
@@ -521,9 +521,9 @@ export default function ApplicationsList() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#276073] focus:border-transparent"
                     >
                       <option value="all">جميع الحالات</option>
-                      {statuses.map((status) => (
-                        <option key={status.status_key} value={status.status_key}>
-                          {status.label_ar}
+                      {availableStatuses.map((status) => (
+                        <option key={status.id} value={status.id}>
+                          {status.name_ar}
                         </option>
                       ))}
                     </select>

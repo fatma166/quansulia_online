@@ -32,6 +32,7 @@ export default function ApplicationDetail() {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showAddActivityModal, setShowAddActivityModal] = useState(false);
   const [activityNote, setActivityNote] = useState('');
+  const [activityType, setActivityType] = useState('');
 
   useEffect(() => {
     if (id) {
@@ -202,7 +203,7 @@ export default function ApplicationDetail() {
 
   const handleAddActivity = async () => {
     if (!activityNote.trim()) {
-      alert('الرجاء إدخال ملاحظة النشاط');
+      alert('الرجاء إدخال وصف النشاط');
       return;
     }
 
@@ -214,6 +215,21 @@ export default function ApplicationDetail() {
         .eq('user_id', userData.user.id)
         .maybeSingle();
 
+      // Build the note with activity type
+      let noteText = activityNote;
+      if (activityType && activityType !== '') {
+        const typeLabels = {
+          'status_change': 'تغيير الحالة',
+          'rejected': 'رفض مستند',
+          'note': 'ملاحظة',
+          'call': 'مكالمة هاتفية',
+          'email': 'بريد إلكتروني',
+          'appointment': 'موعد'
+        };
+        const typeLabel = typeLabels[activityType] || activityType;
+        noteText = `${typeLabel}: ${activityNote}`;
+      }
+
       // Add activity to status history
       const { error } = await supabase
         .from('status_history')
@@ -222,13 +238,14 @@ export default function ApplicationDetail() {
           status_id: currentStatus?.id,
           changed_by: staffData?.id,
           staff_name: staffData?.full_name,
-          notes: activityNote
+          notes: noteText
         }]);
 
       if (error) throw error;
 
       alert('تم إضافة النشاط بنجاح');
       setActivityNote('');
+      setActivityType('');
       setShowAddActivityModal(false);
       await loadApplicationDetail();
     } catch (error) {
@@ -723,53 +740,106 @@ export default function ApplicationDetail() {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                  <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
+                    <MessageSquare className="w-4 h-4 text-white" />
+                  </div>
                   سجل الأنشطة
                 </h3>
                 <button
                   onClick={() => setShowAddActivityModal(true)}
-                  className="px-3 py-1 bg-blue-50 text-blue-600 text-sm rounded-lg hover:bg-blue-100 font-semibold"
+                  className="px-4 py-2 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700 font-semibold transition-colors"
                 >
                   إضافة نشاط
                 </button>
               </div>
 
               {statusHistory.length > 0 ? (
-                <div className="space-y-4">
-                  {statusHistory.map((history, index) => (
-                    <div key={history.id} className="relative">
-                      {index !== statusHistory.length - 1 && (
-                        <div className="absolute right-2 top-10 bottom-0 w-0.5 bg-gray-200"></div>
-                      )}
+                <div className="space-y-3">
+                  {statusHistory.map((history, index) => {
+                    const statusInfo = history.application_statuses;
+                    const isStatusChange = statusInfo?.name_ar;
 
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="w-5 h-5 rounded-full mt-1 relative z-10 flex-shrink-0"
-                          style={{ backgroundColor: history.application_statuses?.color || '#6B7280' }}
-                        ></div>
+                    // Determine activity type and styling
+                    let activityLabel = 'نشاط';
+                    let activityColor = 'yellow';
+                    let bgColor = 'bg-yellow-50';
+                    let borderColor = 'border-yellow-200';
+                    let icon = <FileText className="w-5 h-5" />;
 
-                        <div className="flex-1 bg-green-50 rounded-lg p-3">
-                          <p className="font-semibold text-gray-900 mb-1">
-                            {history.application_statuses?.name_ar || 'تم تقديم الطلب'}
-                          </p>
-                          <p className="text-sm text-gray-600 mb-2">
-                            {history.notes || 'تم تقديم الطلب بنجاح ويتم مراجعته حالياً'}
-                          </p>
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <Clock className="w-3 h-3" />
-                            <span>{formatDate(history.created_at)}</span>
+                    if (isStatusChange) {
+                      if (statusInfo.name_ar.includes('موعد') || statusInfo.name_ar.includes('حجز')) {
+                        activityLabel = 'موعد';
+                        activityColor = 'yellow';
+                        bgColor = 'bg-yellow-50';
+                        borderColor = 'border-yellow-200';
+                        icon = <Calendar className="w-5 h-5" />;
+                      } else if (statusInfo.name_ar.includes('تغيير') || statusInfo.name_ar.includes('تحديث')) {
+                        activityLabel = 'تغيير الحالة';
+                        activityColor = 'green';
+                        bgColor = 'bg-green-50';
+                        borderColor = 'border-green-200';
+                        icon = <CheckCircle className="w-5 h-5" />;
+                      } else if (statusInfo.name_ar.includes('مرفوض') || statusInfo.name_ar.includes('رفض')) {
+                        activityLabel = 'رفض مستند';
+                        activityColor = 'red';
+                        bgColor = 'bg-red-50';
+                        borderColor = 'border-red-200';
+                        icon = <XCircle className="w-5 h-5" />;
+                      } else if (statusInfo.name_ar.includes('تقديم') || statusInfo.name_ar.includes('جديد')) {
+                        activityLabel = 'تقديم الطلب';
+                        activityColor = 'blue';
+                        bgColor = 'bg-blue-50';
+                        borderColor = 'border-blue-200';
+                        icon = <FileText className="w-5 h-5" />;
+                      } else {
+                        activityLabel = statusInfo.name_ar;
+                        bgColor = 'bg-gray-50';
+                        borderColor = 'border-gray-200';
+                      }
+                    }
+
+                    return (
+                      <div key={history.id} className={`${bgColor} ${borderColor} border rounded-xl p-4`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-10 h-10 bg-white rounded-lg flex items-center justify-center text-${activityColor}-600 border ${borderColor}`}>
+                              {icon}
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-gray-900">{activityLabel}</h4>
+                              <p className="text-sm text-gray-600">
+                                {history.notes || (statusInfo?.name_ar ? `تم ${statusInfo.name_ar}` : 'نشاط جديد')}
+                              </p>
+                            </div>
+                          </div>
+                          {statusInfo && (
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-3 h-3 rounded-full"
+                                style={{ backgroundColor: statusInfo.color || '#10B981' }}
+                              ></div>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-200">
+                          <div className="flex items-center gap-3">
                             {history.staff_name && (
-                              <>
-                                <span>•</span>
+                              <div className="flex items-center gap-1">
                                 <User className="w-3 h-3" />
                                 <span>{history.staff_name}</span>
-                              </>
+                              </div>
                             )}
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{formatDate(history.created_at)}</span>
+                            </div>
                           </div>
+                          <span className="text-gray-400">النظام</span>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -816,41 +886,60 @@ export default function ApplicationDetail() {
 
       {showAddActivityModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900">إضافة نشاط جديد</h3>
-            </div>
+          <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-2xl w-full max-w-lg border border-blue-100">
+            <div className="p-6 space-y-5">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-white" />
+                  </div>
+                  سجل الأنشطة
+                </h3>
+              </div>
 
-            <div className="p-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                ملاحظات النشاط
-              </label>
-              <textarea
-                value={activityNote}
-                onChange={(e) => setActivityNote(e.target.value)}
-                rows={5}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="اكتب ملاحظات النشاط هنا..."
-              />
-            </div>
+              <div className="space-y-3">
+                <select
+                  value={activityType}
+                  onChange={(e) => setActivityType(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 font-medium text-right"
+                >
+                  <option value="">اختر نوع النشاط</option>
+                  <option value="status_change">تغيير الحالة</option>
+                  <option value="rejected">رفض مستند</option>
+                  <option value="note">ملاحظة</option>
+                  <option value="call">مكالمة هاتفية</option>
+                  <option value="email">بريد إلكتروني</option>
+                  <option value="appointment">موعد</option>
+                </select>
 
-            <div className="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowAddActivityModal(false);
-                  setActivityNote('');
-                }}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold"
-              >
-                إلغاء
-              </button>
-              <button
-                onClick={handleAddActivity}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center gap-2"
-              >
-                <CheckCircle className="w-5 h-5" />
-                إضافة النشاط
-              </button>
+                <textarea
+                  value={activityNote}
+                  onChange={(e) => setActivityNote(e.target.value)}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right"
+                  placeholder="وصف النشاط..."
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    setShowAddActivityModal(false);
+                    setActivityNote('');
+                    setActivityType('');
+                  }}
+                  className="flex-1 px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg font-bold transition-colors"
+                >
+                  إلغاء
+                </button>
+                <button
+                  onClick={handleAddActivity}
+                  disabled={!activityNote.trim()}
+                  className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg font-bold transition-colors"
+                >
+                  حفظ
+                </button>
+              </div>
             </div>
           </div>
         </div>

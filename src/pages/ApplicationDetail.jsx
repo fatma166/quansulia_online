@@ -30,6 +30,8 @@ export default function ApplicationDetail() {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [availableStatuses, setAvailableStatuses] = useState([]);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const [showAddActivityModal, setShowAddActivityModal] = useState(false);
+  const [activityNote, setActivityNote] = useState('');
 
   useEffect(() => {
     if (id) {
@@ -195,6 +197,43 @@ export default function ApplicationDetail() {
     } catch (error) {
       console.error('Error changing status:', error);
       alert('حدث خطأ أثناء تغيير الحالة');
+    }
+  };
+
+  const handleAddActivity = async () => {
+    if (!activityNote.trim()) {
+      alert('الرجاء إدخال ملاحظة النشاط');
+      return;
+    }
+
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const { data: staffData } = await supabase
+        .from('staff')
+        .select('id, full_name')
+        .eq('user_id', userData.user.id)
+        .maybeSingle();
+
+      // Add activity to status history
+      const { error } = await supabase
+        .from('status_history')
+        .insert([{
+          application_id: id,
+          status_id: currentStatus?.id,
+          changed_by: staffData?.id,
+          staff_name: staffData?.full_name,
+          notes: activityNote
+        }]);
+
+      if (error) throw error;
+
+      alert('تم إضافة النشاط بنجاح');
+      setActivityNote('');
+      setShowAddActivityModal(false);
+      await loadApplicationDetail();
+    } catch (error) {
+      console.error('Error adding activity:', error);
+      alert('حدث خطأ أثناء إضافة النشاط');
     }
   };
 
@@ -687,7 +726,10 @@ export default function ApplicationDetail() {
                   <MessageSquare className="w-5 h-5 text-blue-600" />
                   سجل الأنشطة
                 </h3>
-                <button className="px-3 py-1 bg-blue-50 text-blue-600 text-sm rounded-lg hover:bg-blue-100 font-semibold">
+                <button
+                  onClick={() => setShowAddActivityModal(true)}
+                  className="px-3 py-1 bg-blue-50 text-blue-600 text-sm rounded-lg hover:bg-blue-100 font-semibold"
+                >
                   إضافة نشاط
                 </button>
               </div>
@@ -770,6 +812,48 @@ export default function ApplicationDetail() {
           onClose={() => setShowPriceEditor(false)}
           onUpdate={loadApplicationDetail}
         />
+      )}
+
+      {showAddActivityModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-xl font-bold text-gray-900">إضافة نشاط جديد</h3>
+            </div>
+
+            <div className="p-6">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                ملاحظات النشاط
+              </label>
+              <textarea
+                value={activityNote}
+                onChange={(e) => setActivityNote(e.target.value)}
+                rows={5}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="اكتب ملاحظات النشاط هنا..."
+              />
+            </div>
+
+            <div className="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowAddActivityModal(false);
+                  setActivityNote('');
+                }}
+                className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold"
+              >
+                إلغاء
+              </button>
+              <button
+                onClick={handleAddActivity}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center gap-2"
+              >
+                <CheckCircle className="w-5 h-5" />
+                إضافة النشاط
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

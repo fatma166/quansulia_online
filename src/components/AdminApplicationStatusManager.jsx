@@ -1,114 +1,99 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Clock, AlertTriangle, DollarSign, Calendar, Package, Truck, FileText, MapPin, Search } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { useStatuses } from '../hooks/useStatuses';
 
 const AdminApplicationStatusManager = ({ application, onUpdate }) => {
-  const [selectedStatus, setSelectedStatus] = useState(application.status);
+  const [selectedStatusId, setSelectedStatusId] = useState(application.status_id);
+  const [currentStatus, setCurrentStatus] = useState(null);
+  const [availableStatuses, setAvailableStatuses] = useState([]);
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showRejectionForm, setShowRejectionForm] = useState(false);
-  const [rejectionData, setRejectionData] = useState({
-    reason: '',
-    required_documents: '',
-    can_resubmit: true
-  });
+  const [statusesLoading, setStatusesLoading] = useState(true);
 
-  const { statuses, getStatusByKey, loading: statusesLoading } = useStatuses();
+  useEffect(() => {
+    loadStatuses();
+  }, [application.status_id]);
 
-  const iconMap = {
-    FileText, Search, CheckCircle, DollarSign, Calendar,
-    Clock, MapPin, XCircle, AlertTriangle, Package, Truck
-  };
+  const loadStatuses = async () => {
+    try {
+      setStatusesLoading(true);
 
-  const colorMap = {
-    blue: 'bg-blue-100 text-blue-800',
-    yellow: 'bg-yellow-100 text-yellow-800',
-    green: 'bg-green-100 text-green-800',
-    orange: 'bg-orange-100 text-orange-800',
-    purple: 'bg-purple-100 text-purple-800',
-    indigo: 'bg-indigo-100 text-indigo-800',
-    red: 'bg-red-100 text-red-800',
-    gray: 'bg-gray-100 text-gray-800'
-  };
+      // Load current status
+      if (application.status_id) {
+        const { data: statusData } = await supabase
+          .from('application_statuses')
+          .select('*')
+          .eq('id', application.status_id)
+          .maybeSingle();
 
-  const getCurrentStatusOption = () => {
-    const status = getStatusByKey(selectedStatus);
-    if (!status) return null;
+        if (statusData) {
+          setCurrentStatus(statusData);
+        }
+      }
 
-    const colorClass = status.color.split(' ')[0].replace('bg-', '').replace('-100', '');
-    return {
-      value: status.status_key,
-      label: status.label_ar,
-      icon: iconMap[status.icon] || FileText,
-      color: colorClass
-    };
+      // Load all available statuses
+      const { data: statusesData } = await supabase
+        .from('application_statuses')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index');
+
+      if (statusesData) {
+        setAvailableStatuses(statusesData);
+      }
+    } catch (error) {
+      console.error('Error loading statuses:', error);
+    } finally {
+      setStatusesLoading(false);
+    }
   };
 
   const handleStatusUpdate = async () => {
-    if (selectedStatus === application.status && !notes) {
+    if (!selectedStatusId || selectedStatusId === application.status_id) {
       alert('لم يتم تغيير الحالة');
-      return;
-    }
-
-    if (selectedStatus === 'rejected' && !showRejectionForm) {
-      setShowRejectionForm(true);
-      return;
-    }
-
-    if (selectedStatus === 'rejected' && !rejectionData.reason) {
-      alert('يرجى إدخال سبب الرفض');
       return;
     }
 
     setLoading(true);
 
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      const { data: staffData } = await supabase
+        .from('staff')
+        .select('id, full_name')
+        .eq('user_id', userData.user.id)
+        .maybeSingle();
+
+      // Update application status
       const { error: updateError } = await supabase
         .from('applications')
-        .update({ status: selectedStatus })
+        .update({ status_id: selectedStatusId })
         .eq('id', application.id);
 
       if (updateError) throw updateError;
 
-      const statusOption = getCurrentStatusOption();
-      const statusLabel = statusOption ? statusOption.label : selectedStatus;
+      // Get new status name
+      const newStatus = availableStatuses.find(s => s.id === selectedStatusId);
+      const statusLabel = newStatus ? newStatus.name_ar : 'حالة جديدة';
 
+      // Log status change in history
       const { error: historyError } = await supabase
         .from('status_history')
         .insert({
           application_id: application.id,
-          old_status: application.status,
-          new_status: selectedStatus,
+          status_id: selectedStatusId,
+          changed_by: staffData?.id,
+          staff_name: staffData?.full_name,
           notes: notes || `تم تحديث الحالة إلى: ${statusLabel}`
         });
 
       if (historyError) throw historyError;
-
-      if (selectedStatus === 'rejected') {
-        const requiredDocs = rejectionData.required_documents
-          .split('\n')
-          .filter(doc => doc.trim() !== '');
-
-        const { error: rejectionError } = await supabase
-          .from('rejection_details')
-          .insert({
-            application_id: application.id,
-            reason: rejectionData.reason,
-            required_documents: requiredDocs,
-            can_resubmit: rejectionData.can_resubmit
-          });
-
-        if (rejectionError) throw rejectionError;
-      }
 
       alert('تم تحديث حالة الطلب بنجاح');
       if (onUpdate) {
         onUpdate();
       }
       setNotes('');
-      setShowRejectionForm(false);
-      setRejectionData({ reason: '', required_documents: '', can_resubmit: true });
     } catch (err) {
       console.error('Error updating status:', err);
       alert('حدث خطأ في تحديث الحالة');
@@ -130,49 +115,44 @@ const AdminApplicationStatusManager = ({ application, onUpdate }) => {
     );
   }
 
-  const currentOption = getCurrentStatusOption();
-
-  // إذا لم يتم العثور على الحالة، استخدم القيم الافتراضية
-  if (!currentOption) {
-    return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">إدارة حالة الطلب</h3>
-        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-yellow-800">لا يمكن تحميل بيانات الحالة. يرجى تحديث الصفحة.</p>
-          <p className="text-sm text-yellow-700 mt-2">الحالة الحالية: {selectedStatus}</p>
-        </div>
-      </div>
-    );
-  }
-
-  const StatusIcon = currentOption.icon;
-
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 className="text-lg font-bold text-gray-900 mb-4">إدارة حالة الطلب</h3>
 
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">الحالة الحالية</label>
-          <div className={`flex items-center space-x-3 rtl:space-x-reverse p-3 rounded-lg bg-${currentOption.color}-50 border border-${currentOption.color}-200`}>
-            <StatusIcon className={`w-5 h-5 text-${currentOption.color}-600`} />
-            <span className={`font-semibold text-${currentOption.color}-800`}>{currentOption.label}</span>
+        {currentStatus ? (
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">الحالة الحالية</label>
+            <div
+              className="flex items-center gap-3 p-3 rounded-lg border"
+              style={{
+                backgroundColor: currentStatus.color + '15',
+                borderColor: currentStatus.color
+              }}
+            >
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: currentStatus.color }}
+              ></div>
+              <span className="font-semibold text-gray-900">{currentStatus.name_ar}</span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800 text-sm">لا يمكن تحميل بيانات الحالة. يرجى تحديث الصفحة.</p>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">تغيير الحالة إلى</label>
           <select
-            value={selectedStatus}
-            onChange={(e) => {
-              setSelectedStatus(e.target.value);
-              setShowRejectionForm(e.target.value === 'rejected');
-            }}
+            value={selectedStatusId || ''}
+            onChange={(e) => setSelectedStatusId(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent"
           >
-            {statuses.map((status) => (
-              <option key={status.status_key} value={status.status_key}>
-                {status.label_ar}
+            {availableStatuses.map((status) => (
+              <option key={status.id} value={status.id}>
+                {status.name_ar}
               </option>
             ))}
           </select>
@@ -189,55 +169,10 @@ const AdminApplicationStatusManager = ({ application, onUpdate }) => {
           />
         </div>
 
-        {showRejectionForm && selectedStatus === 'rejected' && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg space-y-3">
-            <h4 className="font-semibold text-red-800 flex items-center space-x-2 rtl:space-x-reverse">
-              <AlertTriangle className="w-5 h-5" />
-              <span>تفاصيل الرفض</span>
-            </h4>
-
-            <div>
-              <label className="block text-sm font-semibold text-red-700 mb-2">سبب الرفض *</label>
-              <textarea
-                value={rejectionData.reason}
-                onChange={(e) => setRejectionData({ ...rejectionData, reason: e.target.value })}
-                rows={3}
-                className="w-full px-4 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent"
-                placeholder="اشرح سبب رفض الطلب بالتفصيل..."
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-red-700 mb-2">المستندات المطلوبة (كل مستند في سطر)</label>
-              <textarea
-                value={rejectionData.required_documents}
-                onChange={(e) => setRejectionData({ ...rejectionData, required_documents: e.target.value })}
-                rows={4}
-                className="w-full px-4 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-transparent"
-                placeholder="نسخة من الهوية الوطنية&#10;صورة شخصية حديثة&#10;شهادة الميلاد"
-              />
-            </div>
-
-            <div className="flex items-center space-x-2 rtl:space-x-reverse">
-              <input
-                type="checkbox"
-                id="can_resubmit"
-                checked={rejectionData.can_resubmit}
-                onChange={(e) => setRejectionData({ ...rejectionData, can_resubmit: e.target.checked })}
-                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-600"
-              />
-              <label htmlFor="can_resubmit" className="text-sm text-red-700">
-                السماح بإعادة تقديم الطلب
-              </label>
-            </div>
-          </div>
-        )}
-
         <button
           onClick={handleStatusUpdate}
-          disabled={loading || selectedStatus === application.status}
-          className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-semibold transition-colors disabled:cursor-not-allowed flex items-center justify-center space-x-2 rtl:space-x-reverse"
+          disabled={loading || selectedStatusId === application.status_id}
+          className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-semibold transition-colors disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
             <>

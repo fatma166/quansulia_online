@@ -231,17 +231,26 @@ export default function ApplicationDetail() {
       }
 
       // Add activity to status history
+      // We need to ensure status_id is valid
+      if (!currentStatus?.id) {
+        alert('لا يمكن إضافة النشاط: الحالة الحالية غير محددة');
+        return;
+      }
+
       const { error } = await supabase
         .from('status_history')
         .insert([{
           application_id: id,
-          status_id: currentStatus?.id,
+          status_id: currentStatus.id,
           changed_by: staffData?.id,
           staff_name: staffData?.full_name,
           notes: noteText
         }]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error details:', error);
+        throw error;
+      }
 
       alert('تم إضافة النشاط بنجاح');
       setActivityNote('');
@@ -737,7 +746,7 @@ export default function ApplicationDetail() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Status History */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-white rounded-lg shadow-sm p-6 relative">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                   <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
@@ -746,12 +755,61 @@ export default function ApplicationDetail() {
                   سجل الأنشطة
                 </h3>
                 <button
-                  onClick={() => setShowAddActivityModal(true)}
+                  onClick={() => setShowAddActivityModal(!showAddActivityModal)}
                   className="px-4 py-2 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700 font-semibold transition-colors"
                 >
                   إضافة نشاط
                 </button>
               </div>
+
+              {/* Add Activity Dropdown */}
+              {showAddActivityModal && (
+                <div className="mb-4 bg-gradient-to-br from-blue-50 to-white rounded-xl border border-blue-200 p-5 shadow-lg">
+                  <div className="space-y-3">
+                    <select
+                      value={activityType}
+                      onChange={(e) => setActivityType(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 font-medium text-right"
+                    >
+                      <option value="">اختر نوع النشاط</option>
+                      <option value="status_change">تغيير الحالة</option>
+                      <option value="rejected">رفض مستند</option>
+                      <option value="note">ملاحظة</option>
+                      <option value="call">مكالمة هاتفية</option>
+                      <option value="email">بريد إلكتروني</option>
+                      <option value="appointment">موعد</option>
+                    </select>
+
+                    <textarea
+                      value={activityNote}
+                      onChange={(e) => setActivityNote(e.target.value)}
+                      rows={3}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right"
+                      placeholder="وصف النشاط..."
+                    />
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => {
+                          setShowAddActivityModal(false);
+                          setActivityNote('');
+                          setActivityType('');
+                        }}
+                        className="flex-1 px-4 py-2.5 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg font-bold transition-colors"
+                      >
+                        إلغاء
+                      </button>
+                      <button
+                        onClick={handleAddActivity}
+                        disabled={!activityNote.trim()}
+                        className="flex-1 px-4 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg font-bold transition-colors"
+                      >
+                        حفظ
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {statusHistory.length > 0 ? (
                 <div className="space-y-3">
@@ -882,67 +940,6 @@ export default function ApplicationDetail() {
           onClose={() => setShowPriceEditor(false)}
           onUpdate={loadApplicationDetail}
         />
-      )}
-
-      {showAddActivityModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-2xl w-full max-w-lg border border-blue-100">
-            <div className="p-6 space-y-5">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <MessageSquare className="w-5 h-5 text-white" />
-                  </div>
-                  سجل الأنشطة
-                </h3>
-              </div>
-
-              <div className="space-y-3">
-                <select
-                  value={activityType}
-                  onChange={(e) => setActivityType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 font-medium text-right"
-                >
-                  <option value="">اختر نوع النشاط</option>
-                  <option value="status_change">تغيير الحالة</option>
-                  <option value="rejected">رفض مستند</option>
-                  <option value="note">ملاحظة</option>
-                  <option value="call">مكالمة هاتفية</option>
-                  <option value="email">بريد إلكتروني</option>
-                  <option value="appointment">موعد</option>
-                </select>
-
-                <textarea
-                  value={activityNote}
-                  onChange={(e) => setActivityNote(e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right"
-                  placeholder="وصف النشاط..."
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    setShowAddActivityModal(false);
-                    setActivityNote('');
-                    setActivityType('');
-                  }}
-                  className="flex-1 px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg font-bold transition-colors"
-                >
-                  إلغاء
-                </button>
-                <button
-                  onClick={handleAddActivity}
-                  disabled={!activityNote.trim()}
-                  className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg font-bold transition-colors"
-                >
-                  حفظ
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );

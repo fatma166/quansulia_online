@@ -32,13 +32,18 @@ const AdminApplicationStatusManager = ({ application, onUpdate }) => {
       }
 
       // Load all available statuses
-      const { data: statusesData } = await supabase
+      const { data: statusesData, error: statusesError } = await supabase
         .from('application_statuses')
         .select('*')
         .eq('is_active', true)
         .order('order_index');
 
+      if (statusesError) {
+        console.error('Error loading statuses:', statusesError);
+      }
+
       if (statusesData) {
+        console.log('Loaded statuses:', statusesData);
         setAvailableStatuses(statusesData);
       }
     } catch (error) {
@@ -150,12 +155,19 @@ const AdminApplicationStatusManager = ({ application, onUpdate }) => {
             onChange={(e) => setSelectedStatusId(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent"
           >
-            {availableStatuses.map((status) => (
-              <option key={status.id} value={status.id}>
-                {status.name_ar}
-              </option>
-            ))}
+            {availableStatuses.length === 0 ? (
+              <option value="">لا توجد حالات متاحة</option>
+            ) : (
+              availableStatuses.map((status) => (
+                <option key={status.id} value={status.id}>
+                  {status.name_ar}
+                </option>
+              ))
+            )}
           </select>
+          {availableStatuses.length === 0 && (
+            <p className="text-xs text-red-600 mt-1">لم يتم العثور على حالات. يرجى التحقق من قاعدة البيانات.</p>
+          )}
         </div>
 
         <div>

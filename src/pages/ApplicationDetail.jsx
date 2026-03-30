@@ -220,135 +220,140 @@ export default function ApplicationDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-6">
+        {/* Top Navigation Bar */}
+        <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate('/admin/applications')}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 ml-2" />
-            العودة
+            <span className="font-medium">العودة</span>
+            <ArrowLeft className="w-5 h-5 rotate-180" />
           </button>
+        </div>
 
-          {/* Title and Reference Number */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {service?.name_ar || application.service_title || 'تفاصيل الطلب'}
-              </h1>
-              <p className="text-lg text-gray-600">
-                رقم المعاملة: <span className="font-semibold">{application.reference_number || application.id?.slice(0, 8)}</span>
-              </p>
+        {/* Main Content Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
+          {/* Title and Actions Section */}
+          <div className="px-8 py-6 border-b border-gray-200">
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                  {service?.name_ar || application.service_title || 'جوازات السفر'}
+                </h1>
+                <p className="text-gray-500 text-lg">
+                  رقم المعاملة: <span className="font-bold text-gray-900">{application.reference_number || application.id?.slice(0, 8)}</span>
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowPriceEditor(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                >
+                  <DollarSign className="w-5 h-5" />
+                  تعديل السعر
+                </button>
+
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <Printer className="w-5 h-5" />
+                </button>
+
+                <div className="relative">
+                  <button
+                    onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                    className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    title="تغيير الحالة"
+                  >
+                    {currentStatus && (
+                      <>
+                        <div
+                          className="w-2.5 h-2.5 rounded-full"
+                          style={{ backgroundColor: currentStatus.color }}
+                        ></div>
+                        <span className="font-medium text-gray-900">{currentStatus.name_ar}</span>
+                      </>
+                    )}
+                    <Info className="w-4 h-4 text-gray-500" />
+                  </button>
+
+                  {showStatusDropdown && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowStatusDropdown(false)}
+                      ></div>
+                      <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-y-auto">
+                        <div className="p-4 border-b border-gray-200">
+                          <p className="text-sm font-bold text-gray-900">تغيير حالة الطلب</p>
+                        </div>
+                        <div className="p-2">
+                          {availableStatuses.map((status) => (
+                            <button
+                              key={status.id}
+                              onClick={() => handleStatusChange(status.id)}
+                              disabled={status.id === currentStatus.id}
+                              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-right ${
+                                status.id === currentStatus.id
+                                  ? 'bg-blue-50 cursor-not-allowed'
+                                  : 'hover:bg-gray-50'
+                              }`}
+                            >
+                              <div
+                                className="w-3 h-3 rounded-full flex-shrink-0"
+                                style={{ backgroundColor: status.color }}
+                              ></div>
+                              <div className="flex-1">
+                                <p className="font-medium text-gray-900">{status.name_ar}</p>
+                                {status.description && (
+                                  <p className="text-xs text-gray-500 mt-0.5">{status.description}</p>
+                                )}
+                              </div>
+                              {status.id === currentStatus.id && (
+                                <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Status and Pricing Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3 relative">
-                {currentStatus && (
-                  <>
-                    <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: currentStatus.color }}
-                      ></div>
-                      <span className="text-lg font-semibold text-gray-900">
-                        {currentStatus.name_ar}
-                      </span>
-                    </div>
-
-                    <div className="relative">
-                      <button
-                        onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
-                        title="تغيير الحالة"
-                      >
-                        <Info className="w-5 h-5 text-gray-600" />
-                      </button>
-
-                      {showStatusDropdown && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-10"
-                            onClick={() => setShowStatusDropdown(false)}
-                          ></div>
-                          <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-20 max-h-96 overflow-y-auto">
-                            <div className="p-3 border-b border-gray-200">
-                              <p className="text-sm font-semibold text-gray-900">تغيير حالة الطلب</p>
-                            </div>
-                            <div className="p-2">
-                              {availableStatuses.map((status) => (
-                                <button
-                                  key={status.id}
-                                  onClick={() => handleStatusChange(status.id)}
-                                  disabled={status.id === currentStatus.id}
-                                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-right ${
-                                    status.id === currentStatus.id
-                                      ? 'bg-gray-50 cursor-not-allowed opacity-50'
-                                      : 'hover:bg-gray-50'
-                                  }`}
-                                >
-                                  <div
-                                    className="w-3 h-3 rounded-full flex-shrink-0"
-                                    style={{ backgroundColor: status.color }}
-                                  ></div>
-                                  <div className="flex-1">
-                                    <p className="font-medium text-gray-900">{status.name_ar}</p>
-                                    {status.description && (
-                                      <p className="text-xs text-gray-500 mt-0.5">{status.description}</p>
-                                    )}
-                                  </div>
-                                  {status.id === currentStatus.id && (
-                                    <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                                  )}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <button
-                onClick={() => setShowPriceEditor(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
-              >
-                <DollarSign className="w-5 h-5" />
-                تعديل السعر
-              </button>
-            </div>
-
-            <div className="grid grid-cols-4 gap-6">
-              <div className="text-center">
-                <p className="text-sm text-gray-500 mb-2">تاريخ التقديم</p>
-                <p className="text-lg font-semibold text-gray-900">
+          {/* Info Grid Section */}
+          <div className="px-8 py-6">
+            <div className="grid grid-cols-4 gap-8 text-center">
+              <div>
+                <p className="text-sm text-gray-500 mb-2 font-medium">تاريخ التقديم</p>
+                <p className="text-base font-bold text-gray-900">
                   {formatDate(application.created_at)}
                 </p>
               </div>
 
-              <div className="text-center">
-                <p className="text-sm text-gray-500 mb-2">آخر تحديث</p>
-                <p className="text-lg font-semibold text-gray-900">
+              <div>
+                <p className="text-sm text-gray-500 mb-2 font-medium">آخر تحديث</p>
+                <p className="text-base font-bold text-gray-900">
                   {formatDate(application.updated_at)}
                 </p>
               </div>
 
-              <div className="text-center">
-                <p className="text-sm text-gray-500 mb-2">الإنجاز المتوقع</p>
-                <p className="text-lg font-semibold text-gray-900">
+              <div>
+                <p className="text-sm text-gray-500 mb-2 font-medium">الإنجاز المتوقع</p>
+                <p className="text-base font-bold text-gray-900">
                   {application.expected_completion_date ? formatDate(application.expected_completion_date) : 'غير محدد'}
                 </p>
               </div>
 
-              <div className="text-center">
-                <p className="text-sm text-gray-500 mb-2">الرسوم</p>
-                <p className="text-lg font-semibold text-gray-900">
+              <div>
+                <p className="text-sm text-gray-500 mb-2 font-medium">الرسوم</p>
+                <p className="text-base font-bold text-gray-900">
                   {application.total_amount ? `${application.total_amount} ريال سعودي` : '300 ريال سعودي'}
                 </p>
               </div>
@@ -356,56 +361,66 @@ export default function ApplicationDetail() {
           </div>
         </div>
 
-        {/* Appointment Section - Only show if appointment exists */}
+        {/* Appointment Section */}
         {appointment && (
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <Calendar className="w-6 h-6 text-green-600" />
-                معلومات الموعد
-              </h2>
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-                مؤكد
-              </span>
+          <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-50 rounded-xl border-2 border-green-200 shadow-sm mb-6">
+            <div className="px-8 py-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-11 h-11 bg-green-500 rounded-xl flex items-center justify-center shadow-sm">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 flex-1">معلومات الموعد</h3>
+                <span className="bg-green-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
+                  مؤكد
+                </span>
             </div>
 
             <div className="grid grid-cols-3 gap-6">
-              <div className="text-center bg-white rounded-lg p-4">
-                <Calendar className="w-5 h-5 text-gray-500 mx-auto mb-2" />
-                <p className="text-sm text-gray-500 mb-1">التاريخ الميلادي</p>
-                <p className="font-semibold text-gray-900">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
+                  <Calendar className="w-4 h-4" />
+                  <p className="text-sm font-semibold">التاريخ الميلادي</p>
+                </div>
+                <p className="text-lg font-bold text-gray-900 mb-2">
                   {new Date(appointment.appointment_date).toLocaleDateString('ar-SA', {
-                    weekday: 'short',
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric'
-                  })}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">التاريخ الهجري</p>
-                <p className="text-sm font-medium text-gray-700">
-                  {new Date(appointment.appointment_date).toLocaleDateString('ar-SA-u-ca-islamic', {
-                    year: 'numeric',
+                    weekday: 'long',
+                    day: 'numeric',
                     month: 'long',
-                    day: 'numeric'
-                  })}
+                    year: 'numeric'
+                  }).replace('،', ', ')}
+                </p>
+                <div className="mt-3 pt-3 border-t border-green-200">
+                  <p className="text-xs text-gray-600 mb-1">التاريخ الهجري</p>
+                  <p className="text-sm font-semibold text-gray-800">
+                    {new Date(appointment.appointment_date).toLocaleDateString('ar-SA-u-ca-islamic', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
+                  <Clock className="w-4 h-4" />
+                  <p className="text-sm font-semibold">الوقت</p>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {appointment.appointment_time || '09:00 - 09:30'}
                 </p>
               </div>
 
-              <div className="text-center bg-white rounded-lg p-4">
-                <Clock className="w-5 h-5 text-gray-500 mx-auto mb-2" />
-                <p className="text-sm text-gray-500 mb-1">الوقت</p>
-                <p className="font-semibold text-gray-900 text-lg">
-                  {appointment.appointment_time}
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-3">
+                  <MapPin className="w-4 h-4" />
+                  <p className="text-sm font-semibold">الموقع</p>
+                </div>
+                <p className="text-lg font-bold text-gray-900">
+                  القنصلية - منطقة الرياض
                 </p>
               </div>
-
-              <div className="text-center bg-white rounded-lg p-4">
-                <MapPin className="w-5 h-5 text-gray-500 mx-auto mb-2" />
-                <p className="text-sm text-gray-500 mb-1">الموقع</p>
-                <p className="font-semibold text-gray-900">
-                  {appointment.location || 'القنصلية - منطقة الرياض'}
-                </p>
-              </div>
+            </div>
             </div>
           </div>
         )}

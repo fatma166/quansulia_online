@@ -27,6 +27,7 @@ export default function ApplicationDetail() {
   const [activeTab, setActiveTab] = useState('applicant');
   const [showPriceEditor, setShowPriceEditor] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const [availableStatuses, setAvailableStatuses] = useState([]);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
 
@@ -269,11 +270,14 @@ export default function ApplicationDetail() {
 
                   <div className="relative flex items-center gap-2">
                     <span className="text-gray-900 font-medium">
-                      {currentStatus?.name_ar || 'يتطلب حجز موعد'}
+                      {currentStatus?.name_ar || 'غير محدد'}
                     </span>
 
                     <button
-                      onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                      onClick={() => {
+                        setSelectedStatus(currentStatus);
+                        setShowStatusDropdown(!showStatusDropdown);
+                      }}
                       className="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
                       title="تغيير الحالة"
                     >
@@ -284,13 +288,19 @@ export default function ApplicationDetail() {
                       <>
                         <div
                           className="fixed inset-0 z-10"
-                          onClick={() => setShowStatusDropdown(false)}
+                          onClick={() => {
+                            setShowStatusDropdown(false);
+                            setSelectedStatus(null);
+                          }}
                         ></div>
                         <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-y-auto">
                           <div className="p-3 flex items-center justify-between border-b border-gray-200">
                             <div className="flex items-center gap-2">
                               <button
-                                onClick={() => setShowStatusDropdown(false)}
+                                onClick={() => {
+                                  setShowStatusDropdown(false);
+                                  setSelectedStatus(null);
+                                }}
                                 className="flex items-center justify-center w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors"
                                 title="إلغاء"
                               >
@@ -298,9 +308,8 @@ export default function ApplicationDetail() {
                               </button>
                               <button
                                 onClick={() => {
-                                  // Get the currently selected status from the state
-                                  if (currentStatus?.id) {
-                                    handleStatusChange(currentStatus.id);
+                                  if (selectedStatus?.id) {
+                                    handleStatusChange(selectedStatus.id);
                                   }
                                 }}
                                 className="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
@@ -312,12 +321,12 @@ export default function ApplicationDetail() {
 
                             <div className="flex-1 mx-3">
                               <select
-                                value={currentStatus?.id || ''}
+                                value={selectedStatus?.id || ''}
                                 onChange={(e) => {
                                   const newStatusId = e.target.value;
                                   const newStatus = availableStatuses.find(s => s.id === newStatusId);
                                   if (newStatus) {
-                                    setCurrentStatus(newStatus);
+                                    setSelectedStatus(newStatus);
                                   }
                                 }}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-center font-medium"
@@ -331,7 +340,10 @@ export default function ApplicationDetail() {
                             </div>
 
                             <button
-                              onClick={() => setShowStatusDropdown(false)}
+                              onClick={() => {
+                                setShowStatusDropdown(false);
+                                setSelectedStatus(null);
+                              }}
                               className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 transition-colors"
                             >
                               <ChevronDown className="w-5 h-5" />

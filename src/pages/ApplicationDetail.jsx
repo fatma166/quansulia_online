@@ -6,7 +6,6 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import ProcessingStatus from '../components/ProcessingStatus';
 import StatusBadge from '../components/StatusBadge';
-import AdminApplicationStatusManager from '../components/AdminApplicationStatusManager';
 import ShippingModal from '../components/ShippingModal';
 import RejectionDetails from '../components/RejectionDetails';
 import InvoiceModal from '../components/InvoiceModal';
@@ -929,14 +928,6 @@ export default function ApplicationDetail() {
                 </div>
               )}
             </div>
-
-            {/* Status Management */}
-            {(isSuperAdmin || canAccessStatus(application.status)) && (
-              <AdminApplicationStatusManager
-                application={application}
-                onUpdate={loadApplicationDetail}
-              />
-            )}
           </div>
         </div>
       </div>

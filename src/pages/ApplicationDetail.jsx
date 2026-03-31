@@ -157,8 +157,8 @@ export default function ApplicationDetail() {
     });
   };
 
-  const handleStatusChange = async (newStatusId) => {
-    if (!newStatusId) {
+  const handleStatusChange = async (newStatusValue) => {
+    if (!newStatusValue) {
       setShowStatusDropdown(false);
       return;
     }
@@ -171,33 +171,56 @@ export default function ApplicationDetail() {
         .eq('user_id', userData.user.id)
         .maybeSingle();
 
-      // Update application status
+      // Find the new status to get the label
+      const newStatus = availableStatuses.find(s =>
+        s.id === newStatusValue || s.status_key === newStatusValue
+      );
+
+      // Update application status (support both status and status_id fields)
+      const updateData = {};
+      if (application.status !== undefined) {
+        updateData.status = newStatus?.status_key || newStatusValue;
+      }
+      if (application.status_id !== undefined) {
+        updateData.status_id = newStatusValue;
+      }
+
       const { error: updateError } = await supabase
         .from('applications')
-        .update({ status_id: newStatusId })
+        .update(updateData)
         .eq('id', id);
 
       if (updateError) throw updateError;
 
       // Log status change in history
+      const historyData = {
+        application_id: id,
+        changed_by: staffData?.id,
+        staff_name: staffData?.full_name,
+        notes: `تم تغيير الحالة إلى: ${newStatus?.name_ar || newStatus?.label_ar || 'حالة جديدة'}`
+      };
+
+      // Add status_id if the table supports it
+      if (newStatusValue) {
+        historyData.status_id = newStatusValue;
+      }
+
       const { error: historyError } = await supabase
         .from('status_history')
-        .insert([{
-          application_id: id,
-          status_id: newStatusId,
-          changed_by: staffData?.id,
-          staff_name: staffData?.full_name,
-          notes: 'تم تغيير الحالة'
-        }]);
+        .insert([historyData]);
 
-      if (historyError) throw historyError;
+      if (historyError) {
+        console.error('Error logging status history:', historyError);
+        // Don't fail the whole operation if history logging fails
+      }
 
       // Reload data
       await loadApplicationDetail();
       setShowStatusDropdown(false);
+      alert('تم تغيير حالة الطلب بنجاح');
     } catch (error) {
       console.error('Error changing status:', error);
-      alert('حدث خطأ أثناء تغيير الحالة');
+      alert('حدث خطأ أثناء تغيير الحالة: ' + (error.message || 'خطأ غير معروف'));
     }
   };
 
@@ -317,120 +340,108 @@ export default function ApplicationDetail() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-3">
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center justify-center w-10 h-10 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <Printer className="w-5 h-5" />
+                </button>
+
+                <div className="relative flex items-center gap-2">
                   {currentStatus && (
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-white border-2 rounded-lg">
                       <div
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: currentStatus.color || '#6B7280' }}
                       ></div>
-                      <span className="font-semibold text-gray-900">{currentStatus.name_ar}</span>
+                      <span className="font-semibold text-gray-900">{currentStatus.name_ar || currentStatus.label_ar || 'حالة الطلب'}</span>
                     </div>
                   )}
 
                   <button
-                    onClick={() => setShowPriceEditor(true)}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                    onClick={() => {
+                      setSelectedStatus(currentStatus);
+                      setShowStatusDropdown(!showStatusDropdown);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-medium"
+                    title="تغيير الحالة"
                   >
-                    <DollarSign className="w-5 h-5" />
-                    تعديل السعر
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handlePrint}
-                    className="flex items-center justify-center w-10 h-10 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <Printer className="w-5 h-5" />
+                    <Edit className="w-4 h-4" />
+                    <span>إمكانية التغيير</span>
                   </button>
 
-                  <div className="relative flex items-center gap-2">
-                    <span className="text-gray-900 font-medium">
-                      {currentStatus?.name_ar || 'غير محدد'}
-                    </span>
+                  {showStatusDropdown && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => {
+                          setShowStatusDropdown(false);
+                          setSelectedStatus(null);
+                        }}
+                      ></div>
+                      <div className="absolute top-full right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-20">
+                        <div className="p-4 border-b border-gray-200">
+                          <h3 className="text-lg font-bold text-gray-900 mb-3">تغيير حالة الطلب</h3>
 
-                    <button
-                      onClick={() => {
-                        setSelectedStatus(currentStatus);
-                        setShowStatusDropdown(!showStatusDropdown);
-                      }}
-                      className="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
-                      title="تغيير الحالة"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-
-                    {showStatusDropdown && (
-                      <>
-                        <div
-                          className="fixed inset-0 z-10"
-                          onClick={() => {
-                            setShowStatusDropdown(false);
-                            setSelectedStatus(null);
-                          }}
-                        ></div>
-                        <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-20 max-h-96 overflow-y-auto">
-                          <div className="p-3 flex items-center justify-between border-b border-gray-200">
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => {
-                                  setShowStatusDropdown(false);
-                                  setSelectedStatus(null);
-                                }}
-                                className="flex items-center justify-center w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors"
-                                title="إلغاء"
+                          <select
+                            value={selectedStatus?.id || selectedStatus?.status_key || ''}
+                            onChange={(e) => {
+                              const newStatusValue = e.target.value;
+                              const newStatus = availableStatuses.find(s =>
+                                s.id === newStatusValue || s.status_key === newStatusValue
+                              );
+                              if (newStatus) {
+                                setSelectedStatus(newStatus);
+                              }
+                            }}
+                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent font-medium text-right"
+                          >
+                            <option value="">اختر حالة جديدة</option>
+                            {availableStatuses.map((status) => (
+                              <option
+                                key={status.id || status.status_key}
+                                value={status.id || status.status_key}
                               >
-                                <XCircle className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => {
-                                  if (selectedStatus?.id) {
-                                    handleStatusChange(selectedStatus.id);
-                                  }
-                                }}
-                                className="flex items-center justify-center w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
-                                title="حفظ التغييرات"
-                              >
-                                <CheckCircle className="w-4 h-4" />
-                              </button>
-                            </div>
-
-                            <div className="flex-1 mx-3">
-                              <select
-                                value={selectedStatus?.id || ''}
-                                onChange={(e) => {
-                                  const newStatusId = e.target.value;
-                                  const newStatus = availableStatuses.find(s => s.id === newStatusId);
-                                  if (newStatus) {
-                                    setSelectedStatus(newStatus);
-                                  }
-                                }}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-center font-medium"
-                              >
-                                {availableStatuses.map((status) => (
-                                  <option key={status.id} value={status.id}>
-                                    {status.name_ar}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-
-                            <button
-                              onClick={() => {
-                                setShowStatusDropdown(false);
-                                setSelectedStatus(null);
-                              }}
-                              className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 transition-colors"
-                            >
-                              <ChevronDown className="w-5 h-5" />
-                            </button>
-                          </div>
+                                {status.name_ar || status.label_ar}
+                              </option>
+                            ))}
+                          </select>
                         </div>
-                      </>
-                    )}
-                  </div>
+
+                        <div className="p-4 flex items-center justify-between">
+                          <button
+                            onClick={() => {
+                              setShowStatusDropdown(false);
+                              setSelectedStatus(null);
+                            }}
+                            className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors font-medium"
+                          >
+                            إلغاء
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (selectedStatus?.id || selectedStatus?.status_key) {
+                                handleStatusChange(selectedStatus.id || selectedStatus.status_key);
+                              }
+                            }}
+                            className="px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-medium flex items-center gap-2"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                            <span>حفظ التغييرات</span>
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
+
+                <button
+                  onClick={() => setShowPriceEditor(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                >
+                  <DollarSign className="w-5 h-5" />
+                  تعديل السعر
+                </button>
               </div>
             </div>
           </div>

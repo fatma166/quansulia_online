@@ -95,7 +95,10 @@ const TransactionTracking = () => {
 
       const { data, error: fetchError } = await supabase
         .from('applications')
-        .select('*')
+        .select(`
+          *,
+          application_statuses(*)
+        `)
         .eq('reference_number', searchQuery.trim())
         .maybeSingle();
 
@@ -362,6 +365,28 @@ const TransactionTracking = () => {
   };
 
   const renderStatusSpecificContent = () => {
+    // Check if current status requires appointment
+    const requiresAppointment = application?.status_id && application?.application_statuses?.name_ar?.includes('يتطلب حجز موعد');
+
+    if (requiresAppointment) {
+      return (
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-8 border-2 border-blue-300">
+          <div className="flex items-start space-x-4 rtl:space-x-reverse mb-6">
+            <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center">
+              <Calendar className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">يتطلب حجز موعد</h3>
+              <p className="text-gray-700 leading-relaxed">
+                طلبك بحاجة إلى حجز موعد لإكمال الإجراءات. يرجى اختيار موعد مناسب من المواعيد المتاحة أدناه.
+              </p>
+            </div>
+          </div>
+          <AppointmentBooking application={application} onBookingComplete={handleSearch} />
+        </div>
+      );
+    }
+
     switch (application?.status) {
       case 'in_review':
         return <ReviewStatus application={application} />;
@@ -631,6 +656,63 @@ const TransactionTracking = () => {
                 })}
               </div>
             </div>
+
+            {/* Documents Section */}
+            {(() => {
+              const allDocuments = [];
+
+              // Collect documents from documents field
+              if (application.documents && typeof application.documents === 'object') {
+                Object.entries(application.documents).forEach(([docName, docUrl]) => {
+                  if (docUrl && typeof docUrl === 'string' && docUrl.startsWith('http')) {
+                    allDocuments.push({ name: docName, url: docUrl });
+                  }
+                });
+              }
+
+              // Collect documents from form_data
+              if (application.form_data && typeof application.form_data === 'object') {
+                Object.entries(application.form_data).forEach(([key, value]) => {
+                  if (typeof value === 'string' && value.startsWith('http') &&
+                      (key.includes('document') || key.includes('file') || key.includes('attachment') ||
+                       key.includes('صورة') || key.includes('مستند'))) {
+                    allDocuments.push({ name: key, url: value });
+                  }
+                });
+              }
+
+              return allDocuments.length > 0 ? (
+                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                  <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    المستندات المرفقة ({allDocuments.length})
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {allDocuments.map((doc, index) => (
+                      <a
+                        key={index}
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-4 border-2 border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition-all group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100">
+                            <FileText className="w-6 h-6 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900">{doc.name}</p>
+                            <p className="text-sm text-gray-500">انقر للعرض أو التحميل</p>
+                          </div>
+                        </div>
+                        <Download className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : null;
+            })()}
 
             {application.form_data && (
               <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">

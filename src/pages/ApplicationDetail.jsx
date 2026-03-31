@@ -317,13 +317,25 @@ export default function ApplicationDetail() {
               </div>
 
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setShowPriceEditor(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
-                >
-                  <DollarSign className="w-5 h-5" />
-                  تعديل السعر
-                </button>
+                <div className="flex items-center gap-3">
+                  {currentStatus && (
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-white border-2 rounded-lg">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: currentStatus.color || '#6B7280' }}
+                      ></div>
+                      <span className="font-semibold text-gray-900">{currentStatus.name_ar}</span>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => setShowPriceEditor(true)}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                  >
+                    <DollarSign className="w-5 h-5" />
+                    تعديل السعر
+                  </button>
+                </div>
 
                 <div className="flex items-center gap-2">
                   <button

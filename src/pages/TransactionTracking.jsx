@@ -365,8 +365,9 @@ const TransactionTracking = () => {
   };
 
   const renderStatusSpecificContent = () => {
-    // Check if current status requires appointment
-    const requiresAppointment = application?.status_id && application?.application_statuses?.name_ar?.includes('يتطلب حجز موعد');
+    // Check if current status requires appointment (support both status field types)
+    const requiresAppointment = application?.status === 'appointment_required' ||
+                                (application?.status_id && application?.application_statuses?.name_ar?.includes('يتطلب حجز موعد'));
 
     if (requiresAppointment) {
       return (

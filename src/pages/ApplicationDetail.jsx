@@ -402,46 +402,9 @@ export default function ApplicationDetail() {
                       </div>
                     </div>
                   ) : (
-                    // Expanded View: Close + Save + Dropdown + Status
+                    // Expanded View: Dropdown + Save + Close (RTL Order)
                     <div className="flex items-center gap-0">
-                      {/* Close button */}
-                      <button
-                        onClick={() => {
-                          setShowStatusDropdown(false);
-                          setSelectedStatus(null);
-                        }}
-                        className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-r-lg transition-colors border border-gray-300"
-                        title="إلغاء"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-
-                      {/* Save button */}
-                      <button
-                        onClick={() => {
-                          if (selectedStatus?.id || selectedStatus?.status_key) {
-                            handleStatusChange(selectedStatus.id || selectedStatus.status_key);
-                          }
-                        }}
-                        className="flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white transition-colors border-t border-b border-green-600"
-                        title="حفظ التغييرات"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                        </svg>
-                      </button>
-
-                      {/* Dropdown arrow button */}
-                      <button
-                        className="flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 transition-colors"
-                        title="اختر الحالة"
-                      >
-                        <ChevronDown className="w-4 h-4" />
-                      </button>
-
-                      {/* Status dropdown select */}
+                      {/* Status dropdown select - أول عنصر من اليمين */}
                       <select
                         value={selectedStatus?.id || selectedStatus?.status_key || currentStatus?.id || currentStatus?.status_key || ''}
                         onChange={(e) => {
@@ -453,7 +416,7 @@ export default function ApplicationDetail() {
                             setSelectedStatus(newStatus);
                           }
                         }}
-                        className="px-4 py-2.5 bg-white border border-gray-300 rounded-l-lg font-semibold text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none cursor-pointer min-w-[200px]"
+                        className="px-4 py-2.5 bg-white border border-gray-300 rounded-r-lg font-semibold text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none cursor-pointer min-w-[200px]"
                       >
                         <option value="">اختر حالة جديدة</option>
                         {availableStatuses.map((status) => (
@@ -465,6 +428,44 @@ export default function ApplicationDetail() {
                           </option>
                         ))}
                       </select>
+
+                      {/* Dropdown arrow button */}
+                      <button
+                        className="flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-50 text-gray-600 border-t border-b border-l border-gray-300 transition-colors"
+                        title="القائمة المنسدلة"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+
+                      {/* Save button - وسط */}
+                      <button
+                        onClick={async () => {
+                          if (selectedStatus?.id || selectedStatus?.status_key) {
+                            await handleStatusChange(selectedStatus.id || selectedStatus.status_key);
+                            setShowStatusDropdown(false);
+                          }
+                        }}
+                        className="flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white transition-colors border-t border-b border-green-600"
+                        title="حفظ التغييرات"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                      </button>
+
+                      {/* Close button - آخر عنصر من اليسار */}
+                      <button
+                        onClick={() => {
+                          setShowStatusDropdown(false);
+                          setSelectedStatus(null);
+                        }}
+                        className="flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-100 text-gray-600 rounded-l-lg transition-colors border border-gray-300"
+                        title="إلغاء"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
                     </div>
                   )}
 

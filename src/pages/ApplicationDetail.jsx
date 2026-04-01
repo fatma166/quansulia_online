@@ -375,54 +375,100 @@ export default function ApplicationDetail() {
 
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  {/* Status Display with Icon Button */}
-                  <div className="flex items-center gap-0">
-                    {/* Close/Cancel button */}
-                    <button
-                      className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-r-lg transition-colors border-r border-t border-b border-gray-300"
-                      title="إغلاق"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+                  {!showStatusDropdown ? (
+                    // Initial View: Status + Info Icon
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => {
+                          setSelectedStatus(currentStatus);
+                          setShowStatusDropdown(true);
+                        }}
+                        className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors"
+                        title="تعديل الحالة"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </button>
 
-                    {/* Save/Edit button */}
-                    <button
-                      onClick={() => {
-                        setSelectedStatus(currentStatus);
-                        setShowStatusDropdown(!showStatusDropdown);
-                      }}
-                      className="flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white transition-colors border-t border-b border-green-600"
-                      title="تغيير الحالة"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                      </svg>
-                    </button>
-
-                    {/* Dropdown arrow */}
-                    <button
-                      onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-                      className="flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 transition-colors"
-                      title="القائمة"
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
-
-                    {/* Status text */}
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-l-lg">
-                      <span className="font-semibold text-gray-900">
-                        {currentStatus?.name_ar || currentStatus?.label_ar || application.status || 'تم التقديم'}
-                      </span>
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: currentStatus?.color || '#3B82F6' }}
-                      ></div>
+                      <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg">
+                        <span className="font-semibold text-gray-900">
+                          {currentStatus?.name_ar || currentStatus?.label_ar || application.status || 'تم التقديم'}
+                        </span>
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: currentStatus?.color || '#3B82F6' }}
+                        ></div>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    // Expanded View: Close + Save + Dropdown + Status
+                    <div className="flex items-center gap-0">
+                      {/* Close button */}
+                      <button
+                        onClick={() => {
+                          setShowStatusDropdown(false);
+                          setSelectedStatus(null);
+                        }}
+                        className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-r-lg transition-colors border border-gray-300"
+                        title="إلغاء"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
 
-                  {showStatusDropdown && (
+                      {/* Save button */}
+                      <button
+                        onClick={() => {
+                          if (selectedStatus?.id || selectedStatus?.status_key) {
+                            handleStatusChange(selectedStatus.id || selectedStatus.status_key);
+                          }
+                        }}
+                        className="flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white transition-colors border-t border-b border-green-600"
+                        title="حفظ التغييرات"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                      </button>
+
+                      {/* Dropdown arrow button */}
+                      <button
+                        className="flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 transition-colors"
+                        title="اختر الحالة"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+
+                      {/* Status dropdown select */}
+                      <select
+                        value={selectedStatus?.id || selectedStatus?.status_key || currentStatus?.id || currentStatus?.status_key || ''}
+                        onChange={(e) => {
+                          const newStatusValue = e.target.value;
+                          const newStatus = availableStatuses.find(s =>
+                            s.id === newStatusValue || s.status_key === newStatusValue
+                          );
+                          if (newStatus) {
+                            setSelectedStatus(newStatus);
+                          }
+                        }}
+                        className="px-4 py-2.5 bg-white border border-gray-300 rounded-l-lg font-semibold text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none cursor-pointer min-w-[200px]"
+                      >
+                        <option value="">اختر حالة جديدة</option>
+                        {availableStatuses.map((status) => (
+                          <option
+                            key={status.id || status.status_key}
+                            value={status.id || status.status_key}
+                          >
+                            {status.name_ar || status.label_ar}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {showStatusDropdown && false && (
                     <>
                       <div
                         className="fixed inset-0 z-10"

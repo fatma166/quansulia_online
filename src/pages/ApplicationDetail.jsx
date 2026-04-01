@@ -63,20 +63,7 @@ export default function ApplicationDetail() {
 
       setApplication(appData);
 
-      // Fetch current status details
-      if (appData.status_id) {
-        const { data: statusData } = await supabase
-          .from('application_statuses')
-          .select('*')
-          .eq('id', appData.status_id)
-          .maybeSingle();
-
-        if (statusData) {
-          setCurrentStatus(statusData);
-        }
-      }
-
-      // Load all available statuses
+      // Load all available statuses first
       const { data: statusesData } = await supabase
         .from('application_statuses')
         .select('*')
@@ -85,6 +72,21 @@ export default function ApplicationDetail() {
 
       if (statusesData) {
         setAvailableStatuses(statusesData);
+
+        // Fetch current status details (support both status and status_id)
+        let currentStatusData = null;
+
+        if (appData.status_id) {
+          // If using status_id (UUID)
+          currentStatusData = statusesData.find(s => s.id === appData.status_id);
+        } else if (appData.status) {
+          // If using status (text key)
+          currentStatusData = statusesData.find(s => s.status_key === appData.status);
+        }
+
+        if (currentStatusData) {
+          setCurrentStatus(currentStatusData);
+        }
       }
 
       // Fetch service data separately if service_id exists
@@ -372,27 +374,53 @@ export default function ApplicationDetail() {
               </div>
 
               <div className="flex items-center gap-3">
-                {currentStatus && (
-                  <div className="flex items-center gap-2 px-4 py-2.5 bg-white border-2 rounded-lg">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: currentStatus.color || '#6B7280' }}
-                    ></div>
-                    <span className="font-semibold text-gray-900">{currentStatus.name_ar || currentStatus.label_ar || 'حالة الطلب'}</span>
-                  </div>
-                )}
+                <div className="relative">
+                  {/* Status Display with Icon Button */}
+                  <div className="flex items-center gap-0">
+                    {/* Close/Cancel button */}
+                    <button
+                      className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-r-lg transition-colors border-r border-t border-b border-gray-300"
+                      title="إغلاق"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
 
-                <div className="relative flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      setSelectedStatus(currentStatus);
-                      setShowStatusDropdown(!showStatusDropdown);
-                    }}
-                    className="flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
-                    title="تغيير الحالة"
-                  >
-                    <Edit className="w-5 h-5" />
-                  </button>
+                    {/* Save/Edit button */}
+                    <button
+                      onClick={() => {
+                        setSelectedStatus(currentStatus);
+                        setShowStatusDropdown(!showStatusDropdown);
+                      }}
+                      className="flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white transition-colors border-t border-b border-green-600"
+                      title="تغيير الحالة"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                      </svg>
+                    </button>
+
+                    {/* Dropdown arrow */}
+                    <button
+                      onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                      className="flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 transition-colors"
+                      title="القائمة"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+
+                    {/* Status text */}
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-l-lg">
+                      <span className="font-semibold text-gray-900">
+                        {currentStatus?.name_ar || currentStatus?.label_ar || application.status || 'تم التقديم'}
+                      </span>
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: currentStatus?.color || '#3B82F6' }}
+                      ></div>
+                    </div>
+                  </div>
 
                   {showStatusDropdown && (
                     <>

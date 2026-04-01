@@ -166,7 +166,7 @@ export default function ApplicationDetail() {
       const { data: userData } = await supabase.auth.getUser();
       const { data: staffData } = await supabase
         .from('staff')
-        .select('id, full_name')
+        .select('id, full_name_ar')
         .eq('user_id', userData.user.id)
         .maybeSingle();
 
@@ -175,8 +175,10 @@ export default function ApplicationDetail() {
         s.id === newStatusValue || s.status_key === newStatusValue
       );
 
+      const oldStatusKey = application.status || application.status_id;
+
       // Update application status (support both status and status_id fields)
-      const updateData = {};
+      const updateData = { updated_at: new Date().toISOString() };
       if (application.status !== undefined) {
         updateData.status = newStatus?.status_key || newStatusValue;
       }
@@ -194,14 +196,16 @@ export default function ApplicationDetail() {
       // Log status change in history
       const historyData = {
         application_id: id,
+        old_status: oldStatusKey,
+        new_status: newStatus?.status_key || newStatusValue,
         changed_by: staffData?.id,
-        staff_name: staffData?.full_name,
+        staff_name: staffData?.full_name_ar || staffData?.full_name || 'موظف',
         notes: `تم تغيير الحالة إلى: ${newStatus?.name_ar || newStatus?.label_ar || 'حالة جديدة'}`
       };
 
-      // Add status_id if the table supports it
-      if (newStatusValue) {
-        historyData.status_id = newStatusValue;
+      // Add status_id reference if available
+      if (newStatus?.id) {
+        historyData.status_id = newStatus.id;
       }
 
       const { error: historyError } = await supabase
@@ -210,13 +214,42 @@ export default function ApplicationDetail() {
 
       if (historyError) {
         console.error('Error logging status history:', historyError);
-        // Don't fail the whole operation if history logging fails
+      }
+
+      // Check if the new status requires an appointment
+      const appointmentStatuses = ['appointment_required', 'appointment_booked', 'appointment_confirmed'];
+      if (appointmentStatuses.includes(newStatus?.status_key)) {
+        // Check if appointment already exists
+        const { data: existingAppointment } = await supabase
+          .from('appointments')
+          .select('id')
+          .eq('application_id', id)
+          .maybeSingle();
+
+        if (!existingAppointment && newStatus?.status_key === 'appointment_required') {
+          // Create a placeholder appointment
+          await supabase
+            .from('appointments')
+            .insert([{
+              application_id: id,
+              appointment_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+              appointment_time: '09:00:00',
+              status: 'pending',
+              notes: 'في انتظار تحديد الموعد من قبل المستخدم',
+              created_by: staffData?.id
+            }]);
+        }
       }
 
       // Reload data
       await loadApplicationDetail();
       setShowStatusDropdown(false);
-      alert('تم تغيير حالة الطلب بنجاح');
+
+      let successMessage = 'تم تغيير حالة الطلب بنجاح';
+      if (newStatus?.status_key === 'appointment_required') {
+        successMessage += '\n\nتم إرسال إشعار للمستخدم لتحديد موعد';
+      }
+      alert(successMessage);
     } catch (error) {
       console.error('Error changing status:', error);
       alert('حدث خطأ أثناء تغيير الحالة: ' + (error.message || 'خطأ غير معروف'));
@@ -339,34 +372,26 @@ export default function ApplicationDetail() {
               </div>
 
               <div className="flex items-center gap-3">
-                <button
-                  onClick={handlePrint}
-                  className="flex items-center justify-center w-10 h-10 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <Printer className="w-5 h-5" />
-                </button>
+                {currentStatus && (
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-white border-2 rounded-lg">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: currentStatus.color || '#6B7280' }}
+                    ></div>
+                    <span className="font-semibold text-gray-900">{currentStatus.name_ar || currentStatus.label_ar || 'حالة الطلب'}</span>
+                  </div>
+                )}
 
                 <div className="relative flex items-center gap-2">
-                  {currentStatus && (
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-white border-2 rounded-lg">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: currentStatus.color || '#6B7280' }}
-                      ></div>
-                      <span className="font-semibold text-gray-900">{currentStatus.name_ar || currentStatus.label_ar || 'حالة الطلب'}</span>
-                    </div>
-                  )}
-
                   <button
                     onClick={() => {
                       setSelectedStatus(currentStatus);
                       setShowStatusDropdown(!showStatusDropdown);
                     }}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-medium"
+                    className="flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
                     title="تغيير الحالة"
                   >
-                    <Edit className="w-4 h-4" />
-                    <span>إمكانية التغيير</span>
+                    <Edit className="w-5 h-5" />
                   </button>
 
                   {showStatusDropdown && (
@@ -433,6 +458,13 @@ export default function ApplicationDetail() {
                     </>
                   )}
                 </div>
+
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center justify-center w-10 h-10 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <Printer className="w-5 h-5" />
+                </button>
 
                 <button
                   onClick={() => setShowPriceEditor(true)}

@@ -232,140 +232,140 @@ function App() {
                 {/* صفحات الإدارة */}
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin/dashboard" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="overview">
                     <AdminDashboard />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/applications" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="applications">
                     <ApplicationsList />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/applications/:id" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="applications">
                     <AdminLayout>
                       <ApplicationDetail />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/chat" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="chat">
                     <AdminLayout>
                       <ChatManagement />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/chatbot" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="chat">
                     <AdminLayout>
                       <ChatbotManagement />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/chat-staff" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute superAdminOnly>
                     <AdminLayout>
                       <ChatStaffManagement />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/contact-messages" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="chat">
                     <AdminLayout>
                       <ContactMessagesManagement />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/appointments" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="appointments">
                     <AdminLayout>
                       <AppointmentsCalendar />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/appointments/day/:date" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="appointments">
                     <AdminLayout>
                       <DailyAppointments />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/services" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="services">
                     <AdminLayout>
                       <ServicesManagement />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/services/new" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute superAdminOnly>
                     <AdminLayout>
                       <ServiceEditor />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/services/:serviceId" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute superAdminOnly>
                     <AdminLayout>
                       <ServiceEditor />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/services/:serviceId/dashboard" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="services">
                     <AdminLayout>
                       <ServiceDashboard />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/staff" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute superAdminOnly>
                     <AdminLayout>
                       <StaffManagement />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/staff/new" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute superAdminOnly>
                     <AdminLayout>
                       <AddStaff />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/staff/:id/edit" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute superAdminOnly>
                     <AdminLayout>
                       <EditStaff />
                     </AdminLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/appointments-shipments" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="appointments">
                     <AppointmentsShipmentsManagement />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/shipping-companies" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="shipping">
                     <ShippingCompaniesManagement />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/event-registrations" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute superAdminOnly>
                     <EventRegistrationsManagement />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/content/consulate" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="content">
                     <ContentManagementConsulate />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/content/services-guide" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="content">
                     <ContentManagementServicesGuide />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/content/important-links" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredSection="content">
                     <ContentManagementImportantLinks />
                   </ProtectedRoute>
                 } />

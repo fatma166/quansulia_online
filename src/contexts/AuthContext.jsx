@@ -5,12 +5,16 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [sessionVerified, setSessionVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
         await resolveUserFromSession(session);
+        setSessionVerified(true);
+      } else {
+        setSessionVerified(false);
       }
       setIsLoading(false);
     });
@@ -19,8 +23,10 @@ export const AuthProvider = ({ children }) => {
       (async () => {
         if (session) {
           await resolveUserFromSession(session);
+          setSessionVerified(true);
         } else {
           setUser(null);
+          setSessionVerified(false);
         }
       })();
     });
@@ -124,14 +130,15 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: result.error || 'اسم المستخدم أو كلمة المرور غير صحيحة' };
       }
 
-      if (result.session) {
-        await supabase.auth.setSession({
-          access_token: result.session.access_token,
-          refresh_token: result.session.refresh_token,
-        });
+      if (!result.session) {
+        return { success: false, error: 'لم يتم إنشاء جلسة صالحة' };
       }
 
-      setUser(result.user);
+      await supabase.auth.setSession({
+        access_token: result.session.access_token,
+        refresh_token: result.session.refresh_token,
+      });
+
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
@@ -140,12 +147,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    localStorage.removeItem('adminUser');
+    localStorage.removeItem('adminUsers');
     await supabase.auth.signOut();
     setUser(null);
+    setSessionVerified(false);
   };
 
   const hasPermission = (permission) => {
-    if (!user) return false;
+    if (!user || !sessionVerified) return false;
     if (user.role === 'super_admin') return true;
     if (Array.isArray(user.permissions)) {
       return user.permissions.includes(permission);
@@ -154,19 +164,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   const canAccessStatus = (status) => {
-    if (!user) return false;
+    if (!user || !sessionVerified) return false;
     if (user.role === 'super_admin') return true;
     return user.allowedStatuses?.includes(status) || false;
   };
 
   const canAccessRegion = (region) => {
-    if (!user) return false;
+    if (!user || !sessionVerified) return false;
     if (user.role === 'super_admin') return true;
     return user.allowedRegions?.includes(region) || false;
   };
 
   const canAccessSection = (section) => {
-    if (!user) return false;
+    if (!user || !sessionVerified) return false;
     if (user.role === 'super_admin') return true;
     if (!user.dashboardSections || !Array.isArray(user.dashboardSections)) return false;
     return user.dashboardSections.includes(section);
@@ -182,8 +192,8 @@ export const AuthProvider = ({ children }) => {
       canAccessStatus,
       canAccessRegion,
       canAccessSection,
-      isAuthenticated: !!user,
-      isSuperAdmin: user?.role === 'super_admin',
+      isAuthenticated: !!user && sessionVerified,
+      isSuperAdmin: !!user && sessionVerified && user.role === 'super_admin',
     }}>
       {children}
     </AuthContext.Provider>

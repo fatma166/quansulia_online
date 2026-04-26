@@ -158,6 +158,226 @@ export default function ApplicationDetail() {
     });
   };
 
+  const getArabicFieldLabel = (rawKey) => {
+    if (!rawKey) return 'بيان';
+
+    const key = String(rawKey)
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .toLowerCase();
+
+    const fieldLabelMap = {
+      full_name: 'الاسم الكامل',
+      first_name: 'الاسم الأول',
+      last_name: 'اسم العائلة',
+      phone: 'رقم الهاتف',
+      phone_number: 'رقم الهاتف',
+      email: 'البريد الإلكتروني',
+      national_id: 'رقم الهوية/الجواز',
+      id_number: 'رقم الهوية/الجواز',
+      passport_number: 'رقم الجواز',
+      passport_type: 'نوع الجواز',
+      old_passport_number: 'رقم الجواز القديم',
+      new_passport_number: 'رقم الجواز الجديد',
+      birth_date: 'تاريخ الميلاد',
+      dob: 'تاريخ الميلاد',
+      date_of_birth: 'تاريخ الميلاد',
+      is_adult: 'الفئة العمرية',
+      isadult: 'الفئة العمرية',
+      gender: 'النوع',
+      address: 'العنوان',
+      city: 'المدينة',
+      district: 'الحي',
+      region: 'المنطقة',
+      nationality: 'الجنسية',
+      occupation: 'المهنة',
+      marital_status: 'الحالة الاجتماعية',
+      notes: 'ملاحظات'
+    };
+
+    if (fieldLabelMap[key]) return fieldLabelMap[key];
+
+    const wordMap = {
+      full: 'كامل',
+      first: 'الأول',
+      last: 'الأخير',
+      name: 'اسم',
+      phone: 'هاتف',
+      mobile: 'جوال',
+      email: 'بريد',
+      national: 'وطني',
+      id: 'رقم',
+      passport: 'جواز',
+      birth: 'ميلاد',
+      date: 'تاريخ',
+      gender: 'نوع',
+      address: 'عنوان',
+      city: 'مدينة',
+      region: 'منطقة',
+      country: 'دولة',
+      occupation: 'مهنة',
+      status: 'حالة',
+      number: 'رقم',
+      document: 'مستند',
+      file: 'ملف',
+      attachment: 'مرفق',
+      image: 'صورة'
+    };
+
+    return key
+      .split(/[_\-\s]+/)
+      .filter(Boolean)
+      .map((word) => wordMap[word] || word)
+      .join(' ');
+  };
+
+  const calculateAgeFromBirthDate = (birthDateValue) => {
+    if (!birthDateValue || Number.isNaN(Date.parse(birthDateValue))) return null;
+    const birth = new Date(birthDateValue);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age -= 1;
+    return age >= 0 ? age : null;
+  };
+
+  const getArabicFieldValue = (rawValue, rawKey = '', formData = null) => {
+    if (rawValue === null || rawValue === undefined || rawValue === '') return 'غير محدد';
+
+    const key = String(rawKey).toLowerCase();
+
+    if (key.includes('is_adult') || key === 'isadult') {
+      const asText = String(rawValue).toLowerCase();
+      const isAdult = rawValue === true || asText === 'true' || asText === 'yes' || asText === 'adult' || asText === 'بالغ';
+      const birthDate = formData?.birth_date || formData?.dob || formData?.date_of_birth;
+      const age = calculateAgeFromBirthDate(birthDate);
+      const ageText = age !== null ? ` (العمر: ${age} سنة)` : '';
+      return `${isAdult ? 'بالغ' : 'طفل'}${ageText}`;
+    }
+
+    if (typeof rawValue === 'boolean') return rawValue ? 'نعم' : 'لا';
+
+    if (typeof rawValue === 'string') {
+      const value = rawValue.trim();
+      const lowerValue = value.toLowerCase();
+
+      const valueMap = {
+        male: 'ذكر',
+        female: 'أنثى',
+        single: 'أعزب/عزباء',
+        married: 'متزوج/متزوجة',
+        divorced: 'مطلق/مطلقة',
+        widowed: 'أرمل/أرملة',
+        yes: 'نعم',
+        no: 'لا',
+        true: 'نعم',
+        false: 'لا',
+        pending: 'قيد الانتظار',
+        approved: 'مقبول',
+        rejected: 'مرفوض'
+      };
+
+      if (valueMap[lowerValue]) return valueMap[lowerValue];
+
+      if (key.includes('date') && !Number.isNaN(Date.parse(value))) {
+        return formatDate(value);
+      }
+
+      return value;
+    }
+
+    return String(rawValue);
+  };
+
+  const getArabicActivityNote = (note) => {
+    if (!note || typeof note !== 'string') return 'نشاط جديد';
+
+    return note
+      .replace(/status[_\s-]?change/gi, 'تغيير الحالة')
+      .replace(/rejected?/gi, 'مرفوض')
+      .replace(/pending/gi, 'قيد الانتظار')
+      .replace(/approved/gi, 'مقبول')
+      .replace(/appointment/gi, 'موعد')
+      .replace(/note/gi, 'ملاحظة')
+      .replace(/call/gi, 'مكالمة')
+      .replace(/email/gi, 'بريد إلكتروني');
+  };
+
+  const getOrderedApplicantEntries = (formData) => {
+    if (!formData || typeof formData !== 'object') return [];
+
+    const hiddenWords = ['document', 'file', 'attachment'];
+    const employerKeys = [
+      'workplace', 'work_place', 'workplace_name', 'employer', 'employer_name',
+      'companyname', 'company_name', 'organizationname', 'organization_name',
+      'representativecompany', 'representative_company', 'workdestination', 'work_destination'
+    ];
+
+    const entries = Object.entries(formData).filter(([key, value]) => {
+      if (typeof value === 'object') return false;
+      const lowerKey = String(key).toLowerCase();
+      if (hiddenWords.some((w) => lowerKey.includes(w))) return false;
+      if (employerKeys.some((k) => lowerKey.includes(k))) return false;
+      return true;
+    });
+
+    const keyPriority = [
+      'full_name', 'name', 'first_name', 'last_name',
+      'national_id', 'id_number', 'passport_number',
+      'birth_date', 'gender', 'nationality',
+      'phone', 'phone_number', 'mobile', 'email',
+      'occupation', 'marital_status', 'address', 'city', 'region'
+    ];
+
+    const score = (key) => {
+      const normalized = String(key).toLowerCase();
+      const idx = keyPriority.findIndex((k) => normalized.includes(k));
+      return idx === -1 ? 999 : idx;
+    };
+
+    return entries.sort((a, b) => score(a[0]) - score(b[0]));
+  };
+
+  const getEmployerNameFromData = (applicationData) => {
+    const formData = applicationData?.form_data || {};
+
+    const directCandidateKeys = [
+      'workplace', 'work_place', 'workplace_name',
+      'employerName', 'employer_name',
+      'companyName', 'company_name',
+      'organizationName', 'organization_name',
+      'representativeCompany', 'representative_company',
+      'workDestination', 'work_destination',
+      'job_place', 'jobplace',
+      'جهة_العمل', 'جهة العمل', 'مكان_العمل', 'مكان العمل', 'اسم_جهة_العمل', 'اسم جهة العمل'
+    ];
+
+    for (const key of directCandidateKeys) {
+      const value = formData?.[key];
+      if (typeof value === 'string' && value.trim()) return value.trim();
+    }
+
+    // Flexible fallback: detect any key that semantically looks like employer/workplace
+    for (const [rawKey, rawValue] of Object.entries(formData || {})) {
+      if (typeof rawValue !== 'string' || !rawValue.trim()) continue;
+      const key = String(rawKey).toLowerCase().replace(/[\s_\-]/g, '');
+
+      const likelyEmployerKey =
+        key.includes('workplace') ||
+        key.includes('employer') ||
+        key.includes('company') ||
+        key.includes('organization') ||
+        key.includes('workdestination') ||
+        key.includes('jobplace') ||
+        key.includes('جهةالعمل') ||
+        key.includes('مكانالعمل') ||
+        key.includes('اسمجهةالعمل');
+
+      if (likelyEmployerKey) return rawValue.trim();
+    }
+
+    return null;
+  };
+
   const handleStatusChange = async (newStatusValue) => {
     if (!newStatusValue) {
       setShowStatusDropdown(false);
@@ -344,6 +564,8 @@ export default function ApplicationDetail() {
       </div>
     );
   }
+
+  const employerName = getEmployerNameFromData(application);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8" dir="rtl">
@@ -714,35 +936,18 @@ export default function ApplicationDetail() {
                     بيانات المتقدم
                   </h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {application.form_data && Object.entries(application.form_data)
-                      .filter(([key, value]) => {
-                        return typeof value !== 'object' &&
-                               !key.includes('document') &&
-                               !key.includes('file') &&
-                               !key.includes('attachment');
-                      })
-                      .map(([key, value]) => (
-                        <div key={key} className="space-y-1">
-                          <div className="flex items-start gap-3">
-                            <MapPin className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
-                            <div className="flex-1">
-                              <p className="text-sm text-gray-500">{key}</p>
-                              <p className="text-gray-900 font-medium">{value || 'غير محدد'}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {getOrderedApplicantEntries(application.form_data).map(([key, value]) => (
+                      <div key={key} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <p className="text-sm text-gray-500 mb-1">{getArabicFieldLabel(key)}</p>
+                              <p className="text-base font-bold text-gray-900 break-words">{getArabicFieldValue(value, key, application.form_data)}</p>
+                      </div>
+                    ))}
 
-                    {application.applicant_region && (
-                      <div className="space-y-1">
-                        <div className="flex items-start gap-3">
-                          <MapPin className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
-                          <div className="flex-1">
-                            <p className="text-sm text-gray-500">المنطقة</p>
-                            <p className="text-gray-900 font-medium">{application.applicant_region}</p>
-                          </div>
-                        </div>
+                    {employerName && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <p className="text-sm text-gray-500 mb-1">جهة العمل</p>
+                        <p className="text-base font-bold text-gray-900 break-words">{employerName}</p>
                       </div>
                     )}
                   </div>
@@ -789,9 +994,9 @@ export default function ApplicationDetail() {
                           .filter(([key, value]) => typeof value !== 'object')
                           .map(([key, value]) => (
                             <div key={key} className="flex justify-between py-2 border-b border-gray-100">
-                              <span className="text-gray-600">{key}:</span>
+                              <span className="text-gray-600">{getArabicFieldLabel(key)}:</span>
                               <span className="font-medium text-gray-900 text-right max-w-md">
-                                {value || 'غير محدد'}
+                                {getArabicFieldValue(value, key, application.form_data)}
                               </span>
                             </div>
                           ))}
@@ -852,7 +1057,7 @@ export default function ApplicationDetail() {
                                 <FileText className="w-5 h-5 text-blue-600" />
                               </div>
                               <div>
-                                <p className="font-medium text-gray-900">{doc.name}</p>
+                                <p className="font-medium text-gray-900">{getArabicFieldLabel(doc.name)}</p>
                                 <p className="text-sm text-gray-500">انقر للعرض أو التحميل</p>
                               </div>
                             </div>
@@ -995,7 +1200,7 @@ export default function ApplicationDetail() {
                             <div>
                               <h4 className="font-bold text-gray-900">{activityLabel}</h4>
                               <p className="text-sm text-gray-600">
-                                {history.notes || (statusInfo?.name_ar ? `تم ${statusInfo.name_ar}` : 'نشاط جديد')}
+                                {getArabicActivityNote(history.notes || (statusInfo?.name_ar ? `تم ${statusInfo.name_ar}` : 'نشاط جديد'))}
                               </p>
                             </div>
                           </div>

@@ -51,23 +51,23 @@ const parseOptions = (options) => {
 // Field Components Library
 const FIELD_LIBRARY = {
   fields: [
-    { id: 'text', icon: '📝', label: 'حقل نصي', type: 'text' },
-    { id: 'textarea', icon: '📄', label: 'نص طويل', type: 'textarea' },
-    { id: 'number', icon: '🔢', label: 'رقم', type: 'number' },
-    { id: 'email', icon: '📧', label: 'بريد إلكتروني', type: 'email' },
-    { id: 'phone', icon: '📱', label: 'هاتف', type: 'phone' },
-    { id: 'date', icon: '📅', label: 'تاريخ', type: 'date' },
-    { id: 'select', icon: '📋', label: 'قائمة منسدلة', type: 'select' },
-    { id: 'radio', icon: '🔘', label: 'اختيار واحد', type: 'radio' },
-    { id: 'checkbox', icon: '☑️', label: 'اختيارات متعددة', type: 'checkbox' },
-    { id: 'file', icon: '📎', label: 'رفع ملف', type: 'file' },
-    { id: 'searchable-select', icon: '🔍', label: 'بحث', type: 'searchable-select' },
+    { id: 'text', icon: '📝', label: 'Input', type: 'text' },
+    { id: 'textarea', icon: '📄', label: 'Text area', type: 'textarea' },
+    { id: 'number', icon: '🔢', label: 'Number format', type: 'number' },
+    { id: 'email', icon: '📧', label: 'Email', type: 'email' },
+    { id: 'phone', icon: '📱', label: 'Phone', type: 'phone' },
+    { id: 'date', icon: '📅', label: 'DatePicker', type: 'date' },
+    { id: 'select', icon: '📋', label: 'Dropdown', type: 'select' },
+    { id: 'radio', icon: '🔘', label: 'Radio group', type: 'radio' },
+    { id: 'checkbox', icon: '☑️', label: 'Checkbox', type: 'checkbox' },
+    { id: 'file', icon: '📎', label: 'Uploader', type: 'file' },
+    { id: 'searchable-select', icon: '🔍', label: 'Search', type: 'searchable-select' },
     { id: 'dynamic-list', icon: '👥', label: 'Repeatable Group', type: 'dynamic-list', description: 'حقول متكررة (مثل: أفراد العائلة)' }
   ],
   static: [
-    { id: 'header', icon: 'T', label: 'عنوان', type: 'header' },
-    { id: 'divider', icon: '—', label: 'فاصل', type: 'divider' },
-    { id: 'info', icon: 'ℹ', label: 'نص', type: 'info' }
+    { id: 'header', icon: 'T', label: 'Header', type: 'header' },
+    { id: 'divider', icon: '—', label: 'Divider', type: 'divider' },
+    { id: 'info', icon: 'ℹ', label: 'Label', type: 'info' }
   ]
 };
 
@@ -91,14 +91,14 @@ const ComponentsSidebar = ({ onAddField }) => {
   return (
     <div className="w-72 bg-white border-r border-gray-200 flex flex-col">
       <div className="p-4 border-b border-gray-200">
-        <h3 className="text-sm font-bold text-gray-900 mb-3">المكوّنات</h3>
+        <h3 className="text-sm font-bold text-gray-900 mb-3">Components</h3>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="بحث..."
+            placeholder="Search..."
             className="w-full pl-10 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
@@ -112,7 +112,7 @@ const ComponentsSidebar = ({ onAddField }) => {
             className="w-full flex items-center gap-2 px-2 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 rounded"
           >
             {expandedSections.fields ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            الحقول
+            Fields
           </button>
 
           {expandedSections.fields && (
@@ -164,7 +164,7 @@ const ComponentsSidebar = ({ onAddField }) => {
             className="w-full flex items-center gap-2 px-2 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 rounded"
           >
             {expandedSections.static ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            عناصر ثابتة
+            Static
           </button>
 
           {expandedSections.static && (
@@ -216,7 +216,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
       case 'header':
         return (
           <h2 className="text-2xl font-bold text-gray-900">
-            {field.label_ar || 'عنوان'}
+            {field.label_ar || 'Header'}
           </h2>
         );
 
@@ -226,7 +226,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
       case 'info':
         return (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-sm text-blue-800">{field.label_ar || 'نص معلوماتي'}</p>
+            <p className="text-sm text-blue-800">{field.label_ar || 'Information text'}</p>
           </div>
         );
 
@@ -234,7 +234,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
         return (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              {field.label_ar || 'التسمية'}
+              {field.label_ar || 'Label'}
               {field.is_required && <span className="text-red-500 mr-1">*</span>}
             </label>
             <textarea
@@ -255,7 +255,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
         return (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              {field.label_ar || 'التسمية'}
+              {field.label_ar || 'Label'}
               {field.is_required && <span className="text-red-500 mr-1">*</span>}
             </label>
             <select
@@ -279,7 +279,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
         return (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              {field.label_ar || 'التسمية'}
+              {field.label_ar || 'Label'}
               {field.is_required && <span className="text-red-500 mr-1">*</span>}
             </label>
             <div className="space-y-2">
@@ -307,7 +307,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
         return (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              {field.label_ar || 'التسمية'}
+              {field.label_ar || 'Label'}
               {field.is_required && <span className="text-red-500 mr-1">*</span>}
             </label>
             <div className="space-y-2">
@@ -335,7 +335,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
         return (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              {field.label_ar || 'التسمية'}
+              {field.label_ar || 'Label'}
               {field.is_required && <span className="text-red-500 mr-1">*</span>}
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
@@ -421,7 +421,7 @@ const FieldPreview = ({ field, isSelected, onClick, onDragStart }) => {
         return (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              {field.label_ar || 'التسمية'}
+              {field.label_ar || 'Label'}
               {field.is_required && <span className="text-red-500 mr-1">*</span>}
             </label>
             <input
@@ -532,7 +532,7 @@ const FormCanvas = ({ fields, selectedField, onSelectField, onDrop, onReorder, v
               onDrop={(e) => handleDrop(e, 0)}
               className="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg"
             >
-              <p className="text-gray-500 text-sm">اسحب الحقول وأفلتها هنا لبدء بناء النموذج</p>
+              <p className="text-gray-500 text-sm">Drag and drop fields here to start building your form</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -1034,7 +1034,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
       <div className="w-96 bg-white border-l border-gray-200 flex items-center justify-center p-8">
         <div className="text-center text-gray-500">
           <Settings className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-          <p className="text-sm">اختر عنصرًا من النموذج لتعديل خصائصه</p>
+          <p className="text-sm">Select element on form for edit properties</p>
         </div>
       </div>
     );
@@ -1092,13 +1092,13 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
     <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-bold text-gray-900">الخصائص</h3>
+          <h3 className="text-sm font-bold text-gray-900">Properties</h3>
           <div className="flex gap-1">
             <button
               type="button"
               onClick={() => onDuplicate(field)}
               className="p-1.5 text-gray-600 hover:bg-gray-100 rounded"
-              title="نسخ"
+              title="Duplicate"
             >
               <Copy className="w-4 h-4" />
             </button>
@@ -1106,7 +1106,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
               type="button"
               onClick={() => onDelete(field)}
               className="p-1.5 text-red-600 hover:bg-red-50 rounded"
-              title="حذف"
+              title="Delete"
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -1114,23 +1114,18 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
         </div>
 
         <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
-          {[
-            { key: 'main', label: 'عام' },
-            { key: 'style', label: 'المظهر' },
-            { key: 'actions', label: 'الإجراءات' },
-            { key: 'rules', label: 'القواعد' }
-          ].map((tab) => (
+          {['main', 'style', 'actions', 'rules'].map((tab) => (
             <button
               type="button"
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              key={tab}
+              onClick={() => setActiveTab(tab)}
               className={`flex-1 px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
-                activeTab === tab.key
+                activeTab === tab
                   ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              {tab.label}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
@@ -1141,7 +1136,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                اسم الحقل *
+                Field Name *
               </label>
               <input
                 type="text"
@@ -1154,7 +1149,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                التسمية (عربي)
+                Label (AR)
               </label>
               <input
                 type="text"
@@ -1167,20 +1162,20 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                التسمية (إنجليزي)
+                Label (EN)
               </label>
               <input
                 type="text"
                 value={field.label_en || ''}
                 onChange={(e) => handleChange('label_en', e.target.value)}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
-                placeholder="التسمية بالإنجليزية"
+                placeholder="Label in English"
               />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                النص الإرشادي (عربي)
+                Placeholder (AR)
               </label>
               <input
                 type="text"
@@ -1192,7 +1187,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
 
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                النص المساعد (عربي)
+                Help Text (AR)
               </label>
               <textarea
                 value={field.help_text_ar || ''}
@@ -1211,7 +1206,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
                 className="w-4 h-4 text-blue-600 rounded"
               />
               <label htmlFor="required" className="text-sm text-gray-700">
-                حقل مطلوب
+                Required field
               </label>
             </div>
 
@@ -1219,7 +1214,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
               <div className="pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <label className="text-xs font-bold text-gray-700">الخيارات</label>
+                    <label className="text-xs font-bold text-gray-700">Options</label>
                     <p className="text-xs text-gray-500 mt-0.5">
                       التسمية: ما يظهر للمستخدم | القيمة: تُحفظ في قاعدة البيانات
                     </p>
@@ -1229,7 +1224,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
                     onClick={addOption}
                     className="text-blue-600 hover:text-blue-700 text-xs font-semibold"
                   >
-                    + إضافة خيار
+                    + Add option
                   </button>
                 </div>
 
@@ -1285,7 +1280,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
                   {parseOptions(field.options).length === 0 && (
                     <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                       <p className="text-sm text-gray-500 mb-2">لا توجد خيارات بعد</p>
-                      <p className="text-xs text-gray-400">اضغط "+ إضافة خيار" لإضافة خيار جديد</p>
+                      <p className="text-xs text-gray-400">اضغط "+ Add option" لإضافة خيار جديد</p>
                     </div>
                   )}
                 </div>
@@ -1440,7 +1435,7 @@ const PropertiesPanel = ({ field, allFields, onUpdate, onDelete, onDuplicate }) 
 
         {activeTab === 'actions' && (
           <div className="text-center text-gray-500 py-8">
-            <p className="text-sm">إعدادات الإجراءات ستتوفر قريبًا</p>
+            <p className="text-sm">Actions configuration coming soon</p>
           </div>
         )}
 
@@ -1586,7 +1581,7 @@ const PreviewModal = ({ isOpen, onClose, fields }) => {
                       ? 'bg-white text-[#276073]'
                       : 'text-white hover:bg-white/30'
                   }`}
-                  title="سطح المكتب"
+                  title="Desktop"
                 >
                   <Monitor className="w-4 h-4" />
                 </button>
@@ -1598,7 +1593,7 @@ const PreviewModal = ({ isOpen, onClose, fields }) => {
                       ? 'bg-white text-[#276073]'
                       : 'text-white hover:bg-white/30'
                   }`}
-                  title="جهاز لوحي"
+                  title="Tablet"
                 >
                   <Tablet className="w-4 h-4" />
                 </button>
@@ -1610,7 +1605,7 @@ const PreviewModal = ({ isOpen, onClose, fields }) => {
                       ? 'bg-white text-[#276073]'
                       : 'text-white hover:bg-white/30'
                   }`}
-                  title="هاتف"
+                  title="Mobile"
                 >
                   <Smartphone className="w-4 h-4" />
                 </button>
@@ -1789,13 +1784,13 @@ const ProfessionalFormBuilder = ({ fields, onChange }) => {
       <div className="flex-1 flex flex-col">
         <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h2 className="text-lg font-bold text-gray-900">منشئ النماذج</h2>
+            <h2 className="text-lg font-bold text-gray-900">Form Builder</h2>
             <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
               <button
                 type="button"
                 onClick={() => setViewMode('desktop')}
                 className={`p-2 rounded ${viewMode === 'desktop' ? 'bg-white shadow-sm' : 'text-gray-600'}`}
-                title="سطح المكتب"
+                title="Desktop"
               >
                 <Monitor className="w-4 h-4" />
               </button>
@@ -1803,7 +1798,7 @@ const ProfessionalFormBuilder = ({ fields, onChange }) => {
                 type="button"
                 onClick={() => setViewMode('tablet')}
                 className={`p-2 rounded ${viewMode === 'tablet' ? 'bg-white shadow-sm' : 'text-gray-600'}`}
-                title="جهاز لوحي"
+                title="Tablet"
               >
                 <Tablet className="w-4 h-4" />
               </button>
@@ -1811,7 +1806,7 @@ const ProfessionalFormBuilder = ({ fields, onChange }) => {
                 type="button"
                 onClick={() => setViewMode('mobile')}
                 className={`p-2 rounded ${viewMode === 'mobile' ? 'bg-white shadow-sm' : 'text-gray-600'}`}
-                title="هاتف"
+                title="Mobile"
               >
                 <Smartphone className="w-4 h-4" />
               </button>
@@ -1825,7 +1820,7 @@ const ProfessionalFormBuilder = ({ fields, onChange }) => {
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-lg flex items-center gap-2"
             >
               <Eye className="w-4 h-4" />
-              معاينة
+              Preview
             </button>
             <div className="px-4 py-2 text-sm text-gray-500 italic">
               التغييرات تُحفظ عند الضغط على "حفظ الخدمة" أسفل الصفحة
